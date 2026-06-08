@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act — Enforcement & Risk Reference · The AI Readyist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Base */
+    --color-bg:              #0D1B2A;
+    --navy:                  #0D1B2A;
+    --deep-black:            #0a1220;
+    --off-white:             #F0F4F8;
+    --teal:                  #00C9A7;
+    --slate:                 #6B7A8D;
+    --amber:                 #E8A838;
+
+    /* Text */
+    --color-text-primary:    #F0F4F8;
+    --color-text-secondary:  rgba(240,244,248,0.65);
+    --color-text-muted:      rgba(240,244,248,0.40);
+
+    /* Borders */
+    --color-border-card:     rgba(0,201,167,0.20);
+    --color-border-active:   rgba(0,201,167,0.60);
+    --color-border-subtle:   rgba(255,255,255,0.08);
+    --color-border-warning:  rgba(232,168,56,0.35);
+
+    /* Derived tokens — legacy aliases */
+    --bg:           var(--navy);
+    --bg2:          transparent;
+    --bg3:          transparent;
+    --gold:         var(--teal);
+    --gold-dim:     rgba(0,201,167,0.12);
+    --gold-border:  rgba(0,201,167,0.25);
+    --text:         var(--off-white);
+    --muted:        var(--slate);
+    --muted2:       rgba(240,244,248,0.65);
+    --teal-dim:     rgba(0,201,167,0.12);
+    --teal-border:  rgba(0,201,167,0.25);
+    --amber-dim:    rgba(232,168,56,0.12);
+    --rule:         rgba(107,122,141,0.20);
+    --rule-teal:    rgba(0,201,167,0.40);
+    --slate-70:     rgba(240,244,248,0.65);
+    --slate-60:     rgba(240,244,248,0.55);
+    --red:          #e05c5c;
+    --red-dim:      rgba(224,92,92,0.10);
+    --orange:       var(--amber);
+    --orange-dim:   var(--amber-dim);
+    --blue:         #6a9fc0;
+    --blue-dim:     rgba(106,159,192,0.10);
+    --green:        #7aaa8a;
+    --green-dim:    rgba(122,170,138,0.10);
+    --eu-ai:        #6a9fc0;
+    --dora:         var(--amber);
+    --nis2:         #7aaa8a;
+  }
+
+  nav { padding:0 48px; height:56px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--rule); position:sticky; top:0; background:rgba(13,31,60,0.96); backdrop-filter:blur(8px); z-index:100; }
+  .nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--off-white); text-decoration:none; }
+  .nav-back { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--slate-70); text-decoration:none; transition:color 0.15s; }
+  .nav-back:hover { color:var(--teal); }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 19px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 32px 40px 26px;
+    border-bottom: 1px solid var(--teal-dim);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .pub-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pub-label::before { content:''; display:inline-block; width:18px; height:1px; background:var(--gold); }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .header-sub {
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    max-width: 500px;
+    line-height: 1.5;
+  }
+
+  .header-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.75;
+    padding-top: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── Main ── */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 64px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ── Who does what ── */
+  .who-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .who-card {
+    background: transparent;
+    padding: 22px 20px 24px;
+    border-top: 2px solid transparent;
+  }
+
+  .who-card.commission { border-top-color: var(--gold); }
+  .who-card.national   { border-top-color: var(--blue); }
+  .who-card.aioffice   { border-top-color: var(--green); }
+
+  .who-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .commission .who-icon { color: var(--gold); }
+  .national   .who-icon { color: var(--blue); }
+  .aioffice   .who-icon { color: var(--green); }
+
+  .who-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+
+  .who-desc {
+    font-size: 16px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .who-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .who-list li {
+    font-size: 15px;
+    color: rgba(240,244,248,0.65);
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .who-list li::before {
+    content: '→'; color: var(--teal);
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+    top: 1px;
+    color: var(--gold);
+  }
+
+  /* ── Reality check banner ── */
+  .reality-banner {
+    background: transparent;
+    border: 1px solid var(--color-border-card);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin-top: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .reality-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+  }
+
+  .rb-item {
+    padding: 8px 20px;
+    border-left: 1px solid var(--rule);
+  }
+  .rb-item:first-child { border-left: none; padding-left: 0; }
+
+  .rb-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .rb-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .rb-desc {
+    font-size: 15px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.45;
+  }
+
+  /* ── Trigger grid ── */
+  .trigger-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .trig {
+    background: transparent;
+    padding: 20px 18px 22px;
+    border-left: 3px solid transparent;
+    position: relative;
+  }
+
+  .trig.t1 { border-left-color: var(--orange); }
+  .trig.t2 { border-left-color: var(--red); }
+  .trig.t3 { border-left-color: var(--blue); }
+  .trig.t4 { border-left-color: var(--green); }
+
+  .trig-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .t1 .trig-num { color: var(--orange); }
+  .t2 .trig-num { color: var(--red); }
+  .t3 .trig-num { color: var(--blue); }
+  .t4 .trig-num { color: var(--green); }
+
+  .trig-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+
+  .trig-body {
+    font-size: 15px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .trig-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 0;
+    border: 1px solid transparent;
+    display: inline-block;
+  }
+  .t1 .trig-tag { background: var(--orange-dim); color: var(--orange); border-color: rgba(212,132,90,0.25); }
+  .t2 .trig-tag { background: var(--red-dim);    color: var(--red);    border-color: rgba(224,92,92,0.25); }
+  .t3 .trig-tag { background: var(--blue-dim);   color: var(--blue);   border-color: rgba(106,159,192,0.25); }
+  .t4 .trig-tag { background: var(--green-dim);  color: var(--green);  border-color: rgba(122,170,138,0.25); }
+
+  /* ── Timeline ── */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    position: relative;
+  }
+
+  .tl-node {
+    background: transparent;
+    padding: 18px 16px 20px;
+    position: relative;
+  }
+
+  .tl-node.active {
+    background: transparent;
+    border: 1px solid var(--color-border-card);
+  }
+
+  .tl-node.active::before {
+    content: 'NOW';
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--bg);
+    background: var(--gold);
+    padding: 2px 7px;
+    border-radius: 0;
+  }
+
+  .tl-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .tl-node.future .tl-date { color: var(--muted); }
+
+  .tl-event {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .tl-detail {
+    font-size: 15px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.5;
+  }
+
+  /* ── Penalty table ── */
+  .penalty-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .penalty-table thead tr {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .penalty-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 16px 12px;
+    text-align: left;
+    font-weight: 400;
+  }
+  .penalty-table th:first-child { padding-left: 0; }
+
+  .penalty-table tbody tr {
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.15s;
+  }
+  .penalty-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+  .penalty-table tbody tr:last-child { border-bottom: none; }
+
+  .penalty-table td {
+    padding: 14px 16px;
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    vertical-align: top;
+  }
+  .penalty-table td:first-child { padding-left: 0; }
+
+  .tier-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+    position: relative;
+    top: 1px;
+  }
+
+  .tier-name-cell {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .fine-cell {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  .turnover-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: rgba(240,244,248,0.65);
+  }
+
+  /* ── Warning ── */
+  .warn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .warn-box {
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .warn-box.amber { background: rgba(212,132,90,0.08); border: 1px solid rgba(212,132,90,0.18); }
+  .warn-box.red   { background: var(--red-dim);        border: 1px solid rgba(224,92,92,0.18); }
+
+  .warn-glyph {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .warn-box.amber .warn-glyph { color: var(--orange); }
+  .warn-box.red   .warn-glyph { color: var(--red); }
+
+  .warn-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .warn-box.amber .warn-label { color: var(--orange); }
+  .warn-box.red   .warn-label { color: var(--red); }
+
+  .warn-text {
+    font-size: 16px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.6;
+  }
+  .warn-text strong { color: var(--text); }
+
+  /* ── Verdict ── */
+  .verdict {
+    background: transparent;
+    border: 1px solid var(--color-border-card);
+    padding: 26px 28px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 2px;
+  }
+  .verdict::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+  }
+
+  .verdict-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .verdict-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .verdict-col p {
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .verdict-col p:last-child { margin-bottom: 0; }
+  .verdict-col p strong { color: var(--text); }
+
+  .cta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .cta-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.15s;
+    border-radius: 0;
+    font-weight: 500;
+  }
+  .cta-primary:hover { opacity: 0.88; }
+
+  .cta-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--color-border-card);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s;
+    border-radius: 0;
+  }
+  .cta-secondary:hover { background: var(--gold-dim); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 40px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-note { font-size: 14px; color: var(--muted); max-width: 540px; line-height: 1.5; }
+  .footer-link { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--gold); text-decoration: none; opacity: 0.8; }
+  .footer-link:hover { opacity: 1; }
+
+  @media (max-width: 860px) {
+    .header { padding: 24px 20px; flex-direction: column; }
+    .main { padding: 0 20px 48px; }
+    .who-grid { grid-template-columns: 1fr; }
+    .trigger-grid { grid-template-columns: 1fr 1fr; }
+    .timeline { grid-template-columns: 1fr 1fr; }
+    .warn-row { grid-template-columns: 1fr; }
+    .verdict-cols { grid-template-columns: 1fr; gap: 0; }
+    .reality-banner { grid-template-columns: 1fr; gap: 12px; }
+    .rb-item { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 12px; }
+    .rb-item:first-child { border-top: none; padding-top: 0; }
+  }
+
+  @media (max-width: 560px) {
+    .trigger-grid { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+  <a class="nav-back" href="/">← All tools</a>
+</nav>
+
+
+
+<header class="header">
+  <div>
+    <div class="pub-label">the<span style="color:var(--teal)">AI</span>Readyist</div>
+    <h1>EU AI Act — Enforcement & Risk</h1>
+    <p class="header-sub">Who enforces the Act, how they will do it, and what your real exposure looks like in 2026 and beyond.</p>
+  </div>
+  <div class="header-meta">
+    Regulation (EU) 2024/1689<br>
+    Full enforcement from Aug 2026<br>
+    Updated June 2026
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- WHO ENFORCES -->
+  <div class="section-label">Who Enforces the Act</div>
+
+  <div class="who-grid">
+
+    <div class="who-card commission">
+      <div class="who-icon">European Commission</div>
+      <div class="who-title">AI Office</div>
+      <p class="who-desc">Sits inside the Commission. Responsible for general-purpose AI (GPAI) models — the foundation models underlying most enterprise AI tooling. Full enforcement powers active from August 2026.</p>
+      <ul class="who-list">
+        <li>Supervises GPAI model providers (GPT, Claude, Gemini etc.)</li>
+        <li>Powers to request documentation, conduct evaluations, impose fines</li>
+        <li>Can issue market restriction and recall orders</li>
+        <li>Operates the AI Act Whistleblower Tool</li>
+      </ul>
+    </div>
+
+    <div class="who-card national">
+      <div class="who-icon">Member State Level</div>
+      <div class="who-title">National Market Surveillance Authorities</div>
+      <p class="who-desc">One per member state, minimum. Responsible for High Risk AI systems deployed within their jurisdiction. Enforcement quality and appetite will vary significantly by country.</p>
+      <ul class="who-list">
+        <li>Investigate complaints and incidents within their territory</li>
+        <li>Conduct market surveillance of High Risk systems</li>
+        <li>Impose national fines and sanctions</li>
+        <li>Only 8 of 27 member states had designated contact points by March 2026</li>
+      </ul>
+    </div>
+
+    <div class="who-card aioffice">
+      <div class="who-icon">Oversight Bodies</div>
+      <div class="who-title">Scientific Panel & AI Board</div>
+      <p class="who-desc">The Scientific Panel of independent experts advises on GPAI risks. The European AI Board coordinates national authorities and promotes consistent enforcement across member states.</p>
+      <ul class="who-list">
+        <li>Scientific Panel can alert the AI Office to systemic risks</li>
+        <li>AI Board issues guidelines and recommendations</li>
+        <li>National DPAs retain GDPR enforcement powers — overlap is real</li>
+        <li>Sector regulators (financial, health, transport) may act in parallel</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="reality-banner">
+    <div class="rb-item">
+      <div class="rb-label">Member states with active contact points</div>
+      <div class="rb-value">8 / 27</div>
+      <div class="rb-desc">As of March 2026. Enforcement infrastructure is not yet uniformly operational.</div>
+    </div>
+    <div class="rb-item">
+      <div class="rb-label">Organisations with no compliance steps taken</div>
+      <div class="rb-value">78%</div>
+      <div class="rb-desc">Vision Compliance, April 2026. Most organisations have no AI inventory, no tier classification, no governance owner.</div>
+    </div>
+    <div class="rb-item">
+      <div class="rb-label">Organisations with no AI inventory</div>
+      <div class="rb-value">&gt;50%</div>
+      <div class="rb-desc">You cannot classify risk you have not mapped. Regulators will be able to identify gaps from database absences alone.</div>
+    </div>
+  </div>
+
+  <!-- HOW ENFORCEMENT HAPPENS -->
+  <div class="section-label">How Enforcement Actually Happens</div>
+
+  <div class="trigger-grid">
+
+    <div class="trig t1">
+      <div class="trig-num">Route 01</div>
+      <div class="trig-title">Incident Reporting</div>
+      <p class="trig-body">Providers and deployers must report serious incidents and malfunctions to national authorities. A discriminatory hiring algorithm, a failed credit model, a clinical AI involved in patient harm — each creates a mandatory reporting obligation that places the organisation directly in front of regulators.</p>
+      <span class="trig-tag">Active Aug 2026</span>
+    </div>
+
+    <div class="trig t2">
+      <div class="trig-num">Route 02</div>
+      <div class="trig-title">Whistleblower Reports</div>
+      <p class="trig-body">From August 2026, EU AI Act violations fall within the Whistleblowing Directive. Employees and contractors have legally protected channels to report non-compliance directly to the AI Office. The tool is already live. Legal and HR need to own this risk — not just the CIO.</p>
+      <span class="trig-tag">Active Aug 2026</span>
+    </div>
+
+    <div class="trig t3">
+      <div class="trig-num">Route 03</div>
+      <div class="trig-title">Procurement Blocking</div>
+      <p class="trig-body">Enterprise buyers are already requiring AI Act conformity declarations, AI governance addenda to contracts, and incident SLAs. An organisation that cannot produce documentation loses contracts before it faces fines. For vendors selling into financial services, healthcare or public sector — this is happening now.</p>
+      <span class="trig-tag">Active now</span>
+    </div>
+
+    <div class="trig t4">
+      <div class="trig-num">Route 04</div>
+      <div class="trig-title">Competitor Complaints</div>
+      <p class="trig-body">Any natural or legal person may lodge a complaint with a national authority. In competitive markets, well-compliant organisations have a structural incentive to report peers cutting corners. This is the same dynamic that drove early GDPR enforcement actions in financial services and adtech.</p>
+      <span class="trig-tag">Active Aug 2026</span>
+    </div>
+
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section-label">Enforcement Timeline</div>
+
+  <div class="timeline">
+
+    <div class="tl-node">
+      <div class="tl-date">Feb 2025</div>
+      <div class="tl-event">Prohibited AI bans in force</div>
+      <p class="tl-detail">Tier 1 systems must be decommissioned. No grace period. Criminal referral possible in some jurisdictions.</p>
+    </div>
+
+    <div class="tl-node">
+      <div class="tl-date">Aug 2025</div>
+      <div class="tl-event">GPAI obligations begin</div>
+      <p class="tl-detail">General-purpose AI model obligations apply. AI Office enforcement powers follow one year later.</p>
+    </div>
+
+    <div class="tl-node active">
+      <div class="tl-date">Jun 2026</div>
+      <div class="tl-event">Documentation trail forming</div>
+      <p class="tl-detail">The absence of an inventory, classification, or governance owner is already a future liability. The window for a defensible position is open.</p>
+    </div>
+
+    <div class="tl-node future">
+      <div class="tl-date">Aug 2026</div>
+      <div class="tl-event">Full High Risk enforcement</div>
+      <p class="tl-detail">All High Risk obligations active. GPAI enforcement powers live. Whistleblower Directive extended. MSAs empowered to fine.</p>
+    </div>
+
+    <div class="tl-node future">
+      <div class="tl-date">2027–28</div>
+      <div class="tl-event">First enforcement wave</div>
+      <p class="tl-detail">Based on GDPR precedent: first significant fines, public findings, market withdrawal orders. Documentation from 2026 will be scrutinised.</p>
+    </div>
+
+  </div>
+
+  <!-- PENALTY TABLE -->
+  <div class="section-label">Penalty Structure</div>
+
+  <table class="penalty-table">
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th>Violation type</th>
+        <th>Maximum fine</th>
+        <th>Turnover basis</th>
+        <th>Additional exposure</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="tier-dot" style="background:#e05c5c"></span>
+          <span class="tier-name-cell">Unacceptable Risk</span>
+        </td>
+        <td>Deploying a prohibited system</td>
+        <td><span class="fine-cell" style="color:#e05c5c">€35M</span></td>
+        <td><span class="turnover-cell">7% global turnover</span></td>
+        <td style="font-size:15px">Criminal referral possible. No remediation path.</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="tier-dot" style="background:#d4845a"></span>
+          <span class="tier-name-cell">High Risk</span>
+        </td>
+        <td>Non-compliance with High Risk obligations</td>
+        <td><span class="fine-cell" style="color:#d4845a">€15M</span></td>
+        <td><span class="turnover-cell">3% global turnover</span></td>
+        <td style="font-size:15px">Market withdrawal orders. Procurement blocking. Public findings.</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="tier-dot" style="background:#6a9fc0"></span>
+          <span class="tier-name-cell">Limited Risk</span>
+        </td>
+        <td>Failure to disclose AI identity</td>
+        <td><span class="fine-cell" style="color:#6a9fc0">€7.5M</span></td>
+        <td><span class="turnover-cell">1.5% global turnover</span></td>
+        <td style="font-size:15px">Primarily reputational. Compliance cost is low.</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="tier-dot" style="background:var(--slate-70)"></span>
+          <span class="tier-name-cell">Any tier</span>
+        </td>
+        <td>Misleading information to authorities</td>
+        <td><span class="fine-cell" style="color:var(--slate-70)">€7.5M</span></td>
+        <td><span class="turnover-cell">1.5% global turnover</span></td>
+        <td style="font-size:15px">Applies regardless of underlying tier. Document accurately.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warn-row">
+    <div class="warn-box amber">
+      <div class="warn-glyph">△</div>
+      <div>
+        <div class="warn-label">Standards gap</div>
+        <p class="warn-text">The harmonised standards that define what High Risk compliance actually looks like have not yet been published. First delivery expected late 2026. <strong>This creates uncertainty for both organisations and regulators — but does not suspend the obligation.</strong></p>
+      </div>
+    </div>
+    <div class="warn-box red">
+      <div class="warn-glyph">!</div>
+      <div>
+        <div class="warn-label">GDPR overlap</div>
+        <p class="warn-text">Where AI systems process personal data, <strong>GDPR and the AI Act apply simultaneously</strong>. Different authorities may investigate the same organisation under each law at the same time. A single incident can trigger both regimes — and both penalty structures.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="section-label">The Executive Position</div>
+
+  <div class="verdict">
+    <div class="verdict-label">Where you stand — honestly</div>
+    <div class="verdict-cols">
+      <div class="verdict-col">
+        <p><strong>The short-term probability of a large fine is low.</strong> The enforcement infrastructure is not yet fully operational. Most national authorities are still staffing up. The harmonised standards are delayed. Regulators cannot easily fine a business for failing to meet a standard that does not exist.</p>
+        <p>The Digital Omnibus may push the effective High Risk deadline to late 2027. That is not confirmed. The original August 2026 deadline remains legally binding.</p>
+      </div>
+      <div class="verdict-col">
+        <p><strong>The medium-term enforcement risk is material.</strong> Based on GDPR precedent, enforcement reaches operational velocity two to three years after obligations come into force. The documentation trail you create — or fail to create — between now and August 2026 will be the primary evidence base when investigators arrive.</p>
+        <p>The organisations that will be first in scope are those with documented High Risk systems, no conformity assessment, no named accountability owner, and no audit trail. That description currently fits most large enterprises.</p>
+      </div>
+    </div>
+    <div class="cta-row">
+      <a class="cta-primary" href="/eu-ai-act" target="_blank">Take the Readiness Assessment</a>
+      <a class="cta-secondary" href="/eu-ai-act-tiers">Review the Tier Reference</a>
+      <a class="cta-secondary" href="/radar">View Governance Radar</a>
+      <a class="cta-secondary" href="/eu-ai-act-enforcement" target="_blank">Read the Full Analysis</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p class="footer-note">Sources: European Parliament Think Tank (March 2026), EU AI Act enforcement tracker (artificialintelligenceact.eu), Vision Compliance Readiness Report (April 2026), European Commission Digital Strategy. For orientation only — not legal advice.</p>
+    <a class="footer-link" href="/" target="_blank">theaireadyist.com →</a>
+  </div>
+
+</main>
+
+</body>
+</html>
