@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The AI Readyist helps enterprise leaders get AI right — before the cost, the risk, and the culture catch up with them.">
+<title>The AI Readyist — Because being AI-ready is harder than being AI-excited.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Brief-spec colour tokens — The Intelligence Terminal */
+    --navy:        #0D1F3C;  /* Primary surface: bg, nav, dominant panels */
+    --deep-black:  #0C1118;  /* Deep surface: behind-panel bg, overlay zones */
+    --off-white:   #F5F2EC;  /* Primary text: all body + headlines on dark */
+    --teal:        #00B8A2;  /* Signal / precision accent: data, CTAs, active states */
+    --slate:       #6B7A8D;  /* Secondary / structural: sub-labels, inactive, supporting */
+    --amber:       #E8A838;  /* Attention / data callout: risk indicators, scores */
+
+    /* Derived utility tokens */
+    --teal-dim:    rgba(0,184,162,0.12);
+    --teal-border: rgba(0,184,162,0.30);
+    --amber-dim:   rgba(232,168,56,0.12);
+    --rule:        rgba(107,122,141,0.20);   /* 1px structural rules */
+    --rule-teal:   rgba(0,184,162,0.40);     /* teal rule accent */
+    --slate-40:    rgba(107,122,141,0.40);   /* muted supporting text */
+    --slate-70:    rgba(245,242,236,0.70);   /* body text at 70% opacity */
+    --slate-60:    rgba(245,242,236,0.60);   /* sub-statement at 60% opacity */
+
+    /* Semantic aliases (match prior codebase roles) */
+    --bg:    var(--navy);
+    --bg2:   #162440;        /* slightly lighter navy for card surfaces */
+    --bg3:   #1c2d4e;        /* tertiary surface */
+    --text:  var(--off-white);
+    --muted: var(--slate);
+    --muted2: #A0AEBB;       /* slightly lighter slate for secondary text */
+    --gold:        var(--teal);
+    --gold-dim:    var(--teal-dim);
+    --gold-border: var(--teal-border);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* NAV */
+  nav {
+    padding: 0 48px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: rgba(13,31,60,0.97);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    height: 56px;
+  }
+
+  .nav-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 0;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--off-white);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .nav-edition {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate);
+    line-height: 1;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+    text-decoration: none;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-left: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: var(--off-white); }
+
+  .nav-links a.active { color: var(--teal); }
+
+  .nav-links a.nav-subscribe {
+    color: var(--teal);
+    border-left: 1px solid var(--rule);
+  }
+
+  .nav-links a.nav-subscribe:hover { background: var(--teal-dim); }
+
+  .nav-mobile-toggle {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    align-self: center;
+  }
+
+  /* HERO — 70/30 two-column split */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    background: var(--navy);
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px 72px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* Left column */
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-edition {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 14px;
+  }
+
+  .hero-rule {
+    width: 100%;
+    height: 1px;
+    background: var(--rule-teal);
+    margin-bottom: 32px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4.2vw, 52px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--off-white);
+    margin-bottom: 22px;
+  }
+
+  .hero-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--slate-60);
+    line-height: 1.65;
+    margin-bottom: 40px;
+    max-width: 520px;
+  }
+
+  .hero-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.2s;
+  }
+  .hero-cta:hover { gap: 12px; }
+  .hero-cta::after { content: '→'; }
+
+  /* Right column — readiness instrument */
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .score-instrument {
+    border: 1px solid var(--rule);
+    background: var(--deep-black);
+    padding: 28px 28px 24px;
+  }
+
+  .score-instrument-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 18px;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .score-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 48px;
+    font-weight: 500;
+    color: var(--teal);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .score-denom {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    color: var(--slate);
+    line-height: 1;
+  }
+
+  .score-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 24px;
+  }
+
+  .score-rule {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 20px;
+  }
+
+  .score-dimensions {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 24px;
+  }
+
+  .score-dim {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .score-dim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .score-dim-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .score-dim-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    color: var(--slate);
+  }
+
+  .score-bar-track {
+    height: 3px;
+    background: rgba(107,122,141,0.18);
+    position: relative;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.6s ease;
+  }
+
+  .score-bar-fill.teal  { background: var(--teal); }
+  .score-bar-fill.amber { background: var(--amber); }
+
+  .score-instrument-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    transition: opacity 0.15s;
+  }
+  .score-instrument-cta:hover { opacity: 0.75; }
+  .score-instrument-cta::after { content: '→'; }
+
+  /* Shared CTA button styles (kept for any remaining uses) */
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    background: var(--teal);
+    color: var(--deep-black);
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    background: transparent;
+    color: var(--teal);
+    border: 1px solid var(--teal-border);
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--teal-dim); }
+
+  /* Hero mobile */
+  @media (max-width: 860px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      padding: 52px 20px 48px;
+      gap: 40px;
+    }
+  }
+
+  /* PILLARS */
+  .pillars-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+  /* PILLAR INDEX — full-width vertical list */
+  .pillar-index {
+    border-top: 1px solid var(--rule);
+  }
+
+  .pillar-row {
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 64px 1fr 1fr auto;
+    gap: 0;
+    align-items: start;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .pillar-row:hover { background: rgba(0,184,162,0.03); }
+
+  .pillar-row-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: rgba(107,122,141,0.35);
+    line-height: 1;
+    padding: 32px 0 32px 48px;
+    letter-spacing: -0.02em;
+  }
+
+  .pillar-row-main {
+    padding: 32px 32px 32px 24px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .pillar-row-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--off-white);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .pillar-row-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--slate-70);
+    line-height: 1.65;
+    max-width: 440px;
+  }
+
+  .pillar-row-articles {
+    padding: 32px 24px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .pillar-row-articles-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 12px;
+  }
+
+  .pillar-article-link {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    color: var(--slate-70);
+    text-decoration: none;
+    line-height: 1.45;
+    padding: 5px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .pillar-article-link:hover {
+    color: var(--teal);
+    border-bottom-color: var(--teal-border);
+  }
+
+  .pillar-row-assess {
+    padding: 32px 48px 32px 28px;
+    display: flex;
+    align-items: flex-start;
+    border-left: 1px solid var(--rule);
+  }
+
+  .pillar-assess-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 4px;
+    transition: gap 0.2s;
+  }
+  .pillar-assess-cta:hover { gap: 10px; }
+  .pillar-assess-cta::after { content: '→'; }
+
+  .pillar-row-tags {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-top: 8px;
+  }
+
+  /* Pillar index mobile */
+  @media (max-width: 860px) {
+    .pillar-row {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: auto auto auto;
+    }
+    .pillar-row-num {
+      padding: 24px 0 0 20px;
+      font-size: 20px;
+    }
+    .pillar-row-main {
+      padding: 24px 20px 16px 16px;
+      grid-column: 2;
+      border-left: none;
+    }
+    .pillar-row-articles {
+      grid-column: 1 / -1;
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding: 16px 20px;
+    }
+    .pillar-row-assess {
+      grid-column: 1 / -1;
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding: 14px 20px 20px;
+    }
+  }
+
+  /* READINESS INSTRUMENTS */
+  .instruments-section {
+    background: var(--deep-black);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .instruments-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px;
+  }
+
+  /* Featured instrument — EU AI Act — full width */
+  .instrument-featured {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    margin-bottom: 2px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .instrument-featured:hover { border-color: var(--teal-border); }
+
+  .instrument-featured-body {
+    padding: 36px 40px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .instrument-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .instrument-status.live   { color: var(--teal); }
+  .instrument-status.soon   { color: var(--slate); }
+  .instrument-status.amber  { color: var(--amber); }
+
+  .instrument-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--off-white);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .instrument-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--slate-70);
+    line-height: 1.65;
+    margin-bottom: 28px;
+    max-width: 500px;
+  }
+
+  .instrument-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .instrument-aud {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .instrument-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+  .instrument-cta:hover { gap: 10px; }
+  .instrument-cta::after { content: '→'; }
+
+  /* Featured right panel — teaser readiness bars */
+  .instrument-featured-panel {
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .panel-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+
+  .panel-dimensions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .panel-dim-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .panel-dim-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .panel-bar-track {
+    height: 2px;
+    background: rgba(107,122,141,0.15);
+    position: relative;
+  }
+
+  .panel-bar-fill {
+    height: 100%;
+    position: absolute;
+    left: 0; top: 0;
+  }
+  .panel-bar-fill.teal  { background: var(--teal); }
+  .panel-bar-fill.amber { background: var(--amber); }
+  .panel-bar-fill.slate { background: rgba(107,122,141,0.4); }
+
+  .panel-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-cta::after { content: '→'; }
+
+  /* Standard instrument cards — 3-col grid */
+  .instruments-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .instrument-card {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    padding: 28px 28px 24px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .instrument-card:hover:not(.disabled) { border-color: var(--teal-border); }
+  .instrument-card.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .instrument-card .instrument-name {
+    font-size: 17px;
+    margin-bottom: 10px;
+    flex: 1;
+  }
+
+  .instrument-card .instrument-desc {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .instrument-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Instruments mobile */
+  @media (max-width: 860px) {
+    .instruments-inner { padding: 48px 20px; }
+    .instrument-featured { grid-template-columns: 1fr; }
+    .instrument-featured-body { border-right: none; border-bottom: 1px solid var(--rule); }
+    .instrument-featured-panel { padding: 24px 20px; }
+    .instruments-grid { grid-template-columns: 1fr; }
+  }
+
+  /* LATEST INTELLIGENCE FEED */
+  .feed-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px 80px;
+  }
+
+  /* Asymmetric 2-col: lead (wider) left, two supporting right */
+  .feed-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Lead article — left column, full height */
+  .feed-lead {
+    background: var(--bg2);
+    padding: 36px 36px 36px 36px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid var(--rule);
+    transition: background 0.15s;
+    min-height: 280px;
+  }
+  .feed-lead:hover { background: #192d4e; }
+
+  .feed-lead .feed-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .feed-lead .feed-summary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--slate-70);
+    line-height: 1.65;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  /* Supporting articles — right column, stacked */
+  .feed-supporting {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .feed-item {
+    background: var(--bg2);
+    padding: 24px 26px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    transition: background 0.15s;
+  }
+  .feed-item:hover { background: #192d4e; }
+
+  .feed-item .feed-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .feed-item .feed-summary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  /* Shared meta row: tag · date · read time */
+  .feed-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .feed-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  .feed-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .feed-readtime {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .feed-source {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-left: auto;
+  }
+
+  .feed-meta-sep {
+    color: var(--rule);
+    font-size: 10px;
+  }
+
+  /* Feed mobile */
+  @media (max-width: 860px) {
+    .feed-section { padding-left: 20px; padding-right: 20px; }
+    .feed-grid {
+      grid-template-columns: 1fr;
+    }
+    .feed-lead { border-right: none; border-bottom: 1px solid var(--rule); min-height: auto; }
+  }
+
+  /* ACCESS THE BRIEFING */
+  .access-section {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .access-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px;
+  }
+
+  .access-rule {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 48px;
+  }
+
+  .access-body {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 80px;
+    align-items: end;
+  }
+
+  .access-left {}
+
+  .access-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+
+  .access-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+
+  .access-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--slate);
+    line-height: 1.8;
+    text-transform: uppercase;
+  }
+
+  .access-desc span {
+    display: block;
+  }
+
+  /* Email input form */
+  .access-right {}
+
+  .access-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .access-input-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--slate);
+    margin-bottom: 24px;
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .access-input-row:focus-within {
+    border-bottom-color: var(--teal);
+  }
+
+  .access-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    padding: 8px 0;
+    caret-color: var(--teal);
+  }
+
+  .access-input::placeholder {
+    color: var(--slate);
+  }
+
+  .access-submit {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+    white-space: nowrap;
+  }
+  .access-submit:hover { gap: 10px; }
+  .access-submit::after { content: '→'; }
+
+  .access-terms {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 860px) {
+    .access-inner { padding: 52px 20px; }
+    .access-body {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 48px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links a { padding: 0 12px; font-size: 9px; }
+    .nav-edition { display: none; }
+  }
+
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: var(--navy);
+      border-bottom: 1px solid var(--rule);
+      z-index: 99;
+    }
+    .nav-links.open a {
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding: 14px 20px;
+    }
+    .nav-mobile-toggle { display: block; }
+    .pillars-section { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 24px 20px; }
+  }
+
+
+  /* FUNCTION LENSES */
+  .lenses-section {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--deep-black);
+  }
+
+  .lenses-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Tab bar */
+  .lenses-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--rule);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .lenses-tabs::-webkit-scrollbar { display: none; }
+
+  .lenses-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate);
+    padding: 18px 32px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+  }
+
+  .lenses-tab:hover { color: var(--off-white); }
+
+  .lenses-tab.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  /* Content panel */
+  .lenses-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    min-height: 320px;
+  }
+
+  /* Thesis column */
+  .lenses-thesis {
+    padding: 40px 40px 40px 48px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lenses-function-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+
+  .lenses-thesis-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    flex: 1;
+    margin-bottom: 28px;
+  }
+
+  .lenses-thesis-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.65;
+  }
+
+  /* Pillars column */
+  .lenses-pillars {
+    padding: 40px 32px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .lenses-col-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+
+  .lenses-pillar-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    transition: background 0.1s;
+  }
+  .lenses-pillar-item:last-child { border-bottom: none; }
+
+  .lenses-pillar-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(107,122,141,0.4);
+    min-width: 18px;
+  }
+
+  .lenses-pillar-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .lenses-pillar-item:hover .lenses-pillar-name { color: var(--teal); }
+
+  .lenses-pillar-priority {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: auto;
+    padding: 2px 6px;
+    border: 1px solid;
+  }
+  .lenses-pillar-priority.high {
+    color: var(--teal);
+    border-color: var(--teal-border);
+  }
+  .lenses-pillar-priority.watch {
+    color: var(--amber);
+    border-color: rgba(232,168,56,0.3);
+  }
+
+  /* Articles column */
+  .lenses-articles {
+    padding: 40px 40px 40px 32px;
+  }
+
+  .lenses-article-item {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+  .lenses-article-item:last-child { border-bottom: none; }
+
+  .lenses-article-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+
+  .lenses-article-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.4;
+    transition: color 0.15s;
+  }
+  .lenses-article-item:hover .lenses-article-title { color: var(--off-white); }
+
+  /* Lenses mobile */
+  @media (max-width: 860px) {
+    .lenses-tab { padding: 14px 18px; font-size: 9px; }
+    .lenses-panel { grid-template-columns: 1fr; }
+    .lenses-thesis { border-right: none; border-bottom: 1px solid var(--rule); padding: 28px 20px; }
+    .lenses-pillars { border-right: none; border-bottom: 1px solid var(--rule); padding: 24px 20px; }
+    .lenses-articles { padding: 24px 20px; }
+  }
+
+
+  /* INTELLIGENCE LOOP — nav score indicator */
+  .nav-score {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    border-left: 1px solid var(--rule);
+    padding: 0 18px;
+  }
+  .nav-score.visible { display: flex; }
+
+  .nav-score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .nav-score-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--teal);
+    letter-spacing: -0.01em;
+  }
+
+  .nav-score-bar {
+    width: 36px;
+    height: 2px;
+    background: rgba(107,122,141,0.2);
+    position: relative;
+  }
+
+  .nav-score-bar-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    background: var(--teal);
+    transition: width 0.4s ease;
+  }
+
+  /* INTELLIGENCE LOOP — pillar dimension tags */
+  .pillar-dimension-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .pillar-dimension-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.5;
+  }
+
+  /* INTELLIGENCE LOOP — contextual assess prompt (enhanced) */
+  .pillar-assess-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pillar-assess-score-val {
+    color: var(--amber);
+  }
+
+  /* INTELLIGENCE LOOP — scroll highlight on pillar row */
+  .pillar-row.in-view {
+    background: rgba(0,184,162,0.025);
+  }
+
+  .pillar-row.in-view .pillar-assess-cta {
+    color: var(--teal);
+    opacity: 1;
+  }
+
+  /* INTELLIGENCE LOOP — score update pulse animation */
+  @keyframes score-pulse {
+    0%   { opacity: 1; }
+    40%  { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  .score-pulse { animation: score-pulse 0.6s ease; }
+
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a class="nav-logo" href="/">theAIReadyist</a>
+    <span class="nav-edition">Intelligence Briefing &middot; Edition 42 &middot; June 2026</span>
+  </div>
+  <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+  <div class="nav-links">
+    <a href="#intelligence" class="active">Intelligence</a>
+    <a href="#readiness">Readiness</a>
+    <a href="#function-lenses">Function Lenses</a>
+    <a href="#tools">Tools</a>
+    <div class="nav-score" id="nav-score">
+      <span class="nav-score-label">Readiness</span>
+      <div class="nav-score-bar"><div class="nav-score-bar-fill" id="nav-score-fill" style="width:0%"></div></div>
+      <span class="nav-score-value" id="nav-score-val">—</span>
+    </div>
+    <a href="https://cspanswick.substack.com" target="_blank" class="nav-subscribe">Subscribe</a>
+  </div>
+</nav>
+
+<section class="hero" id="intelligence">
+  <div class="hero-inner">
+
+    <!-- Left: editorial statement -->
+    <div class="hero-left">
+      <div class="hero-edition">Intelligence Briefing &middot; Edition 42 &middot; June 2026</div>
+      <div class="hero-rule"></div>
+      <h1>The enterprises winning with AI are not moving faster. They are acting with greater clarity.</h1>
+      <p class="hero-sub">theAIReadyist is the intelligence layer for leaders who need to make consequential AI decisions — not consume more AI content.</p>
+      <a class="hero-cta" href="https://cspanswick.substack.com" target="_blank">Read this edition</a>
+    </div>
+
+    <!-- Right: AI Readiness Score instrument -->
+    <div class="hero-right">
+      <div class="score-instrument">
+        <div class="score-instrument-label">AI Readiness Score</div>
+        <div class="score-display">
+          <span class="score-number">47</span>
+          <span class="score-denom">/ 100</span>
+        </div>
+        <div class="score-status">Developing &mdash; Significant gaps identified</div>
+        <div class="score-rule"></div>
+        <div class="score-dimensions">
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">AI Cost Governance</span>
+              <span class="score-dim-value">38</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill amber" style="width:38%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Governance &amp; Trust</span>
+              <span class="score-dim-value">52</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill teal" style="width:52%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Human &amp; Culture Readiness</span>
+              <span class="score-dim-value">61</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill teal" style="width:61%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Operating Model</span>
+              <span class="score-dim-value">33</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill amber" style="width:33%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Production Readiness</span>
+              <span class="score-dim-value">44</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill amber" style="width:44%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Regulatory Compliance</span>
+              <span class="score-dim-value">58</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill teal" style="width:58%"></div></div>
+          </div>
+        </div>
+        <a class="score-instrument-cta" href="/eu-ai-act">Assess your organisation</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="lenses-section" id="function-lenses">
+  <div class="lenses-inner">
+
+    <!-- Tab bar -->
+    <div class="lenses-tabs" role="tablist">
+      <button class="lenses-tab active" onclick="setLens('cfo')" role="tab" aria-selected="true">CFO</button>
+      <button class="lenses-tab" onclick="setLens('chro')" role="tab" aria-selected="false">CHRO</button>
+      <button class="lenses-tab" onclick="setLens('cio')" role="tab" aria-selected="false">CIO</button>
+      <button class="lenses-tab" onclick="setLens('cto')" role="tab" aria-selected="false">CTO</button>
+      <button class="lenses-tab" onclick="setLens('board')" role="tab" aria-selected="false">Board</button>
+    </div>
+
+    <!-- Content panel — rendered by JS -->
+    <div class="lenses-panel" id="lenses-panel"></div>
+
+  </div>
+</section>
+
+
+<section id="readiness" style="max-width:1200px;margin:0 auto;padding:72px 48px 0;">
+  <div class="section-label">Intelligence Pillars</div>
+</section>
+
+<div class="pillar-index" style="max-width:1200px;margin:0 auto 0;">
+
+  <!-- 01 AI Cost Intelligence -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">01</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">AI Cost Intelligence</div>
+      <p class="pillar-row-desc">Agentic AI is creating a cost spiral most enterprises aren't ready for. When agents talk to agents, inference costs compound in ways invisible to the budget owners who signed off the original use case.</p>
+      <div class="pillar-row-tags">CFO · CIO · CAIO</div>
+    </div>
+    <div class="pillar-row-articles">
+      <div class="pillar-row-articles-label">Recent</div>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" target="_blank">The AI Bill Shock Nobody Is Budgeting For</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">When Agents Talk to Agents, Who Pays?</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Hidden Cost of the Wrong Model</a>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="AI Cost Governance" data-score="38">Assess this dimension</a>
+      <div class="pillar-assess-score">
+        <span>Readiness dimension:</span>
+        <span class="pillar-dimension-tag">AI Cost Governance</span>
+      </div>
+      <div class="pillar-assess-score">
+        <span>Current score:</span>
+        <span class="pillar-assess-score-val" style="color:#E8A838">38 / 100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Governance, Trust & Risk -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">02</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">Governance, Trust &amp; Risk</div>
+      <p class="pillar-row-desc">Who owns the decision when the AI gets it wrong? Governance conversations happen too late — after something goes wrong. This pillar covers what responsible AI looks like in a production environment.</p>
+      <div class="pillar-row-tags">CIO · CTO · CFO · Board</div>
+    </div>
+    <div class="pillar-row-articles">
+      <div class="pillar-row-articles-label">Recent</div>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The EU AI Act Is Not an IT Problem</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Who Owns the Model When It's Wrong?</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Governance Without Theatre</a>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Governance &amp; Trust" data-score="52">Assess this dimension</a>
+      <div class="pillar-assess-score">
+        <span>Readiness dimension:</span>
+        <span class="pillar-dimension-tag">Governance &amp; Trust</span>
+      </div>
+      <div class="pillar-assess-score">
+        <span>Current score:</span>
+        <span class="pillar-assess-score-val" style="color:#00B8A2">52 / 100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Human & Culture Layer -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">03</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">The Human &amp; Culture Layer</div>
+      <p class="pillar-row-desc">The main reason AI value stays locked inside organisations is not the technology — it is the humans. Most AI transformation programmes treat change management as a checkbox. This pillar goes deep.</p>
+      <div class="pillar-row-tags">CHRO · CEO · CIO</div>
+    </div>
+    <div class="pillar-row-articles">
+      <div class="pillar-row-articles-label">Recent</div>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" target="_blank">Can You Prove This Role Can't Be Done by AI?</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Change Management Debt Nobody Accounts For</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Why AI Champions Burn Out</a>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Human &amp; Culture" data-score="61">Assess this dimension</a>
+      <div class="pillar-assess-score">
+        <span>Readiness dimension:</span>
+        <span class="pillar-dimension-tag">Human &amp; Culture</span>
+      </div>
+      <div class="pillar-assess-score">
+        <span>Current score:</span>
+        <span class="pillar-assess-score-val" style="color:#00B8A2">61 / 100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 AI-Native Operating Model -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">04</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">AI-Native Operating Model</div>
+      <p class="pillar-row-desc">Deploying AI on top of existing processes is the least ambitious thing you can do with it. The enterprises extracting real, compounding value are reimagining how work gets done — not just which tools they use.</p>
+      <div class="pillar-row-tags">CEO · COO · CTO · CHRO</div>
+    </div>
+    <div class="pillar-row-articles">
+      <div class="pillar-row-articles-label">Recent</div>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Operating Model Is the Strategy</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">When Process Redesign Precedes the Prompt</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">What AI-Native Actually Looks Like at Scale</a>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Operating Model" data-score="33">Assess this dimension</a>
+      <div class="pillar-assess-score">
+        <span>Readiness dimension:</span>
+        <span class="pillar-dimension-tag">Operating Model</span>
+      </div>
+      <div class="pillar-assess-score">
+        <span>Current score:</span>
+        <span class="pillar-assess-score-val" style="color:#E8A838">33 / 100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 PoC Purgatory -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">05</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">PoC Purgatory</div>
+      <p class="pillar-row-desc">30–50% of AI projects fail after the pilot. Not because the technology doesn't work — because the organisation isn't ready to operationalise it. This pillar covers what it takes to get from experiment to production.</p>
+      <div class="pillar-row-tags">CIO · CTO · CAIO</div>
+    </div>
+    <div class="pillar-row-articles">
+      <div class="pillar-row-articles-label">Recent</div>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" target="_blank">Vibe Coding Has a Stop Sign</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Pilot That Never Became a Product</a>
+      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Production Readiness Is Not a Technical Problem</a>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Production Readiness" data-score="44">Assess this dimension</a>
+      <div class="pillar-assess-score">
+        <span>Readiness dimension:</span>
+        <span class="pillar-dimension-tag">Production Readiness</span>
+      </div>
+      <div class="pillar-assess-score">
+        <span>Current score:</span>
+        <span class="pillar-assess-score-val" style="color:#E8A838">44 / 100</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<section class="instruments-section" id="tools">
+  <div class="instruments-inner">
+
+    <div class="section-label">Readiness Instruments</div>
+
+    <!-- Featured: EU AI Act Assessment — full width with teaser bars -->
+    <a class="instrument-featured" href="/eu-ai-act">
+      <div class="instrument-featured-body">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">EU AI Act Readiness Assessment</div>
+        <p class="instrument-desc">Rate your organisation across five governance domains. Weighted readiness score with gap analysis, compliance verdict, and dimension-level recommendations. Takes 10 minutes.</p>
+        <div class="instrument-meta">
+          <span class="instrument-aud">CIO &middot; CFO &middot; CTO &middot; Legal &middot; 10 Min</span>
+          <span class="instrument-cta">See where your organisation stands</span>
+        </div>
+      </div>
+      <div class="instrument-featured-panel">
+        <div class="panel-label">Governance dimensions</div>
+        <div class="panel-dimensions">
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Risk Classification</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:42%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Data Governance</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:58%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Human Oversight</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:35%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Transparency</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:61%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Accountability</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:29%"></div></div>
+          </div>
+        </div>
+        <div class="panel-cta">Your organisation&rsquo;s score</div>
+      </div>
+    </a>
+
+    <!-- Standard instrument cards -->
+    <div class="instruments-grid">
+
+      <a class="instrument-card" href="/eu-ai-act-tiers">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">EU AI Act Tier Navigator</div>
+        <p class="instrument-desc">Understand which risk tier your AI systems fall into — and what that means for your P&amp;L, controls, and accountability structure.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CIO &middot; CFO &middot; Legal &middot; 5 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card disabled" href="#">
+        <div class="instrument-status soon">Coming Soon</div>
+        <div class="instrument-name">AI Maturity Map</div>
+        <p class="instrument-desc">Benchmark your organisation across five AI maturity dimensions. Identifies where you are, where the gaps are, and what moves the needle.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CIO &middot; CHRO</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card disabled" href="#">
+        <div class="instrument-status soon">Coming Soon</div>
+        <div class="instrument-name">Vendor AI Scorecard</div>
+        <p class="instrument-desc">Evaluate vendor AI claims against a structured framework. Cut through the marketing and identify what actually matters for enterprise deployment.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CPO &middot; CFO</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="feed-section">
+  <div class="section-label">Latest Intelligence</div>
+  <div class="feed-grid">
+
+    <!-- Lead article — left, larger -->
+    <a class="feed-lead" href="https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" target="_blank">
+      <div>
+        <div class="feed-meta">
+          <span class="feed-tag">PoC Purgatory</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Apr 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">6 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">Vibe Coding Has a Stop Sign.</div>
+        <div class="feed-summary">The enthusiasm for AI-assisted coding is real — and so is the cliff edge most organisations are building toward. Speed without structure is not productivity. It is deferred failure.</div>
+      </div>
+    </a>
+
+    <!-- Supporting articles — right column, stacked -->
+    <div class="feed-supporting">
+
+      <a class="feed-item" href="https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" target="_blank">
+        <div class="feed-meta">
+          <span class="feed-tag">Human &amp; Culture Layer</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Apr 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">5 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">Can You Prove This Role Can't Be Done by AI?</div>
+        <div class="feed-summary">The uncomfortable question every function leader will face in the next 18 months — and the ones who answer it honestly will be better placed than those who don't.</div>
+      </a>
+
+      <a class="feed-item" href="https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" target="_blank">
+        <div class="feed-meta">
+          <span class="feed-tag">AI Cost Intelligence</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Mar 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">4 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">The AI Bill Shock Nobody Is Budgeting For</div>
+        <div class="feed-summary">Inference costs are not on anyone's radar until the invoice arrives. By then the architecture decisions that caused them are already locked in.</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="access-section">
+  <div class="access-inner">
+    <div class="access-rule"></div>
+    <div class="access-body">
+
+      <div class="access-left">
+        <div class="access-label">The Intelligence Briefing</div>
+        <div class="access-title">Built for leaders who don&rsquo;t have time to be wrong about AI.</div>
+        <div class="access-desc">
+          <span>Published every other Tuesday.</span>
+          <span>Structured. Scannable. No filler.</span>
+          <span>No vendor promotion.</span>
+        </div>
+      </div>
+
+      <div class="access-right">
+        <form class="access-form" action="https://cspanswick.substack.com/subscribe" method="get" target="_blank">
+          <div class="access-input-row">
+            <input
+              class="access-input"
+              type="email"
+              name="email"
+              placeholder="Your email"
+              required
+            >
+            <button class="access-submit" type="submit">Access the briefing</button>
+          </div>
+          <div class="access-terms">No noise. Unsubscribe any time.</div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">theAIReadyist</div>
+  <div class="footer-note">By Clive Spanswick &middot; theaireadyist.com &middot; &copy; 2026</div>
+</footer>
+
+
+<script>
+const LENSES = {
+  cfo: {
+    label: 'CFO Lens',
+    thesis: 'AI readiness is a capital allocation problem before it is a technology one.',
+    sub: 'The financial risk of moving too slowly is now larger than the risk of moving too fast. CFOs who treat AI as an IT budget line are already behind.',
+    pillars: [
+      { num: '01', name: 'AI Cost Intelligence', priority: 'high' },
+      { num: '02', name: 'Governance, Trust & Risk', priority: 'high' },
+      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
+      { num: '05', name: 'PoC Purgatory', priority: 'watch' },
+    ],
+    articles: [
+      { tag: 'AI Cost Intelligence', title: 'The AI Bill Shock Nobody Is Budgeting For', href: 'https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting' },
+      { tag: 'Governance & Risk', title: 'Who Owns the Model When It Gets It Wrong?', href: 'https://cspanswick.substack.com' },
+      { tag: 'Operating Model', title: 'The Operating Model Is the Strategy', href: 'https://cspanswick.substack.com' },
+    ]
+  },
+  chro: {
+    label: 'CHRO Lens',
+    thesis: 'AI readiness is a workforce and culture problem before it is a technology one.',
+    sub: 'The organisations stalling on AI are not stalling because of the models — they are stalling because of the people. Change management is the critical path.',
+    pillars: [
+      { num: '03', name: 'The Human & Culture Layer', priority: 'high' },
+      { num: '04', name: 'AI-Native Operating Model', priority: 'high' },
+      { num: '05', name: 'PoC Purgatory', priority: 'watch' },
+      { num: '02', name: 'Governance, Trust & Risk', priority: 'watch' },
+    ],
+    articles: [
+      { tag: "Human & Culture Layer", title: "Can You Prove This Role Can't Be Done by AI?", href: "https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" },
+      { tag: 'Human & Culture Layer', title: 'Why AI Champions Burn Out', href: 'https://cspanswick.substack.com' },
+      { tag: 'Operating Model', title: 'What AI-Native Actually Looks Like at Scale', href: 'https://cspanswick.substack.com' },
+    ]
+  },
+  cio: {
+    label: 'CIO Lens',
+    thesis: 'AI readiness is an infrastructure and governance problem before it is a capability one.',
+    sub: 'CIOs are caught between the demand for AI speed and the reality of data architecture debt. The platforms that will enable AI are not the ones being bought today.',
+    pillars: [
+      { num: '02', name: 'Governance, Trust & Risk', priority: 'high' },
+      { num: '01', name: 'AI Cost Intelligence', priority: 'high' },
+      { num: '05', name: 'PoC Purgatory', priority: 'high' },
+      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
+    ],
+    articles: [
+      { tag: 'PoC Purgatory', title: 'Vibe Coding Has a Stop Sign', href: 'https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign' },
+      { tag: 'Governance & Risk', title: 'The EU AI Act Is Not an IT Problem', href: 'https://cspanswick.substack.com' },
+      { tag: 'AI Cost Intelligence', title: 'When Agents Talk to Agents, Who Pays?', href: 'https://cspanswick.substack.com' },
+    ]
+  },
+  cto: {
+    label: 'CTO Lens',
+    thesis: 'AI readiness is an architecture and production-readiness problem before it is a vision one.',
+    sub: 'Most organisations can demo AI. Very few can deploy it safely and repeatably. The gap between PoC and production is where technical leadership is tested.',
+    pillars: [
+      { num: '05', name: 'PoC Purgatory', priority: 'high' },
+      { num: '01', name: 'AI Cost Intelligence', priority: 'high' },
+      { num: '02', name: 'Governance, Trust & Risk', priority: 'watch' },
+      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
+    ],
+    articles: [
+      { tag: 'PoC Purgatory', title: 'Vibe Coding Has a Stop Sign', href: 'https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign' },
+      { tag: 'AI Cost Intelligence', title: 'The Hidden Cost of the Wrong Model', href: 'https://cspanswick.substack.com' },
+      { tag: 'PoC Purgatory', title: 'Production Readiness Is Not a Technical Problem', href: 'https://cspanswick.substack.com' },
+    ]
+  },
+  board: {
+    label: 'Board Lens',
+    thesis: 'AI readiness is a governance and accountability question before it is an opportunity one.',
+    sub: 'Boards that only hear about AI as upside are being poorly served. The liability exposure, the regulatory timeline, and the talent risk all require board-level framing.',
+    pillars: [
+      { num: '02', name: 'Governance, Trust & Risk', priority: 'high' },
+      { num: '01', name: 'AI Cost Intelligence', priority: 'watch' },
+      { num: '03', name: 'The Human & Culture Layer', priority: 'watch' },
+      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
+    ],
+    articles: [
+      { tag: 'Governance & Risk', title: 'Governance Without Theatre', href: 'https://cspanswick.substack.com' },
+      { tag: 'Governance & Risk', title: 'Who Owns the Decision When the AI Gets It Wrong?', href: 'https://cspanswick.substack.com' },
+      { tag: 'AI Cost Intelligence', title: 'The AI Bill Shock Nobody Is Budgeting For', href: 'https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting' },
+    ]
+  }
+};
+
+function renderLens(key) {
+  const d = LENSES[key];
+  const panel = document.getElementById('lenses-panel');
+
+  const pillarsHTML = d.pillars.map(p => `
+    <a class="lenses-pillar-item" href="#readiness">
+      <span class="lenses-pillar-num">${p.num}</span>
+      <span class="lenses-pillar-name">${p.name}</span>
+      <span class="lenses-pillar-priority ${p.priority}">${p.priority === 'high' ? 'Priority' : 'Monitor'}</span>
+    </a>`).join('');
+
+  const articlesHTML = d.articles.map(a => `
+    <a class="lenses-article-item" href="${a.href}" target="_blank">
+      <div class="lenses-article-tag">${a.tag}</div>
+      <div class="lenses-article-title">${a.title}</div>
+    </a>`).join('');
+
+  panel.innerHTML = `
+    <div class="lenses-thesis">
+      <div>
+        <div class="lenses-function-label">${d.label}</div>
+        <div class="lenses-thesis-text">${d.thesis}</div>
+        <div class="lenses-thesis-sub">${d.sub}</div>
+      </div>
+    </div>
+    <div class="lenses-pillars">
+      <div class="lenses-col-label">Priority pillars</div>
+      ${pillarsHTML}
+    </div>
+    <div class="lenses-articles">
+      <div class="lenses-col-label">Relevant reading</div>
+      ${articlesHTML}
+    </div>
+  `;
+}
+
+function setLens(key) {
+  document.querySelectorAll('.lenses-tab').forEach(t => {
+    t.classList.toggle('active', t.getAttribute('onclick') === `setLens('${key}')`);
+    t.setAttribute('aria-selected', t.getAttribute('onclick') === `setLens('${key}')`);
+  });
+  renderLens(key);
+}
+
+// Initialise on CFO
+renderLens('cfo');
+</script>
+
+
+<script>
+// ── INTELLIGENCE LOOP ENGINE ──────────────────────────────────────────────
+
+// Dimension scores — mirrors hero instrument. In Phase 3+ these come from
+// localStorage once the user has completed assessments.
+const DIMENSION_SCORES = {
+  'AI Cost Governance':    { score: 38, color: 'amber' },
+  'Governance & Trust':    { score: 52, color: 'teal'  },
+  'Human & Culture':       { score: 61, color: 'teal'  },
+  'Operating Model':       { score: 33, color: 'amber' },
+  'Production Readiness':  { score: 44, color: 'amber' },
+  'Regulatory Compliance': { score: 58, color: 'teal'  },
+};
+
+const COMPOSITE_SCORE = Math.round(
+  Object.values(DIMENSION_SCORES).reduce((s, d) => s + d.score, 0)
+  / Object.values(DIMENSION_SCORES).length
+);
+
+// ── 1. Nav score indicator ────────────────────────────────────────────────
+// Shows once the user has scrolled past the hero — signals "you're now
+// inside the platform, your score travels with you."
+
+const navScore     = document.getElementById('nav-score');
+const navScoreFill = document.getElementById('nav-score-fill');
+const navScoreVal  = document.getElementById('nav-score-val');
+const hero         = document.querySelector('.hero');
+
+function activateNavScore() {
+  navScore.classList.add('visible');
+  navScoreVal.textContent = COMPOSITE_SCORE;
+  navScoreFill.style.width = COMPOSITE_SCORE + '%';
+}
+
+function deactivateNavScore() {
+  navScore.classList.remove('visible');
+}
+
+// Use IntersectionObserver to watch when hero exits viewport
+if (hero && navScore) {
+  const heroObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) {
+        activateNavScore();
+      } else {
+        deactivateNavScore();
+      }
+    },
+    { threshold: 0.1 }
+  );
+  heroObserver.observe(hero);
+}
+
+// ── 2. Pillar row scroll highlight ────────────────────────────────────────
+// Highlights the pillar row currently in view — makes the assess CTA feel
+// contextually active rather than static.
+
+const pillarRows = document.querySelectorAll('.pillar-row');
+
+if (pillarRows.length) {
+  const rowObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
+      });
+    },
+    { threshold: 0.4, rootMargin: '-80px 0px -20% 0px' }
+  );
+  pillarRows.forEach(row => rowObserver.observe(row));
+}
+
+// ── 3. Score bar live sync ────────────────────────────────────────────────
+// Connects the hero score bars to the same DIMENSION_SCORES data object,
+// so when scores update (Phase 3 localStorage integration) both the hero
+// instrument and nav indicator update together.
+
+function syncScoreBars() {
+  // Hero instrument bars
+  document.querySelectorAll('.score-dim').forEach(dim => {
+    const nameEl = dim.querySelector('.score-dim-name');
+    const valEl  = dim.querySelector('.score-dim-value');
+    const fill   = dim.querySelector('.score-bar-fill');
+    if (!nameEl) return;
+
+    const key = nameEl.textContent.replace(' &amp; ', ' & ').replace(' & ', ' & ');
+    const match = Object.entries(DIMENSION_SCORES).find(([k]) =>
+      k.toLowerCase().includes(key.toLowerCase().split(' ')[0]) ||
+      key.toLowerCase().includes(k.toLowerCase().split(' ')[0])
+    );
+
+    if (match && fill) {
+      const [, data] = match;
+      fill.style.width = data.score + '%';
+      fill.className = 'score-bar-fill ' + data.color;
+      if (valEl) valEl.textContent = data.score;
+    }
+  });
+
+  // Update hero composite score
+  const scoreNumber = document.querySelector('.score-number');
+  if (scoreNumber) {
+    scoreNumber.textContent = COMPOSITE_SCORE;
+    scoreNumber.classList.add('score-pulse');
+    setTimeout(() => scoreNumber.classList.remove('score-pulse'), 700);
+  }
+}
+
+// ── 4. Assess CTA click tracking ─────────────────────────────────────────
+// When a user clicks "Assess this dimension", store which dimension they
+// came from. The EU AI Act tool page can read this to contextualise results.
+
+document.querySelectorAll('.pillar-assess-cta').forEach(cta => {
+  cta.addEventListener('click', () => {
+    const dim = cta.getAttribute('data-dimension');
+    const score = cta.getAttribute('data-score');
+    if (dim) {
+      try {
+        sessionStorage.setItem('assess_from_dimension', dim);
+        sessionStorage.setItem('assess_from_score', score);
+        sessionStorage.setItem('assess_from_page', 'homepage_pillar');
+      } catch(e) {}
+    }
+  });
+});
+
+// ── 5. Score instrument CTA click ────────────────────────────────────────
+const instrumentCta = document.querySelector('.score-instrument-cta');
+if (instrumentCta) {
+  instrumentCta.addEventListener('click', () => {
+    try {
+      sessionStorage.setItem('assess_from_page', 'homepage_hero_instrument');
+      sessionStorage.setItem('assess_composite', COMPOSITE_SCORE);
+    } catch(e) {}
+  });
+}
+
+// Initialise
+syncScoreBars();
+</script>
+
+</body>
+</html>
