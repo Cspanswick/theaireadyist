@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act Navigator — theAIReadyist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Base */
+    --color-bg:              #0D1B2A;
+    --navy:                  #0D1B2A;
+    --deep-black:            #0a1220;
+    --off-white:             #F0F4F8;
+    --teal:                  #00C9A7;
+    --slate:                 #6B7A8D;
+    --amber:                 #E8A838;
+
+    /* Text */
+    --color-text-primary:    #F0F4F8;
+    --color-text-secondary:  rgba(240,244,248,0.65);
+    --color-text-muted:      rgba(240,244,248,0.40);
+
+    /* Borders */
+    --color-border-card:     rgba(0,201,167,0.20);
+    --color-border-active:   rgba(0,201,167,0.60);
+    --color-border-subtle:   rgba(255,255,255,0.08);
+    --color-border-warning:  rgba(232,168,56,0.35);
+
+    /* Derived tokens — legacy aliases */
+    --bg:           var(--navy);
+    --bg2:          transparent;
+    --bg3:          transparent;
+    --gold:         var(--teal);
+    --gold-dim:     rgba(0,201,167,0.12);
+    --gold-border:  rgba(0,201,167,0.25);
+    --text:         var(--off-white);
+    --muted:        var(--slate);
+    --muted2:       rgba(240,244,248,0.65);
+    --teal-dim:     rgba(0,201,167,0.12);
+    --teal-border:  rgba(0,201,167,0.25);
+    --amber-dim:    rgba(232,168,56,0.12);
+    --rule:         rgba(107,122,141,0.20);
+    --rule-teal:    rgba(0,201,167,0.40);
+    --slate-70:     rgba(240,244,248,0.65);
+    --slate-60:     rgba(240,244,248,0.55);
+    --red:          #e05c5c;
+    --red-dim:      rgba(224,92,92,0.10);
+    --orange:       var(--amber);
+    --orange-dim:   var(--amber-dim);
+    --blue:         #6a9fc0;
+    --blue-dim:     rgba(106,159,192,0.10);
+    --green:        #7aaa8a;
+    --green-dim:    rgba(122,170,138,0.10);
+    --eu-ai:        #6a9fc0;
+    --dora:         var(--amber);
+    --nis2:         #7aaa8a;
+  }
+
+  nav { padding:0 48px; height:56px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--rule); position:sticky; top:0; background:rgba(13,31,60,0.96); backdrop-filter:blur(8px); z-index:100; }
+  .nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--off-white); text-decoration:none; }
+  .nav-back { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--slate-70); text-decoration:none; transition:color 0.15s; }
+  .nav-back:hover { color:var(--teal); }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 19px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    padding: 36px 40px 28px;
+    border-bottom: 1px solid var(--teal-dim);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .header-left { flex: 1; }
+
+  .pub-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pub-label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .header-sub {
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    max-width: 520px;
+    line-height: 1.5;
+  }
+
+  .header-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    padding-top: 6px;
+  }
+
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .tiers-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .tier-card {
+    background: transparent;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tier-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .tier-card:hover::before { opacity: 1; }
+  .tier-card[data-tier="banned"] { border-left-color: var(--red); }
+  .tier-card[data-tier="banned"]::before { background: var(--red-dim); }
+  .tier-card[data-tier="high"] { border-left-color: var(--orange); }
+  .tier-card[data-tier="high"]::before { background: var(--orange-dim); }
+  .tier-card[data-tier="limited"] { border-left-color: var(--blue); }
+  .tier-card[data-tier="limited"]::before { background: var(--blue-dim); }
+  .tier-card[data-tier="minimal"] { border-left-color: var(--green); }
+  .tier-card[data-tier="minimal"]::before { background: var(--green-dim); }
+
+  .tier-header {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 24px;
+    position: relative;
+  }
+
+  .tier-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .tier-card[data-tier="banned"] .tier-label { color: var(--red); }
+  .tier-card[data-tier="high"] .tier-label { color: var(--orange); }
+  .tier-card[data-tier="limited"] .tier-label { color: var(--blue); }
+  .tier-card[data-tier="minimal"] .tier-label { color: var(--green); }
+
+  .tier-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tier-tagline {
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.4;
+  }
+
+  .tier-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 0;
+    white-space: nowrap;
+    background: var(--rule);
+    color: rgba(240,244,248,0.65);
+    border: 1px solid var(--rule);
+  }
+
+  .tier-card[data-tier="banned"] .pill { background: var(--red-dim); color: var(--red); border-color: rgba(224,92,92,0.25); }
+  .tier-card[data-tier="high"] .pill { background: var(--orange-dim); color: var(--orange); border-color: rgba(212,132,90,0.25); }
+
+  .expand-icon {
+    font-size: 22px;
+    color: var(--muted);
+    transition: transform 0.25s ease;
+    margin-left: 16px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .tier-card.open .expand-icon { transform: rotate(45deg); color: var(--gold); }
+
+  .tier-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .tier-body-inner {
+    padding: 24px 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    border-top: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .body-col h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .body-col p, .body-col li {
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    line-height: 1.6;
+  }
+
+  .body-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .body-col li::before {
+    content: '→ '; color: var(--teal);
+    color: var(--gold);
+    font-size: 14px;
+  }
+
+  .consequence-box {
+    background: transparent;
+    border-radius: 0;
+    padding: 12px 14px;
+  }
+
+  .fine {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .fine-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .tier-card[data-tier="banned"] .fine { color: var(--red); }
+  .tier-card[data-tier="high"] .fine { color: var(--orange); }
+  .tier-card[data-tier="limited"] .fine { color: var(--blue); }
+  .tier-card[data-tier="minimal"] .fine { color: var(--green); }
+
+  /* Classifier */
+  .classifier {
+    background: transparent;
+    border: 1px solid var(--color-border-card);
+    padding: 32px;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .classifier::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+  }
+
+  .classifier-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .classifier-sub {
+    font-size: 17px;
+    color: rgba(240,244,248,0.65);
+    margin-bottom: 28px;
+  }
+
+  .questions { display: flex; flex-direction: column; gap: 20px; }
+
+  .question-block { opacity: 0.35; transition: opacity 0.3s; pointer-events: none; }
+  .question-block.active { opacity: 1; pointer-events: all; }
+  .question-block.answered { opacity: 0.6; pointer-events: none; }
+
+  .q-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .q-text {
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .q-options { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .q-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 9px 20px;
+    border: 1px solid var(--color-border-subtle);
+    background: transparent;
+    color: rgba(240,244,248,0.65);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 0;
+  }
+
+  .q-btn:hover { border-color: var(--gold-border); color: var(--gold); background: var(--gold-dim); }
+  .q-btn.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+  .progress-bar {
+    height: 2px;
+    background: var(--rule);
+    margin-bottom: 24px;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 0;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .result-panel { display: none; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--rule); }
+  .result-panel.show { display: block; }
+
+  .result-tier-badge { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .result-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .result-tier-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  .result-headline {
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .result-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+
+  .result-action {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: rgba(240,244,248,0.65);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .result-action::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 12px;
+    top: 1px;
+  }
+
+  .cta-row { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+
+  .cta-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.15s;
+    border-radius: 0;
+    font-weight: 500;
+  }
+
+  .cta-primary:hover { opacity: 0.88; }
+
+  .cta-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--color-border-card);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s;
+    border-radius: 0;
+  }
+
+  .cta-secondary:hover { background: var(--gold-dim); }
+
+  .reset-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 16px;
+    display: block;
+    transition: color 0.15s;
+  }
+
+  .reset-btn:hover { color: rgba(240,244,248,0.65); }
+
+  .footer-note {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .footer-note a { color: var(--gold); text-decoration: none; opacity: 0.8; }
+  .footer-note a:hover { opacity: 1; }
+
+  @media (max-width: 760px) {
+    .header { padding: 24px 20px; flex-direction: column; }
+    .header-meta { text-align: left; }
+    .main { padding: 0 20px 48px; }
+    .tier-header { grid-template-columns: 1fr auto; gap: 12px; }
+    .tier-pills { display: none; }
+    .tier-body-inner { grid-template-columns: 1fr; }
+    .classifier { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+  <a class="nav-back" href="/">← All tools</a>
+</nav>
+
+
+
+<header class="header">
+  <div class="header-left">
+    <div class="pub-label">The AI Readyist</div>
+    <h1>EU AI Act Navigator</h1>
+    <p class="header-sub">Understand which tier your AI systems fall into — and what that means for your P&L, controls, and accountability.</p>
+  </div>
+  <div class="header-meta">
+    Regulation (EU) 2024/1689<br>
+    In force from Aug 2026
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="section-label">Risk Tier Reference</div>
+
+  <div class="tiers-grid">
+
+    <div class="tier-card" data-tier="banned" onclick="toggleTier(this)">
+      <div class="tier-header">
+        <div>
+          <div class="tier-label">Tier 1</div>
+          <div class="tier-name">Unacceptable Risk</div>
+        </div>
+        <div class="tier-tagline">Prohibited outright. Deploying these systems is a legal violation — not a compliance gap.</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="tier-pills">
+            <span class="pill">Banned</span>
+            <span class="pill">No compliance path</span>
+          </div>
+          <div class="expand-icon">+</div>
+        </div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="body-col">
+            <h4>What triggers this</h4>
+            <ul>
+              <li>Real-time biometric surveillance in public spaces</li>
+              <li>Social scoring by governments or employers</li>
+              <li>AI exploiting psychological vulnerabilities to manipulate behaviour</li>
+              <li>Predictive policing based on profiling</li>
+              <li>Subliminal manipulation techniques</li>
+            </ul>
+          </div>
+          <div class="body-col">
+            <h4>Executive implication</h4>
+            <p>If any system in your portfolio matches these descriptions — even partially — the correct action is immediate decommissioning, not remediation. There is no conformity path. Legal exposure extends to directors personally in most member states.</p>
+          </div>
+          <div class="body-col">
+            <h4>Enforcement exposure</h4>
+            <div class="consequence-box">
+              <div class="fine">€35M</div>
+              <div class="fine-label">or 7% global turnover</div>
+            </div>
+            <p style="margin-top:10px;font-size:15px">Whichever is higher. The highest penalty band in the Act. Criminal referral is possible in some jurisdictions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-card" data-tier="high" onclick="toggleTier(this)">
+      <div class="tier-header">
+        <div>
+          <div class="tier-label">Tier 2</div>
+          <div class="tier-name">High Risk</div>
+        </div>
+        <div class="tier-tagline">Heaviest obligations. This is where most enterprise AI programmes live — and most compliance gaps sit.</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="tier-pills">
+            <span class="pill">Significant cost</span>
+            <span class="pill">Board-level risk</span>
+          </div>
+          <div class="expand-icon">+</div>
+        </div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="body-col">
+            <h4>What triggers this</h4>
+            <ul>
+              <li>HR and recruitment AI (screening, scoring, ranking)</li>
+              <li>Credit scoring and lending decisions</li>
+              <li>Insurance risk assessment</li>
+              <li>Medical devices and clinical decision support</li>
+              <li>Critical infrastructure (energy, water, transport)</li>
+              <li>Education assessment systems</li>
+              <li>Law enforcement tools</li>
+            </ul>
+          </div>
+          <div class="body-col">
+            <h4>What compliance requires</h4>
+            <ul>
+              <li>Conformity assessment before deployment</li>
+              <li>Human oversight mechanisms built in</li>
+              <li>Audit trail and logging (retained)</li>
+              <li>Registration in the EU AI Act database</li>
+              <li>Technical documentation to prescribed standard</li>
+              <li>Data governance and bias testing</li>
+              <li>Designated accountability owner</li>
+            </ul>
+          </div>
+          <div class="body-col">
+            <h4>Enforcement exposure</h4>
+            <div class="consequence-box">
+              <div class="fine">€15M</div>
+              <div class="fine-label">or 3% global turnover</div>
+            </div>
+            <p style="margin-top:10px;font-size:15px">Plus market withdrawal orders, suspension of systems, and reputational exposure. Procurement-blocking in public sector contracts likely.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-card" data-tier="limited" onclick="toggleTier(this)">
+      <div class="tier-header">
+        <div>
+          <div class="tier-label">Tier 3</div>
+          <div class="tier-name">Limited Risk</div>
+        </div>
+        <div class="tier-tagline">Transparency obligations only. Users must know they are interacting with AI.</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="tier-pills">
+            <span class="pill">Low compliance cost</span>
+            <span class="pill">Manageable</span>
+          </div>
+          <div class="expand-icon">+</div>
+        </div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="body-col">
+            <h4>What triggers this</h4>
+            <ul>
+              <li>Customer-facing chatbots and virtual assistants</li>
+              <li>AI-generated content (text, images, audio, video)</li>
+              <li>Deepfake or synthetic media tools</li>
+              <li>Emotion recognition in customer interactions</li>
+            </ul>
+          </div>
+          <div class="body-col">
+            <h4>What compliance requires</h4>
+            <ul>
+              <li>Disclose that users are interacting with AI — not a human</li>
+              <li>Label AI-generated content as such</li>
+              <li>Mark synthetic media (deepfakes) clearly</li>
+              <li>No technical documentation or registration required</li>
+            </ul>
+          </div>
+          <div class="body-col">
+            <h4>Enforcement exposure</h4>
+            <div class="consequence-box">
+              <div class="fine">€7.5M</div>
+              <div class="fine-label">or 1.5% global turnover</div>
+            </div>
+            <p style="margin-top:10px;font-size:15px">Penalties apply for failure to disclose AI identity. Compliance cost is low — the risk of non-compliance here is primarily reputational.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier-card" data-tier="minimal" onclick="toggleTier(this)">
+      <div class="tier-header">
+        <div>
+          <div class="tier-label">Tier 4</div>
+          <div class="tier-name">Minimal Risk</div>
+        </div>
+        <div class="tier-tagline">No mandatory obligations. The majority of AI in use today falls here.</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="tier-pills">
+            <span class="pill">No compliance cost</span>
+            <span class="pill">No obligation</span>
+          </div>
+          <div class="expand-icon">+</div>
+        </div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="body-col">
+            <h4>What falls here</h4>
+            <ul>
+              <li>Spam and content filters</li>
+              <li>Recommendation engines (unless consequential decisions)</li>
+              <li>AI in video games</li>
+              <li>Predictive maintenance (non-critical infrastructure)</li>
+              <li>Internal productivity tools with no personnel decision output</li>
+            </ul>
+          </div>
+          <div class="body-col">
+            <h4>What compliance requires</h4>
+            <p>Nothing mandatory. The Act encourages voluntary adoption of codes of conduct, but imposes no legal requirement. The CIO/CFO task here is simply to confirm systems are correctly classified — not assumed to be minimal risk.</p>
+          </div>
+          <div class="body-col">
+            <h4>Key risk</h4>
+            <div class="consequence-box" style="border-left:2px solid var(--green)">
+              <div class="fine" style="font-size:19px;margin-bottom:6px">Misclassification</div>
+              <div class="fine-label">is the real exposure</div>
+            </div>
+            <p style="margin-top:10px;font-size:15px">A system that appears minimal risk may be high risk if its outputs feed into decisions about people. Document your reasoning — not just your conclusion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Tier Classifier</div>
+
+  <div class="classifier">
+    <div class="classifier-title">Which tier are your AI systems in?</div>
+    <p class="classifier-sub">Answer four questions. Takes 90 seconds. Gets you a starting position — not a legal opinion.</p>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="questions" id="questionsContainer">
+
+      <div class="question-block active" id="q1">
+        <div class="q-number">Question 01 / 04</div>
+        <div class="q-text">Does any AI system in your portfolio make — or directly inform — decisions about individual people: employment, credit, insurance, healthcare, or access to essential services?</div>
+        <div class="q-options">
+          <button class="q-btn" onclick="answer(1,'yes')">Yes</button>
+          <button class="q-btn" onclick="answer(1,'no')">No</button>
+          <button class="q-btn" onclick="answer(1,'unsure')">Not sure</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q2">
+        <div class="q-number">Question 02 / 04</div>
+        <div class="q-text">Does any AI system interact directly with customers or employees in a way that could be mistaken for a human — for example, a chatbot, virtual agent, or AI-generated communication?</div>
+        <div class="q-options">
+          <button class="q-btn" onclick="answer(2,'yes')">Yes</button>
+          <button class="q-btn" onclick="answer(2,'no')">No</button>
+          <button class="q-btn" onclick="answer(2,'unsure')">Not sure</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q3">
+        <div class="q-number">Question 03 / 04</div>
+        <div class="q-text">Does any AI system operate on or near critical infrastructure — energy, water, transport, financial networks — where a failure could affect public safety or continuity of service?</div>
+        <div class="q-options">
+          <button class="q-btn" onclick="answer(3,'yes')">Yes</button>
+          <button class="q-btn" onclick="answer(3,'no')">No</button>
+          <button class="q-btn" onclick="answer(3,'unsure')">Not sure</button>
+        </div>
+      </div>
+
+      <div class="question-block" id="q4">
+        <div class="q-number">Question 04 / 04</div>
+        <div class="q-text">Has your organisation completed a formal inventory of all AI systems in production — including those embedded in third-party software or procured from vendors?</div>
+        <div class="q-options">
+          <button class="q-btn" onclick="answer(4,'yes')">Yes — complete inventory exists</button>
+          <button class="q-btn" onclick="answer(4,'partial')">Partial — some systems mapped</button>
+          <button class="q-btn" onclick="answer(4,'no')">No — not yet done</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="result-panel" id="resultPanel"></div>
+  </div>
+
+  <div class="footer-note">
+    <span>This tool is for orientation only — not legal advice. Tier classification requires a full system-level assessment against Annex III of Regulation (EU) 2024/1689.</span>
+    <a href="https://theaireadyist.com/eu-ai-act" target="_blank">Full Readiness Assessment →</a>
+  </div>
+
+</main>
+
+<script>
+  const answers = {};
+
+  function toggleTier(card) {
+    const isOpen = card.classList.contains('open');
+    document.querySelectorAll('.tier-card').forEach(c => {
+      c.classList.remove('open');
+      c.querySelector('.tier-body').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      card.classList.add('open');
+      const body = card.querySelector('.tier-body');
+      body.style.maxHeight = body.scrollHeight + 80 + 'px';
+    }
+  }
+
+  function answer(q, val) {
+    answers[q] = val;
+
+    const block = document.getElementById('q' + q);
+    block.classList.remove('active');
+    block.classList.add('answered');
+    block.querySelectorAll('.q-btn').forEach(btn => {
+      const t = btn.textContent.toLowerCase();
+      if ((val === 'yes' && t === 'yes') ||
+          (val === 'no' && t === 'no') ||
+          (val === 'unsure' && t === 'not sure') ||
+          (val === 'partial' && t.includes('partial')) ||
+          (val === 'yes' && t.includes('complete inventory'))) {
+        btn.classList.add('selected');
+      }
+    });
+
+    const progress = (Object.keys(answers).length / 4) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+
+    if (q < 4) {
+      const next = document.getElementById('q' + (q + 1));
+      next.classList.add('active');
+      setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+    }
+
+    if (Object.keys(answers).length === 4) {
+      setTimeout(showResult, 400);
+    }
+  }
+
+  function showResult() {
+    const panel = document.getElementById('resultPanel');
+    panel.classList.add('show');
+
+    let tier, color, headline, actions, nextStep;
+
+    const decisionAI = answers[1];
+    const chatbot = answers[2];
+    const infra = answers[3];
+    const inventory = answers[4];
+
+    if (decisionAI === 'yes' || infra === 'yes') {
+      tier = 'High Risk'; color = '#d4845a';
+      headline = 'One or more of your AI systems is likely to fall under the High Risk tier. This triggers the Act\'s heaviest obligations: conformity assessment, human oversight requirements, audit logging, and mandatory registration before deployment or continued operation.';
+      actions = [
+        'Appoint a named accountability owner for each high-risk system — this cannot remain a shared or undefined responsibility',
+        'Commission a conformity assessment against Annex III requirements before August 2026',
+        'Implement audit trail logging on all decision-influencing outputs — retroactive logging is not sufficient',
+        'Map your vendor contracts: if a third party supplies the system, operator obligations still transfer to you',
+        'Brief your board — this is a governance risk, not a technology project'
+      ];
+      nextStep = 'Your next step is a full EU AI Act Readiness Assessment to identify gaps across all five governance domains.';
+    } else if (decisionAI === 'unsure' || infra === 'unsure') {
+      tier = 'Probable High Risk'; color = '#d4845a';
+      headline = 'You have uncertainty in areas that typically trigger High Risk obligations. \'Not sure\' is not a defensible position with regulators. The priority is classification — before August 2026.';
+      actions = [
+        'Conduct a system-level inventory immediately — you cannot classify risk you have not mapped',
+        'Apply the Annex III checklist to any system that touches decisions about people or critical services',
+        'Do not assume vendor-supplied systems are compliant — operator obligations transfer to you',
+        'Treat this as a governance gap, not an IT task'
+      ];
+      nextStep = 'Use the full Readiness Assessment to structure your classification exercise across all five domains.';
+    } else if (chatbot === 'yes') {
+      tier = 'Limited Risk'; color = '#6a9fc0';
+      headline = 'Your AI systems appear to fall primarily within the Limited Risk tier. Obligations here are narrow: users must be informed they are interacting with AI. The compliance cost is low — but non-disclosure still carries significant penalty and reputational risk.';
+      actions = [
+        'Audit all customer and employee-facing interfaces to confirm AI disclosure is explicit and prominent',
+        'Update terms of service and interaction disclosures before go-live on any new AI-assisted channel',
+        'Ensure AI-generated content (emails, reports, summaries) is labelled as such where material',
+        'Document your classification rationale — tier boundaries can shift as system capabilities expand'
+      ];
+      nextStep = 'If you have not yet completed a full system inventory, do so before assuming all systems remain in this tier.';
+    } else {
+      tier = 'Minimal Risk'; color = '#7aaa8a';
+      headline = 'Based on your answers, your AI systems appear to fall within the Minimal Risk tier. The Act imposes no mandatory obligations here. The primary risk is misclassification — systems that seem minimal risk today may cross into higher tiers as their scope or outputs change.';
+      actions = [
+        'Document your classification rationale now, while it is straightforward to do so',
+        'Build a review trigger into your AI governance cycle — new capabilities can change tier status',
+        'Ensure procurement processes for future AI systems include a tier classification step at point of purchase',
+        inventory === 'no' ? 'Complete your system inventory before confirming this assessment — you cannot classify what you have not mapped' : 'Maintain and version your system inventory as a living document'
+      ];
+      nextStep = 'Your compliance exposure is currently low. The priority is maintaining that position as your AI portfolio grows.';
+    }
+
+    panel.innerHTML = `
+      <div class="result-tier-badge">
+        <div class="result-dot" style="background:${color};width:10px;height:10px;border-radius:50%"></div>
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:${color}">${tier}</div>
+      </div>
+      <p style="font-size:18px;color:var(--text);margin-bottom:12px;line-height:1.6;max-width:640px">${headline}</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+        ${actions.map(a => `<div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--muted2);padding-left:14px;position:relative;line-height:1.5"><span style="position:absolute;left:0;color:var(--gold);font-size:12px;top:1px">▸</span>${a}</div>`).join('')}
+      </div>
+      <p style="font-size:15px;color:var(--muted2);margin-top:18px;line-height:1.5">${nextStep}</p>
+      <div class="cta-row">
+        <a class="cta-primary" href="/eu-ai-act">Take the Full Readiness Assessment</a>
+        <a class="cta-secondary" href="/dora">DORA Assessment</a>
+      <a class="cta-secondary" href="/radar">View Governance Radar</a>
+      </div>
+      <button class="reset-btn" onclick="resetClassifier()">↺ Start again</button>
+    `;
+
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  }
+
+  function resetClassifier() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.getElementById('progressFill').style.width = '0%';
+    const panel = document.getElementById('resultPanel');
+    panel.classList.remove('show');
+    panel.innerHTML = '';
+    document.querySelectorAll('.question-block').forEach((b, i) => {
+      b.classList.remove('active', 'answered');
+      if (i === 0) b.classList.add('active');
+      b.querySelectorAll('.q-btn').forEach(btn => btn.classList.remove('selected'));
+    });
+  }
+</script>
+
+</body>
+</html>
