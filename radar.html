@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Governance Exposure Radar — theAIReadyist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    /* Base */
+    --color-bg:              #0D1B2A;
+    --navy:                  #0D1B2A;
+    --deep-black:            #0a1220;
+    --off-white:             #F0F4F8;
+    --teal:                  #00C9A7;
+    --slate:                 #6B7A8D;
+    --amber:                 #E8A838;
+
+    /* Text */
+    --color-text-primary:    #F0F4F8;
+    --color-text-secondary:  rgba(240,244,248,0.65);
+    --color-text-muted:      rgba(240,244,248,0.40);
+
+    /* Borders */
+    --color-border-card:     rgba(0,201,167,0.20);
+    --color-border-active:   rgba(0,201,167,0.60);
+    --color-border-subtle:   rgba(255,255,255,0.08);
+    --color-border-warning:  rgba(232,168,56,0.35);
+
+    /* Derived tokens — legacy aliases */
+    --bg:           var(--navy);
+    --bg2:          transparent;
+    --bg3:          transparent;
+    --gold:         var(--teal);
+    --gold-dim:     rgba(0,201,167,0.12);
+    --gold-border:  rgba(0,201,167,0.25);
+    --text:         var(--off-white);
+    --muted:        var(--slate);
+    --muted2:       rgba(240,244,248,0.65);
+    --teal-dim:     rgba(0,201,167,0.12);
+    --teal-border:  rgba(0,201,167,0.25);
+    --amber-dim:    rgba(232,168,56,0.12);
+    --rule:         rgba(107,122,141,0.20);
+    --rule-teal:    rgba(0,201,167,0.40);
+    --slate-70:     rgba(240,244,248,0.65);
+    --slate-60:     rgba(240,244,248,0.55);
+    --red:          #e05c5c;
+    --red-dim:      rgba(224,92,92,0.10);
+    --orange:       var(--amber);
+    --orange-dim:   var(--amber-dim);
+    --blue:         #6a9fc0;
+    --blue-dim:     rgba(106,159,192,0.10);
+    --green:        #7aaa8a;
+    --green-dim:    rgba(122,170,138,0.10);
+    --eu-ai:        #6a9fc0;
+    --dora:         var(--amber);
+    --nis2:         #7aaa8a;
+  }
+  html { scroll-behavior:smooth; }
+  body { background: var(--navy); color:var(--text); font-family:'DM Sans',sans-serif; font-size:19px; line-height:1.65; min-height:100vh; }
+
+  nav { padding: 0 48px; height: 56px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--rule); position:sticky; top:0; background:rgba(13,31,60,0.96); backdrop-filter:blur(8px); z-index:100; }
+  .nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:600; color:var(--text); text-decoration:none; }
+  .nav-back { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted2); text-decoration:none; transition:color 0.15s; }
+  .nav-back:hover { color:var(--gold); }
+
+  .page { max-width:1080px; margin:0 auto; padding:48px 48px 72px; }
+
+  /* Header */
+  .header { text-align:center; margin-bottom:36px; }
+  .header-eyebrow { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:flex; align-items:center; justify-content:center; gap:12px; }
+  .header-eyebrow::before,.header-eyebrow::after { content:''; width:24px; height:1px; background:var(--gold-border); }
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(22px,3.5vw,36px); font-weight:600; line-height:1.15; color:var(--text); margin-bottom:10px; }
+  h1 em { font-style:italic; color:var(--gold); }
+  .header-sub { font-size:18px; color:var(--muted2); max-width:580px; margin:0 auto 8px; line-height:1.65; }
+  .header-note { font-size:15px; color:var(--muted); font-style:italic; max-width:520px; margin:0 auto; }
+
+  /* Summary cards */
+  .summary-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-bottom:24px; }
+  .sum-card { background: transparent; padding:18px 20px; border-top:2px solid var(--gold-border); }
+  .sum-card.highlight { border-top-color:var(--orange); }
+  .sum-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .sum-value { font-family:'Playfair Display',serif; font-size:28px; font-weight:600; color:var(--gold); line-height:1; margin-bottom:4px; }
+  .sum-value.warning { color:var(--orange); }
+  .sum-sub { font-size:15px; color:var(--muted2); line-height:1.4; }
+  .sum-badge { display:inline-block; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 8px; border-radius: 0; margin-top:4px; border:1px solid transparent; }
+
+  /* Main grid */
+  .main-grid { display:grid; grid-template-columns:1fr 360px; gap:16px; align-items:start; }
+
+  /* Radar card */
+  .radar-card { background: transparent; border: 1px solid var(--color-border-card); padding:24px; position:relative; overflow:hidden; }
+  .radar-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .radar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .radar-status { display:flex; align-items:center; gap:8px; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); }
+  .radar-dot { width:8px; height:8px; border-radius:50%; background:var(--green); }
+  .radar-status-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+
+  /* View toggle */
+  .view-toggle { display:flex; gap:2px; margin-bottom:16px; }
+  .vt-btn { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; padding:7px 16px; background:transparent; color:var(--muted2); border:1px solid var(--rule); cursor:pointer; transition:all 0.15s; border-radius: 0; }
+  .vt-btn.active { background:var(--gold-dim); color:var(--gold); border-color:var(--gold-border); }
+  .vt-btn:hover:not(.active) { color:var(--text); border-color:rgba(255,255,255,0.15); }
+
+  /* Target toggle */
+  .target-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .target-row input[type="checkbox"] { accent-color:var(--gold); width:13px; height:13px; cursor:pointer; }
+  .target-row label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted2); cursor:pointer; }
+
+  #radarCanvas { display:block; margin:0 auto; }
+
+  .radar-disclaimer { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.06em; margin-top:12px; font-style:italic; text-align:center; line-height:1.5; }
+
+  /* Export row */
+  .export-row { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .btn-export { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; padding:8px 14px; background:transparent; color:var(--muted2); border:1px solid rgba(255,255,255,0.1); cursor:pointer; border-radius: 0; transition:all 0.15s; }
+  .btn-export:hover { color:var(--text); border-color:rgba(255,255,255,0.2); }
+  .btn-export.done { color:var(--green); border-color:rgba(122,170,138,0.3); }
+
+  /* Right panel */
+  .right-panel { display:flex; flex-direction:column; gap:10px; }
+
+  /* Score inputs */
+  .input-card { background: transparent; padding:18px 18px 16px; border-left:3px solid transparent; }
+  .input-card.eu-ai { border-left-color:var(--eu-ai); }
+  .input-card.dora  { border-left-color:var(--dora); }
+  .input-card.nis2  { border-left-color:var(--nis2); }
+  .input-reg { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:3px; }
+  .eu-ai .input-reg { color:var(--eu-ai); }
+  .dora  .input-reg { color:var(--dora); }
+  .nis2  .input-reg { color:var(--nis2); }
+  .input-title { font-size:16px; color:var(--text); font-weight:500; margin-bottom:10px; line-height:1.3; }
+  .input-status { display:inline-block; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; border-radius: 0; margin-bottom:10px; border:1px solid transparent; }
+  .status-manual { background:rgba(106,109,120,0.12); color:var(--muted); border-color:rgba(106,109,120,0.18); }
+  .status-imported { background:rgba(122,170,138,0.1); color:var(--green); border-color:rgba(122,170,138,0.2); }
+  .score-row { display:flex; align-items:center; gap:12px; }
+  .score-slider { flex:1; -webkit-appearance:none; appearance:none; height:3px; border-radius: 0; outline:none; cursor:pointer; }
+  .score-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; border:2px solid var(--bg); cursor:pointer; }
+  .eu-ai .score-slider { background:linear-gradient(to right,var(--eu-ai) 50%,rgba(255,255,255,0.1) 50%); }
+  .eu-ai .score-slider::-webkit-slider-thumb { background:var(--eu-ai);  }
+  .dora  .score-slider { background:linear-gradient(to right,var(--dora) 50%,rgba(255,255,255,0.1) 50%); }
+  .dora  .score-slider::-webkit-slider-thumb { background:var(--dora);  }
+  .nis2  .score-slider { background:linear-gradient(to right,var(--nis2) 50%,rgba(255,255,255,0.1) 50%); }
+  .nis2  .score-slider::-webkit-slider-thumb { background:var(--nis2);  }
+  .score-display { font-family:'Playfair Display',serif; font-size:24px; font-weight:600; min-width:46px; text-align:right; }
+  .eu-ai .score-display { color:var(--eu-ai); }
+  .dora  .score-display { color:var(--dora); }
+  .nis2  .score-display { color:var(--nis2); }
+  .score-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-top:5px; }
+
+  /* AI Gov block */
+  .ai-gov-block { background: transparent; border: 1px solid var(--color-border-card); padding:16px 18px; display:flex; align-items:center; gap:16px; }
+  .ai-gov-num { font-family:'Playfair Display',serif; font-size:36px; font-weight:600; color:var(--gold); line-height:1; flex-shrink:0; }
+  .ai-gov-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+  .ai-gov-sub { font-size:15px; color:var(--muted2); line-height:1.45; }
+
+  /* Score guide */
+  .score-guide { background: transparent; padding:16px 18px; }
+  .guide-title { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .guide-items { display:flex; flex-direction:column; gap:6px; }
+  .guide-item { display:flex; align-items:flex-start; gap:8px; }
+  .guide-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .guide-text { font-size:15px; color:var(--muted2); line-height:1.4; }
+  .guide-text strong { color:var(--text); }
+
+  /* Remediation */
+  .remediation-section { margin-top:24px; }
+  .rem-title { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:12px; }
+  .rem-title::after { content:''; flex:1; height:1px; background:var(--rule); }
+  .rem-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .rem-card { background: transparent; padding:18px 18px 20px; border-top:2px solid transparent; }
+  .rem-card.critical { border-top-color:var(--red); }
+  .rem-card.partial  { border-top-color:var(--orange); }
+  .rem-card.managed  { border-top-color:var(--gold); }
+  .rem-card-rank { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .rem-card-name { font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--text); margin-bottom:4px; line-height:1.25; }
+  .rem-card-score { font-family:'DM Mono',monospace; font-size:13px; color:var(--muted2); margin-bottom:10px; }
+  .rem-card-exposure { font-size:15px; color:var(--muted2); line-height:1.55; margin-bottom:8px; }
+  .rem-card-action { font-size:15px; color:var(--muted2); line-height:1.55; margin-bottom:6px; }
+  .rem-card-action strong { color:var(--text); }
+  .rem-card-evidence { font-size:14px; color:var(--muted); line-height:1.45; font-style:italic; }
+
+  /* Verdict */
+  .verdict-section { margin-top:24px; }
+  .verdict-box { background: transparent; border: 1px solid var(--color-border-card); padding:28px; position:relative; overflow:hidden; }
+  .verdict-box::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .verdict-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+  #verdictText p { font-size:18px; color:var(--muted2); line-height:1.75; margin-bottom:12px; }
+  #verdictText p:last-child { margin-bottom:0; }
+  #verdictText strong { color:var(--text); }
+
+  /* Methodology drawer */
+  .methodology-section { margin-top:16px; }
+  .method-toggle { width:100%; background:none; border:none; border-top:1px solid var(--rule); padding:14px 0 0; display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); transition:color 0.15s; }
+  .method-toggle:hover { color:var(--muted2); }
+  .method-toggle .m-arrow { font-size:13px; transition:transform 0.2s; }
+  .method-toggle.open .m-arrow { transform:rotate(90deg); }
+  .method-body { display:none; padding-top:16px; }
+  .method-body.show { display:block; }
+  .method-table { width:100%; border-collapse:collapse; }
+  .method-table th { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); padding:0 10px 8px; text-align:left; font-weight:400; }
+  .method-table th:first-child { padding-left:0; }
+  .method-table td { font-size:15px; color:var(--muted2); padding:8px 10px; border-top:1px solid var(--rule); vertical-align:top; line-height:1.4; }
+  .method-table td:first-child { padding-left:0; color:var(--text); font-weight:500; }
+  .method-note { font-size:14px; color:var(--muted); font-style:italic; margin-top:12px; line-height:1.5; }
+
+  /* CTA row */
+  .cta-row { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+  .btn-primary { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 22px; background:var(--gold); color:var(--bg); border:none; cursor:pointer; text-decoration:none; display:inline-block; transition:opacity 0.15s; border-radius: 0; font-weight:500; }
+  .btn-primary:hover { opacity:0.88; }
+  .btn-secondary { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:10px 22px; background:transparent; color:var(--gold); border: 1px solid var(--color-border-card); cursor:pointer; text-decoration:none; display:inline-block; transition:background 0.15s; border-radius: 0; }
+  .btn-secondary:hover { background:var(--gold-dim); }
+
+  footer { padding:24px 48px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  .footer-logo { font-family:'Playfair Display',serif; font-size:17px; color:var(--muted); }
+  .footer-note { font-size:14px; color:var(--muted); font-style:italic; max-width:540px; line-height:1.5; }
+
+  /* Confidence badge */
+  .confidence-badge { display:flex; align-items:flex-start; gap:8px; padding:10px 14px; background: transparent; border:1px solid var(--rule); margin-bottom:12px; border-radius: 0; }
+  .conf-dot { width:7px; height:7px; border-radius:50%; background:var(--muted); flex-shrink:0; margin-top:3px; }
+  .conf-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted2); white-space:nowrap; padding-top:1px; flex-shrink:0; }
+  .conf-desc { font-size:15px; color:var(--muted); line-height:1.45; }
+
+  /* View helper */
+  .view-helper { font-size:15px; color:var(--muted); line-height:1.45; margin:-4px 0 12px; }
+
+  /* Inferred tag */
+  .inferred-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; border-radius: 0; background:rgba(106,109,120,0.12); color:var(--muted); border:1px solid rgba(106,109,120,0.18); vertical-align:middle; margin-left:6px; }
+
+  @media (max-width:860px) {  @media (max-width:860px) {
+    nav { padding:16px 20px; }
+    .page { padding:32px 20px 56px; }
+    .summary-cards { grid-template-columns:1fr; }
+    .main-grid { grid-template-columns:1fr; }
+    .rem-grid { grid-template-columns:1fr; }
+    footer { padding:20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+  <a class="nav-back" href="/">← All tools</a>
+</nav>
+
+<div class="page">
+
+  <div class="header">
+    <div class="header-eyebrow">EU AI Act · DORA · NIS2</div>
+    <h1><em>AI Governance</em> Exposure Radar</h1>
+    <p class="header-sub">Three frameworks. One control view. Enter your EU AI Act, DORA and NIS2 scores to see where the same AI governance weaknesses create exposure across multiple regulatory regimes.</p>
+    <p class="header-note">This radar does not replace a legal assessment. It helps executives see where AI creates overlapping exposure — and where a single control gap can create multiple regulatory consequences.</p>
+  </div>
+
+  <div class="summary-cards">
+    <div class="sum-card">
+      <div class="sum-label">Overall AI Governance Score</div>
+      <div class="sum-value" id="sumGovScore">—</div>
+      <div class="sum-sub" id="sumGovLabel">Adjust sliders to calculate</div>
+    </div>
+    <div class="sum-card highlight">
+      <div class="sum-label">Weakest Framework</div>
+      <div class="sum-value warning" id="sumWeakFramework">—</div>
+      <div class="sum-sub" id="sumWeakFrameworkSub">—</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Priority Control Exposure</div>
+      <div class="sum-value warning" id="sumWeakControl">—</div>
+      <div class="sum-sub" id="sumWeakControlSub">—</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- LEFT: Radar -->
+    <div>
+      <div class="radar-card">
+        <div class="radar-top">
+          <div class="radar-status">
+            <div class="radar-dot" id="radarDot"></div>
+            <span id="radarStatusLabel">AI Governance Control Radar</span>
+          </div>
+          <div class="radar-status-label" id="radarViewLabel">Control View</div>
+        </div>
+
+        <div class="view-toggle">
+          <button class="vt-btn active" id="btnControl" onclick="setView('control')">Control View (8 axes)</button>
+          <button class="vt-btn" id="btnFramework" onclick="setView('framework')">Framework View (3 axes)</button>
+        </div>
+
+        <p class="view-helper" id="viewHelper">Control View shows where one AI governance weakness may create exposure across multiple regimes.</p>
+
+        <div class="confidence-badge" id="confidenceBadge">
+          <span class="conf-dot" id="confDot"></span>
+          <span class="conf-label" id="confLabel">Scenario Mode</span>
+          <span class="conf-desc" id="confDesc">Scores are manually entered. Use for board scenarios and directional planning.</span>
+        </div>
+
+        <div class="target-row">
+          <input type="checkbox" id="showTarget" onchange="draw()">
+          <label for="showTarget">Show target posture (75%)</label>
+        </div>
+
+        <canvas id="radarCanvas" width="480" height="420"></canvas>
+
+        <p class="radar-disclaimer" id="radarDisclaimer"><span class="inferred-tag">Inferred — not an audit result</span> Control-domain scores are inferred from your framework scores unless detailed assessment data is imported. Treat this as a directional executive view, not a control-by-control audit result.</p>
+
+        <div class="export-row">
+          <button class="btn-export" id="exportPngBtn" onclick="exportPng()">Download PNG</button>
+          <button class="btn-export" id="exportCopyBtn" onclick="copySummary()">Copy Summary</button>
+          <button class="btn-export" id="exportJsonBtn" onclick="exportJson()">Download JSON</button>
+        </div>
+      </div>
+
+      <!-- Remediation -->
+      <div class="remediation-section">
+        <div class="rem-title">What to fix first — three weakest control domains</div>
+        <div class="rem-grid" id="remGrid">
+          <div class="rem-card" style="opacity:0.4;border-top-color:var(--muted)">
+            <div class="rem-card-rank">Priority 1</div>
+            <div class="rem-card-name">Adjust sliders to generate</div>
+          </div>
+          <div class="rem-card" style="opacity:0.3;border-top-color:var(--muted)">
+            <div class="rem-card-rank">Priority 2</div>
+            <div class="rem-card-name">—</div>
+          </div>
+          <div class="rem-card" style="opacity:0.2;border-top-color:var(--muted)">
+            <div class="rem-card-rank">Priority 3</div>
+            <div class="rem-card-name">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verdict -->
+      <div class="verdict-section">
+        <div class="verdict-box">
+          <div class="verdict-label">AI Governance Posture Analysis</div>
+          <div id="verdictText">
+            <p style="font-family:'Playfair Display',serif;font-style:italic;color:var(--muted)">Adjust the sliders to generate your posture analysis.</p>
+          </div>
+
+          <div class="methodology-section">
+            <button class="method-toggle" id="methodToggle" onclick="toggleMethodology()">
+              <span class="m-arrow">▶</span> How this score is calculated
+            </button>
+            <div class="method-body" id="methodBody">
+              <table class="method-table">
+                <thead><tr><th>Control Domain</th><th>EU AI Act</th><th>DORA</th><th>NIS2</th><th>Why</th></tr></thead>
+                <tbody id="methodTableBody"></tbody>
+              </table>
+              <p class="method-note">The overall score is a synthetic executive indicator based on framework readiness and inferred control exposure. It is designed for prioritisation, not audit certification. EU AI Act weighted at 45%, DORA 30%, NIS2 25% for framework average. Control-domain scores are inferred from the three framework scores using weighting logic — treat as directional unless future versions import detailed domain-level assessment results. Generated: <span id="methodDate"></span></p>
+              <p class="method-note">For orientation only — not legal advice. All three frameworks are now either in force, applying progressively, or implemented through national regimes. The EU AI Act applies progressively, with many high-risk AI system obligations applying from 2 August 2026. DORA has applied since 17 January 2025. NIS2 required Member States to transpose by October 2024; national implementation and supervisory practice vary by Member State.</p>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <a class="btn-primary" href="/eu-ai-act">EU AI Act Assessment</a>
+            <a class="btn-secondary" href="/dora">DORA Assessment</a>
+            <a class="btn-secondary" href="/nis2">NIS2 Assessment</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Inputs -->
+    <div class="right-panel">
+
+      <div class="input-card eu-ai">
+        <div class="input-reg">EU AI Act</div>
+        <div class="input-title">AI System Governance</div>
+        <span class="input-status status-manual" id="status-euai">Manual input</span>
+        <div class="score-row">
+          <input type="range" class="score-slider" min="0" max="100" value="50" id="slider-euai" oninput="updateScore('euai',this.value)">
+          <div class="score-display" id="display-euai">50%</div>
+        </div>
+        <div class="score-label">0 = Critical gaps · 100 = Audit-ready</div>
+      </div>
+
+      <div class="input-card dora">
+        <div class="input-reg">DORA</div>
+        <div class="input-title">Operational Resilience & ICT Third-Party Risk</div>
+        <span class="input-status status-manual" id="status-dora">Manual input</span>
+        <div class="score-row">
+          <input type="range" class="score-slider" min="0" max="100" value="50" id="slider-dora" oninput="updateScore('dora',this.value)">
+          <div class="score-display" id="display-dora">50%</div>
+        </div>
+        <div class="score-label">0 = Critical gaps · 100 = Audit-ready</div>
+      </div>
+
+      <div class="input-card nis2">
+        <div class="input-reg">NIS2</div>
+        <div class="input-title">Cybersecurity & Supply Chain Exposure</div>
+        <span class="input-status status-manual" id="status-nis2">Manual input</span>
+        <div class="score-row">
+          <input type="range" class="score-slider" min="0" max="100" value="50" id="slider-nis2" oninput="updateScore('nis2',this.value)">
+          <div class="score-display" id="display-nis2">50%</div>
+        </div>
+        <div class="score-label">0 = Critical gaps · 100 = Audit-ready</div>
+      </div>
+
+      <div class="ai-gov-block">
+        <div class="ai-gov-num" id="aiGovNum">—</div>
+        <div>
+          <div class="ai-gov-label">AI Governance Score</div>
+          <div class="ai-gov-sub" id="aiGovSub">50% framework + 50% control average</div>
+        </div>
+      </div>
+
+      <div class="score-guide">
+        <div class="guide-title">Score Reference</div>
+        <div class="guide-items">
+          <div class="guide-item"><div class="guide-dot" style="background:var(--red)"></div><div class="guide-text"><strong>0–29</strong> Critical Exposure — material gaps, immediate action required</div></div>
+          <div class="guide-item"><div class="guide-dot" style="background:var(--orange)"></div><div class="guide-text"><strong>30–54</strong> Partial Coverage — foundations exist, AI controls incomplete</div></div>
+          <div class="guide-item"><div class="guide-dot" style="background:var(--gold)"></div><div class="guide-text"><strong>55–74</strong> Controlled but Incomplete — good baseline, evidence gaps remain</div></div>
+          <div class="guide-item"><div class="guide-dot" style="background:#9acd9a"></div><div class="guide-text"><strong>75–89</strong> Evidence-Led Posture — strong posture, manageable residual gaps</div></div>
+          <div class="guide-item"><div class="guide-dot" style="background:var(--green)"></div><div class="guide-text"><strong>90–100</strong> Board-Ready — mature, evidenced, actively maintained</div></div>
+        </div>
+      </div>
+
+      <div style="background: transparent;padding:16px 18px">
+        <div style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">How to use</div>
+        <div style="font-size:15px;color:var(--muted2);line-height:1.65;margin-bottom:12px">Complete each assessment then enter your score, or drag sliders to explore scenarios for board conversations. The Control View shows where one weakness spans multiple frameworks.</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <a href="/eu-ai-act" style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--eu-ai);text-decoration:none">→ EU AI Act Assessment</a>
+          <a href="/dora" style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dora);text-decoration:none">→ DORA Assessment</a>
+          <a href="/nis2" style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--nis2);text-decoration:none">→ NIS2 Assessment</a>
+        </div>
+      </div>
+
+    </div><!-- /right-panel -->
+  </div><!-- /main-grid -->
+</div><!-- /page -->
+
+<footer>
+  <div class="footer-logo">the<span style="color:var(--teal)">AI</span>Readyist</div>
+  <div class="footer-note">For orientation only — not legal advice. This tool is a directional control lens, not a formal legal or compliance assessment. Validate with Legal, Risk, Compliance, and Audit teams in each relevant jurisdiction. theaireadyist.com</div>
+</footer>
+
+<script>
+// ── Data model ──
+const controlDomains = [
+  { id:'inventory',    label:'AI System Inventory & Classification',       short:'Inventory',   weights:{euai:0.55,dora:0.25,nis2:0.20}, why:'EU AI Act drives classification; DORA and NIS2 require ICT and supplier visibility.' },
+  { id:'board',        label:'Board Governance & Accountability',           short:'Board',       weights:{euai:0.35,dora:0.35,nis2:0.30}, why:'All three frameworks require management body oversight, accountability and training.' },
+  { id:'risk',         label:'ICT / Cyber Risk Integration',                short:'Risk',        weights:{euai:0.25,dora:0.40,nis2:0.35}, why:'DORA and NIS2 dominate ICT and cyber risk management; EU AI Act adds AI-specific risk controls.' },
+  { id:'incident',     label:'Incident Detection & Reporting',              short:'Incidents',    weights:{euai:0.20,dora:0.45,nis2:0.35}, why:'DORA and NIS2 impose incident reporting obligations; EU AI Act adds AI event traceability.' },
+  { id:'thirdparty',   label:'Third-Party / Supply Chain Risk',             short:'Supply Chain', weights:{euai:0.20,dora:0.45,nis2:0.35}, why:'DORA drives ICT third-party oversight; NIS2 drives supply-chain security; EU AI Act adds provider obligations.' },
+  { id:'testing',      label:'Resilience Testing & Vulnerability Mgmt',    short:'Testing',     weights:{euai:0.20,dora:0.45,nis2:0.35}, why:'DORA resilience testing and NIS2 vulnerability management dominate this domain.' },
+  { id:'evidence',     label:'Documentation, Evidence & Auditability',     short:'Evidence',    weights:{euai:0.40,dora:0.35,nis2:0.25}, why:'All three frameworks require evidence; EU AI Act and DORA are especially documentation-heavy.' },
+  { id:'fragmentation',label:'Cross-Border / Regulatory Fragmentation',    short:'Jurisdiction',weights:{euai:0.30,dora:0.25,nis2:0.45}, why:'NIS2 directive transposition varies by Member State; supervisory practice varies across all three.' }
+];
+
+const remediationLibrary = {
+  inventory:    { exposure:'AI systems may not be classified, tiered or mapped to critical business processes.', action:'Create a single AI system inventory covering internal tools, third-party AI services, embedded SaaS AI, foundation model APIs and agentic workflows.', evidence:'AI inventory, system owner, use case, data processed, criticality, vendor, deployment status, model dependency.' },
+  board:        { exposure:'Board accountability may be documented for cyber or ICT generally, but not for AI-specific risk.', action:'Add AI risk to board governance cadence and document accountable owners for each material AI system.', evidence:'Board minutes, training records, governance charter, risk appetite statement, system owner map.' },
+  risk:         { exposure:'Existing ICT and cyber risk frameworks may predate AI deployment.', action:'Update ICT and cyber risk frameworks to include AI-specific threats and operational failure modes.', evidence:'Updated risk framework, AI threat taxonomy, control mapping, risk register entries.' },
+  incident:     { exposure:'AI-caused or AI-assisted incidents may be hard to detect, classify and report within regulatory timeframes.', action:'Create incident scenarios for AI hallucination, prompt injection, model compromise, agentic misexecution and AI vendor outage.', evidence:'Incident taxonomy, reporting workflow, playbooks, tabletop exercise records.' },
+  thirdparty:   { exposure:'AI vendors and foundation-model dependencies may be invisible to vendor risk, procurement or DORA/NIS2 registers.', action:'Map all AI vendors, model providers and AI-enabled SaaS suppliers to contractual, operational and cyber risk obligations.', evidence:'Supplier inventory, contracts, SLAs, audit rights, subprocessor list, exit plans.' },
+  testing:      { exposure:'Traditional penetration testing and resilience testing may not cover AI-specific vulnerabilities.', action:'Add AI-specific testing scenarios including prompt injection, model extraction, data leakage and adversarial input testing.', evidence:'Test plan, results, remediation log, retest evidence, owner sign-off.' },
+  evidence:     { exposure:'Controls may exist operationally but not be evidenced in a way that survives audit or supervisory scrutiny.', action:'Create an AI regulatory evidence pack aligned to EU AI Act, DORA and NIS2.', evidence:'Policies, inventories, decision logs, risk assessments, board packs, vendor due diligence, incident simulations.' },
+  fragmentation:{ exposure:'Cross-border operations may face inconsistent national NIS2 implementation and differing supervisory expectations.', action:'Create a jurisdictional obligations map for every EU country where the organisation operates.', evidence:'Country-by-country legal memo, competent authority mapping, registration status, local incident reporting route.' }
+};
+
+// ── State ──
+const scores = { euai:50, dora:50, nis2:50 };
+let activeView = 'control';
+
+// ── Try to import saved scores ──
+function tryImportScores() {
+  const keys = { euai:'aiReadyist.euai.score', dora:'aiReadyist.dora.score', nis2:'aiReadyist.nis2.score' };
+  Object.entries(keys).forEach(([key, lsKey]) => {
+    try {
+      const saved = localStorage.getItem(lsKey);
+      if (saved !== null) {
+        const val = parseInt(saved);
+        if (!isNaN(val) && val >= 0 && val <= 100) {
+          scores[key] = val;
+          document.getElementById('slider-' + key).value = val;
+          document.getElementById('display-' + key).textContent = val + '%';
+          document.getElementById('status-' + key).textContent = 'Imported from assessment';
+          document.getElementById('status-' + key).className = 'input-status status-imported';
+          updateSliderTrack(key, val);
+        }
+      }
+    } catch(e) {}
+  });
+}
+
+// ── Scoring ──
+function calculateControlScore(domain) {
+  return Math.round(
+    (scores.euai * domain.weights.euai) +
+    (scores.dora * domain.weights.dora) +
+    (scores.nis2 * domain.weights.nis2)
+  );
+}
+
+function calcAiGov() {
+  const frameworkScore = (scores.euai * 0.45) + (scores.dora * 0.30) + (scores.nis2 * 0.25);
+  const controlScores = controlDomains.map(d => calculateControlScore(d));
+  const controlAverage = controlScores.reduce((a,b) => a+b, 0) / controlScores.length;
+  return Math.round((frameworkScore * 0.5) + (controlAverage * 0.5));
+}
+
+function getLabel(v) {
+  if (v < 30) return 'Critical Exposure';
+  if (v < 55) return 'Partial Coverage';
+  if (v < 75) return 'Controlled but Incomplete';
+  if (v < 90) return 'Evidence-Led Posture';
+  return 'Board-Ready';
+}
+
+function getColor(v) {
+  if (v < 30) return '#e05c5c';
+  if (v < 55) return '#d4845a';
+  if (v < 75) return 'var(--teal)';
+  if (v < 90) return '#9acd9a';
+  return '#7aaa8a';
+}
+
+// ── Slider update ──
+function updateSliderTrack(key, val) {
+  const colorMap = { euai:'#6a9fc0', dora:'#d4845a', nis2:'#7aaa8a' };
+  const slider = document.getElementById('slider-' + key);
+  slider.style.background = `linear-gradient(to right, ${colorMap[key]} ${val}%, rgba(255,255,255,0.1) ${val}%)`;
+}
+
+function updateScore(key, val) {
+  val = parseInt(val);
+  scores[key] = val;
+  document.getElementById('display-' + key).textContent = val + '%';
+  updateSliderTrack(key, val);
+  // Mark manual if it was imported
+  if (document.getElementById('status-' + key).classList.contains('status-imported')) {
+    document.getElementById('status-' + key).textContent = 'Manual input';
+    document.getElementById('status-' + key).className = 'input-status status-manual';
+  }
+  draw();
+  updateSummary();
+  updateRemediation();
+  updateVerdict();
+  updateConfidenceBadge();
+}
+
+// ── View toggle ──
+function setView(view) {
+  activeView = view;
+  document.getElementById('btnControl').classList.toggle('active', view === 'control');
+  document.getElementById('btnFramework').classList.toggle('active', view === 'framework');
+  document.getElementById('radarViewLabel').textContent = view === 'control' ? 'Control View' : 'Framework View';
+  document.getElementById('radarDisclaimer').style.display = view === 'control' ? 'block' : 'none';
+  document.getElementById('viewHelper').textContent = view === 'control'
+    ? 'Control View shows where one AI governance weakness may create exposure across multiple regimes.'
+    : 'Framework View shows headline readiness across EU AI Act, DORA and NIS2.';
+  draw();
+}
+
+// FUTURE ENHANCEMENT:
+// Replace inferred control-domain scoring with domain-level imports from each assessment.
+// This will move the radar from directional scenario modelling to control-backed exposure analysis.
+// Future DORA inputs: ICT Risk Mgmt, Incident Mgmt, Resilience Testing, TPR, Governance
+// Future NIS2 inputs: Governance, Article 21, Incident Reporting, Supply Chain, Testing
+// Future EU AI Act inputs: AI Inventory, Risk Classification, Provider/Deployer Obligations,
+//   Human Oversight, Documentation/Logging, Governance
+
+// ── Confidence badge ──
+function getConfidenceState() {
+  const statuses = ['euai', 'dora', 'nis2'].map(k =>
+    document.getElementById('status-' + k).classList.contains('status-imported')
+  );
+  const importedCount = statuses.filter(Boolean).length;
+  if (importedCount === 0) return {
+    label: 'Scenario Mode',
+    desc: 'Scores are manually entered. Use for board scenarios and directional planning.',
+    color: 'var(--muted)'
+  };
+  if (importedCount < 3) return {
+    label: 'Partial Evidence',
+    desc: 'Some scores are imported from assessments; remaining scores are manually entered.',
+    color: 'var(--gold)'
+  };
+  return {
+    label: 'Assessment-Backed',
+    desc: 'Scores are imported from completed assessments. Control-domain scores remain inferred.',
+    color: 'var(--green)'
+  };
+}
+
+function updateConfidenceBadge() {
+  const state = getConfidenceState();
+  document.getElementById('confLabel').textContent = 'Confidence: ' + state.label;
+  document.getElementById('confDesc').textContent = state.desc;
+  document.getElementById('confDot').style.background = state.color;
+  document.getElementById('confLabel').style.color = state.color;
+}
+
+// ── Canvas draw ──
+function draw() {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2 + 10;
+  const R = Math.min(W, H) * 0.34;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const isControl = activeView === 'control';
+  const labels = isControl ? controlDomains.map(d => d.short) : ['EU AI Act', 'DORA', 'NIS2'];
+  const vals = isControl
+    ? controlDomains.map(d => calculateControlScore(d) / 100)
+    : [scores.euai / 100, scores.dora / 100, scores.nis2 / 100];
+  const dotColors = isControl ? null : ['#6a9fc0', '#d4845a', '#7aaa8a'];
+  const n = labels.length;
+  const angles = labels.map((_, i) => (Math.PI * 2 * i / n) - Math.PI / 2);
+
+  // Ring levels
+  [20, 40, 60, 80, 100].forEach(ring => {
+    const r = R * ring / 100;
+    ctx.beginPath();
+    angles.forEach((a, i) => {
+      const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle = ring === 100 ? 'var(--teal-dim)' : 'var(--rule)';
+    ctx.lineWidth = ring === 100 ? 1 : 0.5;
+    ctx.stroke();
+    // Ring labels
+    if ([20, 40, 60, 80].includes(ring)) {
+      ctx.fillStyle = 'rgba(106,109,120,0.6)';
+      ctx.font = '9px DM Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(ring, cx + 4, cy - r + 4);
+    }
+  });
+
+  // Spokes
+  angles.forEach(a => {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
+    ctx.strokeStyle = 'var(--rule)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  });
+
+  // Target polygon (optional)
+  if (document.getElementById('showTarget').checked) {
+    ctx.beginPath();
+    angles.forEach((a, i) => {
+      const r = R * 0.75;
+      const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(0,184,162,0.35)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Data polygon
+  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const fillC = avg < 0.30 ? 'rgba(224,92,92,0.12)' : avg < 0.55 ? 'rgba(212,132,90,0.12)' : avg < 0.75 ? 'var(--teal-dim)' : 'rgba(122,170,138,0.12)';
+  const strokeC = avg < 0.30 ? 'rgba(224,92,92,0.7)' : avg < 0.55 ? 'rgba(212,132,90,0.7)' : avg < 0.75 ? 'rgba(0,184,162,0.7)' : 'rgba(122,170,138,0.7)';
+
+  ctx.beginPath();
+  vals.forEach((v, i) => {
+    const r = R * v;
+    const x = cx + r * Math.cos(angles[i]), y = cy + r * Math.sin(angles[i]);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = fillC;
+  ctx.fill();
+  ctx.strokeStyle = strokeC;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Dots + score labels
+  vals.forEach((v, i) => {
+    const r = R * v;
+    const x = cx + r * Math.cos(angles[i]), y = cy + r * Math.sin(angles[i]);
+    const dc = dotColors ? dotColors[i] : getColor(v * 100);
+
+    // Glow
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, 10);
+    grd.addColorStop(0, dc + '44');
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fill();
+
+    // Dot
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = dc; ctx.fill();
+    ctx.strokeStyle = 'var(--navy)'; ctx.lineWidth = 1.5; ctx.stroke();
+  });
+
+  // Axis labels
+  const labelR = R + (isControl ? 32 : 36);
+  labels.forEach((label, i) => {
+    const a = angles[i];
+    const x = cx + labelR * Math.cos(a), y = cy + labelR * Math.sin(a);
+    const score = Math.round(vals[i] * 100);
+    const labelColor = isControl ? getColor(score) : (dotColors ? dotColors[i] : 'var(--off-white)');
+    ctx.font = `${isControl ? '500 11px' : '600 12px'} Playfair Display, serif`;
+    ctx.fillStyle = labelColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x, y - 6);
+    ctx.font = '9px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(154,157,170,0.7)';
+    ctx.fillText(score + '%', x, y + 8);
+  });
+
+  // Update radar dot colour
+  const rd = document.getElementById('radarDot');
+  rd.style.background = getColor(avg * 100);
+}
+
+// ── Summary cards ──
+function updateSummary() {
+  const aiGov = calcAiGov();
+  const label = getLabel(aiGov);
+  const color = getColor(aiGov);
+
+  document.getElementById('sumGovScore').textContent = aiGov + '%';
+  document.getElementById('sumGovScore').style.color = color;
+  document.getElementById('sumGovLabel').textContent = label;
+
+  // Weakest framework
+  const fw = [
+    { name:'EU AI Act', score:scores.euai },
+    { name:'DORA',      score:scores.dora },
+    { name:'NIS2',      score:scores.nis2 }
+  ].sort((a,b) => a.score - b.score)[0];
+  document.getElementById('sumWeakFramework').textContent = fw.name;
+  document.getElementById('sumWeakFrameworkSub').textContent = fw.score + '% — ' + getLabel(fw.score);
+
+  // Weakest control domain
+  const cd = controlDomains.map(d => ({ ...d, score: calculateControlScore(d) })).sort((a,b) => a.score - b.score)[0];
+  document.getElementById('sumWeakControl').textContent = cd.short;
+  document.getElementById('sumWeakControlSub').textContent = cd.score + '% — ' + getLabel(cd.score);
+
+  // AI Gov block
+  document.getElementById('aiGovNum').textContent = aiGov + '%';
+  document.getElementById('aiGovNum').style.color = color;
+  document.getElementById('aiGovSub').textContent = label;
+}
+
+// ── Remediation cards ──
+function updateRemediation() {
+  const sorted = controlDomains.map(d => ({ ...d, score: calculateControlScore(d) })).sort((a,b) => a.score - b.score);
+  const top3 = sorted.slice(0, 3);
+  const rankClass = ['critical', 'partial', 'managed'];
+  document.getElementById('remGrid').innerHTML = top3.map((d, i) => {
+    const lib = remediationLibrary[d.id];
+    const cls = rankClass[i];
+    return `<div class="rem-card ${cls}">
+      <div class="rem-card-rank">Priority ${i+1}</div>
+      <div class="rem-card-name">${d.label}</div>
+      <div class="rem-card-score">${d.score}% — ${getLabel(d.score)}</div>
+      <div class="rem-card-exposure">${lib.exposure}</div>
+      <div class="rem-card-action"><strong>First action:</strong> ${lib.action}</div>
+      <div class="rem-card-evidence"><strong>Evidence:</strong> ${lib.evidence}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Verdict ──
+function updateVerdict() {
+  const aiGov = calcAiGov();
+  const fw = [{ name:'EU AI Act', score:scores.euai }, { name:'DORA', score:scores.dora }, { name:'NIS2', score:scores.nis2 }].sort((a,b) => a.score - b.score)[0];
+  const cd = controlDomains.map(d => ({ ...d, score:calculateControlScore(d) })).sort((a,b) => a.score - b.score)[0];
+
+  let intro = '';
+  if (aiGov < 30) intro = 'Your AI governance posture has <strong>critical exposure across multiple control domains.</strong>';
+  else if (aiGov < 55) intro = 'Your AI governance posture is <strong>partially covered but uneven.</strong> Regulatory programmes exist, but AI-specific controls are not consistently embedded across all three frameworks.';
+  else if (aiGov < 75) intro = 'Your AI governance posture is <strong>controlled but incomplete.</strong> A good baseline exists, but evidence and integration gaps remain visible in the control radar.';
+  else if (aiGov < 90) intro = 'Your AI governance posture is <strong>audit defensible</strong> with manageable residual gaps.';
+  else intro = 'Your AI governance posture is <strong>board-ready</strong> — mature, evidenced and actively maintained.';
+
+  const euaiNote = 'Key EU AI Act obligations apply progressively, with many high-risk AI system obligations applying from 2 August 2026.';
+  const doraNote = 'DORA has applied since 17 January 2025 and is already live for in-scope financial entities.';
+  const nis2Note = 'NIS2 audit, registration and supervisory expectations depend on national implementation — confirm timing with legal counsel in each relevant Member State.';
+
+  let verdictHtml = `<p>${intro}</p>`;
+  verdictHtml += `<p>Your weakest framework is <strong>${fw.name} (${fw.score}%)</strong>, while your weakest inferred control domain is <strong>${cd.label} (${cd.score}%)</strong>. ${cd.id === 'thirdparty' || cd.id === 'inventory' ? 'This suggests AI vendor dependencies and system mapping may be insufficiently evidenced across both operational resilience and cybersecurity obligations.' : 'This is where the model indicates the broadest potential multi-framework exposure.'}</p>`;
+  verdictHtml += `<p>The priority is not another policy document. The priority is evidence: AI system inventory, AI vendor register, owner mapping, incident playbooks, testing records and board-level reporting. These are the artefacts that make AI governance visible to Legal, Risk, Compliance, Audit and the Board.</p>`;
+
+  if (aiGov < 55) {
+    verdictHtml += `<p style="font-size:15px;color:var(--muted);font-style:italic">${fw.name === 'EU AI Act' ? euaiNote : fw.name === 'DORA' ? doraNote : nis2Note}</p>`;
+  }
+
+  document.getElementById('verdictText').innerHTML = verdictHtml;
+
+  // Methodology table
+  document.getElementById('methodDate').textContent = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  document.getElementById('methodTableBody').innerHTML = controlDomains.map(d => {
+    const score = calculateControlScore(d);
+    return `<tr>
+      <td>${d.label}</td>
+      <td>${Math.round(d.weights.euai*100)}%</td>
+      <td>${Math.round(d.weights.dora*100)}%</td>
+      <td>${Math.round(d.weights.nis2*100)}%</td>
+      <td style="color:var(--muted)">${d.why}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Methodology ──
+function toggleMethodology() {
+  const body = document.getElementById('methodBody');
+  const btn = document.getElementById('methodToggle');
+  const open = body.classList.contains('show');
+  body.classList.toggle('show', !open);
+  btn.classList.toggle('open', !open);
+}
+
+// ── Export functions ──
+function exportPng() {
+  const canvas = document.getElementById('radarCanvas');
+  const link = document.createElement('a');
+  link.download = 'ai-governance-radar.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  markDone('exportPngBtn');
+}
+
+function copySummary() {
+  const aiGov = calcAiGov();
+  const fw = [{ name:'EU AI Act', score:scores.euai }, { name:'DORA', score:scores.dora }, { name:'NIS2', score:scores.nis2 }].sort((a,b) => a.score - b.score)[0];
+  const top3 = controlDomains.map(d => ({ ...d, score:calculateControlScore(d) })).sort((a,b) => a.score - b.score).slice(0,3);
+
+  let text = `AI Governance Exposure Radar — Executive Summary\n`;
+  text += `Generated: ${new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}\n\n`;
+  text += `Overall AI Governance Score: ${aiGov}% — ${getLabel(aiGov)}\n\n`;
+  text += `Framework Scores:\n- EU AI Act: ${scores.euai}%\n- DORA: ${scores.dora}%\n- NIS2: ${scores.nis2}%\n\n`;
+  text += `Weakest Framework: ${fw.name} (${fw.score}%)\n\n`;
+  text += `Top 3 Control Domain Gaps:\n`;
+  top3.forEach((d, i) => {
+    const lib = remediationLibrary[d.id];
+    text += `${i+1}. ${d.label}: ${d.score}% — ${getLabel(d.score)}\n   Action: ${lib.action}\n`;
+  });
+  text += `\nFor orientation only — not legal advice. theaireadyist.com/radar`;
+
+  navigator.clipboard.writeText(text).then(() => markDone('exportCopyBtn')).catch(() => {
+    const btn = document.getElementById('exportCopyBtn');
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy Summary'; }, 2000);
+  });
+}
+
+function exportJson() {
+  const aiGov = calcAiGov();
+  const data = {
+    generated: new Date().toISOString(),
+    overallScore: aiGov,
+    overallLabel: getLabel(aiGov),
+    frameworkScores: { euai: scores.euai, dora: scores.dora, nis2: scores.nis2 },
+    controlDomainScores: Object.fromEntries(controlDomains.map(d => [d.id, calculateControlScore(d)])),
+    disclaimer: 'For orientation only — not legal advice. theaireadyist.com/radar'
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'ai-governance-radar.json'; a.click();
+  URL.revokeObjectURL(url);
+  markDone('exportJsonBtn');
+}
+
+function markDone(id) {
+  const btn = document.getElementById(id);
+  const orig = btn.textContent;
+  btn.classList.add('done');
+  btn.textContent = '✓ Done';
+  setTimeout(() => { btn.classList.remove('done'); btn.textContent = orig; }, 2500);
+}
+
+// ── Init ──
+['euai','dora','nis2'].forEach(k => updateSliderTrack(k, scores[k]));
+tryImportScores();
+draw();
+updateSummary();
+updateRemediation();
+updateVerdict();
+updateConfidenceBadge();
+</script>
+</body>
+</html>
