@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act Readiness Assessment — The AI Readyist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0c0f16;
+    --bg2:       #121620;
+    --bg3:       #181d28;
+    --border:    #1e2330;
+    --border2:   #262c3a;
+    --text:      #ddd8cc;
+    --muted:     #6a6d78;
+    --faint:     #2e3244;
+    --gold:      #c8a96e;
+    --gold-dim:  #7a6540;
+    --green:     #4caf7d;
+    --amber:     #e8a44a;
+    --red:       #d95f5f;
+    --blue:      #5b8fd4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .back-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover { color: var(--gold); }
+
+  .edition {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 56px 40px 40px;
+    max-width: 960px;
+  }
+
+  .hero-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 54px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: #f0ece0;
+    margin-bottom: 16px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.7;
+  }
+
+  /* ── LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; padding: 0 20px 60px; }
+    .sidebar { position: static !important; margin-top: 40px; }
+    .site-header, .hero { padding-left: 20px; padding-right: 20px; }
+  }
+
+  /* ── DOMAINS ── */
+  .domains { padding-right: 40px; }
+
+  .domain {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--faint);
+    margin-bottom: 6px;
+    background: var(--bg2);
+    transition: border-color 0.3s;
+  }
+
+  .domain.scored { border-left-color: var(--gold-dim); }
+  .domain.scored-well { border-left-color: var(--green); }
+  .domain.scored-mid  { border-left-color: var(--amber); }
+  .domain.scored-low  { border-left-color: var(--red); }
+
+  .domain-header {
+    padding: 24px 28px 20px;
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 0 16px;
+    align-items: start;
+  }
+
+  .d-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--faint);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .domain.scored .d-num,
+  .domain.scored-well .d-num,
+  .domain.scored-mid .d-num,
+  .domain.scored-low .d-num { color: var(--border2); }
+
+  .d-info {}
+
+  .d-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ece8dc;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .d-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .d-score-badge {
+    text-align: right;
+  }
+
+  .d-score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--faint);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .d-score-num.green { color: var(--green); }
+  .d-score-num.amber { color: var(--amber); }
+  .d-score-num.red   { color: var(--red); }
+
+  .d-score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .d-weight {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--gold-dim);
+    margin-top: 4px;
+  }
+
+  /* domain mini bar */
+  .d-mini-bar {
+    height: 2px;
+    background: var(--faint);
+    margin: 0 28px;
+    border-radius: 1px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .d-mini-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 1px;
+    transition: width 0.5s ease, background 0.3s;
+    background: var(--faint);
+  }
+
+  /* ── QUESTIONS ── */
+  .questions {
+    padding: 0 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .q-block {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 0 16px;
+    align-items: start;
+  }
+
+  .q-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    text-transform: uppercase;
+    padding-top: 4px;
+    font-weight: 400;
+  }
+
+  .q-content {}
+
+  .q-text {
+    font-size: 16px;
+    color: #b0aba0;
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  .q-hint {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  /* ── SLIDER ── */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .slider-wrap {
+    flex: 1;
+    position: relative;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--border2);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    transition: transform 0.15s, background 0.2s;
+    box-shadow: 0 0 0 0 rgba(200,169,110,0);
+  }
+
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+  }
+
+  input[type=range]:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(200,169,110,0.2);
+  }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+
+  .slider-labels span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .slider-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    min-width: 32px;
+    text-align: right;
+    transition: color 0.3s;
+    color: var(--faint);
+  }
+
+  .slider-val.green { color: var(--green); }
+  .slider-val.amber { color: var(--amber); }
+  .slider-val.red   { color: var(--red); }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky;
+    top: 24px;
+  }
+
+  .score-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 32px 28px;
+    margin-bottom: 6px;
+  }
+
+  .sc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .sc-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 84px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--faint);
+    transition: color 0.4s;
+    margin-bottom: 6px;
+  }
+
+  .sc-big.green { color: var(--green); }
+  .sc-big.amber { color: var(--amber); }
+  .sc-big.red   { color: var(--red); }
+
+  .sc-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* heat bar */
+  .heat-wrap {
+    margin-bottom: 24px;
+  }
+
+  .heat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .heat-track {
+    height: 10px;
+    background: var(--faint);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .heat-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 5px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1), background 0.4s;
+    background: var(--faint);
+  }
+
+  .heat-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+
+  .heat-scale span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* verdict */
+  .verdict-box {
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    background: var(--bg3);
+    margin-bottom: 20px;
+  }
+
+  .verdict-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .verdict-status.green { color: var(--green); }
+  .verdict-status.amber { color: var(--amber); }
+  .verdict-status.red   { color: var(--red); }
+  .verdict-status.muted { color: var(--muted); }
+
+  .verdict-text {
+    font-size: 15px;
+    color: #7a7870;
+    line-height: 1.65;
+  }
+
+  /* domain breakdown */
+  .breakdown {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin-bottom: 6px;
+  }
+
+  .breakdown-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .bk-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .bk-name {
+    font-size: 14px;
+    color: #7a7870;
+  }
+
+  .bk-bar-wrap {
+    width: 90px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bk-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--faint);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .bk-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    transition: width 0.5s ease, background 0.3s;
+    background: var(--faint);
+  }
+
+  .bk-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-width: 24px;
+    text-align: right;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+
+  /* reset */
+  .reset-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    margin-top: 6px;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  /* footer */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-sources {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    line-height: 1.9;
+  }
+
+  .footer-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* animate in */
+  .domain {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.4s ease forwards;
+  }
+  .domain:nth-child(1) { animation-delay: 0.05s; }
+  .domain:nth-child(2) { animation-delay: 0.12s; }
+  .domain:nth-child(3) { animation-delay: 0.19s; }
+  .domain:nth-child(4) { animation-delay: 0.26s; }
+  .domain:nth-child(5) { animation-delay: 0.33s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .score-card, .breakdown {
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.4s forwards;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/">The AI Readyist</a>
+  <a class="back-link" href="/">← All tools</a>
+</header>
+
+<div class="hero">
+  <div class="hero-kicker">Interactive Self-Assessment · CIO &amp; CFO</div>
+  <h1 class="hero-title">How ready are you for<br><em>EU AI Act</em> compliance?</h1>
+  <p class="hero-desc">Rate your organisation across five governance domains. Each question has a 0–10 scale with anchor descriptions to calibrate your score. The weighted readiness score reflects where the Act places the highest governance burden.</p>
+</div>
+
+<div class="main">
+  <div class="domains" id="domains"></div>
+
+  <aside class="sidebar">
+    <div class="score-card">
+      <div class="sc-label">Readiness Score</div>
+      <div class="sc-big" id="sc-big">—</div>
+      <div class="sc-pct" id="sc-pct">Rate all questions to see your score</div>
+      <div class="heat-wrap">
+        <div class="heat-label">
+          <span>Exposure</span>
+          <span id="heat-pct-label">—</span>
+        </div>
+        <div class="heat-track">
+          <div class="heat-fill" id="heat-fill"></div>
+        </div>
+        <div class="heat-scale">
+          <span>Critical</span>
+          <span>Gaps</span>
+          <span>Partial</span>
+          <span>Strong</span>
+          <span>Ready</span>
+        </div>
+      </div>
+      <div class="verdict-box">
+        <div class="verdict-status muted" id="verdict-status">Awaiting assessment</div>
+        <div class="verdict-text" id="verdict-text">Complete all ten questions to generate your compliance readiness verdict.</div>
+      </div>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-label">Domain Breakdown</div>
+      <div id="breakdown-rows"></div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">↺ Reset assessment</button>
+  </aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-sources">
+    Sources: Deloitte State of AI 2026 · McKinsey State of AI Trust 2026<br>
+    Gartner AI Agent Layer 2026 · EU AI Act, European Commission
+  </div>
+  <div class="footer-brand">#AIReadyist</div>
+</footer>
+
+<script>
+const DOMAINS = [
+  {
+    id: 'd1',
+    num: '01',
+    title: 'Inventory & Classification',
+    sub: 'Do you know what you have deployed?',
+    weight: 0.25,
+    questions: [
+      {
+        role: 'CIO',
+        text: 'Can you produce a complete inventory of AI systems currently in production or active pilot, with a description of what decisions each system makes or influences?',
+        anchors: [
+          { val: 0, text: 'No inventory exists. AI deployments are undocumented.' },
+          { val: 3, text: 'Partial list exists but is incomplete and not regularly maintained.' },
+          { val: 5, text: 'Inventory exists but lacks decision-level detail or is not current.' },
+          { val: 7, text: 'Inventory is maintained, covers most systems, includes decision descriptions.' },
+          { val: 10, text: 'Complete, current, decision-level inventory. Reviewed quarterly. Owned by named role.' }
+        ]
+      },
+      {
+        role: 'CFO',
+        text: 'Do you know which deployments touch regulated data, critical infrastructure, customer rights, or employee-impacting workflows — the categories where the EU AI Act\'s governance burden rises materially?',
+        anchors: [
+          { val: 0, text: 'No risk classification has been applied to AI deployments.' },
+          { val: 3, text: 'Risk awareness exists informally but no formal classification process.' },
+          { val: 5, text: 'Some systems have been classified but not consistently across the estate.' },
+          { val: 7, text: 'Classification framework in place; most high-risk systems identified.' },
+          { val: 10, text: 'Full risk classification complete. EU AI Act categories mapped. Audit committee briefed.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'd2',
+    num: '02',
+    title: 'Decision Accountability',
+    sub: 'When the agent gets it wrong, who owns it?',
+    weight: 0.25,
+    questions: [
+      {
+        role: 'CIO',
+        text: 'For each agent in production, is there a named business owner accountable for outcomes — not the vendor, not the platform team, but a business owner accountable for what the agent decides?',
+        anchors: [
+          { val: 0, text: 'No named owners. Accountability defaults to the vendor or IT.' },
+          { val: 3, text: 'Ownership assumed but not formally assigned or documented.' },
+          { val: 5, text: 'Some agents have owners; coverage is inconsistent across deployments.' },
+          { val: 7, text: 'Named owners assigned for most production agents. RACI documented.' },
+          { val: 10, text: 'Every agent has a named business owner. RACI board-approved. Decision rights defined.' }
+        ]
+      },
+      {
+        role: 'CFO',
+        text: 'Has your audit committee been briefed on which AI systems carry material operational or regulatory risk, and is that risk reflected in your controls framework?',
+        anchors: [
+          { val: 0, text: 'Audit committee has not discussed AI risk. No controls framework.' },
+          { val: 3, text: 'AI mentioned in risk register but not as a material item. Controls absent.' },
+          { val: 5, text: 'Audit committee aware; formal risk classification or controls partial.' },
+          { val: 7, text: 'Audit committee briefed. AI risk reflected in controls framework at a high level.' },
+          { val: 10, text: 'Regular audit committee reporting on AI risk. Controls framework current and tested.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'd3',
+    num: '03',
+    title: 'Human Oversight',
+    sub: 'Can you demonstrate supervision, or just describe it?',
+    weight: 0.20,
+    questions: [
+      {
+        role: 'CIO',
+        text: 'Do your agentic systems have defined escalation thresholds — specific conditions under which the agent must pause and seek human approval before acting?',
+        anchors: [
+          { val: 0, text: 'No escalation thresholds defined. Agents act without checkpoints.' },
+          { val: 3, text: 'Some informal escalation points exist but are not systematically designed.' },
+          { val: 5, text: 'Thresholds defined for some systems. Not consistently applied or tested.' },
+          { val: 7, text: 'Escalation thresholds documented and implemented for most production agents.' },
+          { val: 10, text: 'All agents have tested escalation thresholds. Overrides logged and reviewed monthly.' }
+        ]
+      },
+      {
+        role: 'CFO',
+        text: 'Is oversight being measured and reported? If a regulator asked for evidence of human supervision over your highest-risk AI deployments, could you produce it within 48 hours?',
+        anchors: [
+          { val: 0, text: 'No measurement. Could not produce oversight evidence under any timeline.' },
+          { val: 3, text: 'Anecdotal oversight exists but is not measured or documented.' },
+          { val: 5, text: 'Some oversight data exists. Evidence could be assembled but would take weeks.' },
+          { val: 7, text: 'Oversight is measured. Evidence could be produced but would require significant effort.' },
+          { val: 10, text: 'Oversight metrics tracked in real time. Regulatory evidence producible within 48 hours.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'd4',
+    num: '04',
+    title: 'Auditability & Documentation',
+    sub: 'Can you reconstruct what the agent saw, decided, and did?',
+    weight: 0.20,
+    questions: [
+      {
+        role: 'CIO',
+        text: 'Do your agents produce structured, queryable logs of inputs, decisions, tool calls, and outputs — retained for a period consistent with your regulatory obligations?',
+        anchors: [
+          { val: 0, text: 'No structured logging. Agent activity is not recorded in queryable form.' },
+          { val: 3, text: 'System logs exist but are not structured for AI decision reconstruction.' },
+          { val: 5, text: 'Some agents log decisions. Coverage is incomplete. Retention policy unclear.' },
+          { val: 7, text: 'Structured logging in place for most agents. Retention policy defined.' },
+          { val: 10, text: 'Full structured logging across all agents. Queryable. Retention aligned to regulatory obligation.' }
+        ]
+      },
+      {
+        role: 'CFO',
+        text: 'Has your internal audit function assessed AI agent logging as part of its current cycle, or is AI still treated as out of scope?',
+        anchors: [
+          { val: 0, text: 'Internal audit has not considered AI agent logging. Treated as out of scope.' },
+          { val: 3, text: 'Audit function aware but has not yet formally assessed AI logging.' },
+          { val: 5, text: 'AI logging assessed informally. No formal audit finding or recommendation.' },
+          { val: 7, text: 'Formal audit assessment completed. Findings in remediation.' },
+          { val: 10, text: 'AI agent logging is a standing internal audit item. Findings closed and verified.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'd5',
+    num: '05',
+    title: 'Vendor Accountability',
+    sub: 'Does your vendor relationship match your regulatory exposure?',
+    weight: 0.10,
+    questions: [
+      {
+        role: 'CIO',
+        text: 'Do your vendor contracts include audit rights, model change notification obligations, and documented evidence of how the system\'s decisions are generated?',
+        anchors: [
+          { val: 0, text: 'Standard SaaS contracts. No AI-specific audit rights or change notifications.' },
+          { val: 3, text: 'Vendor provides some documentation but no contractual audit rights.' },
+          { val: 5, text: 'Audit rights exist in some contracts. Change notification inconsistent.' },
+          { val: 7, text: 'AI-specific clauses in most contracts. Audit rights and change notices included.' },
+          { val: 10, text: 'Full AI contractual governance: audit rights, change notification, explainability evidence.' }
+        ]
+      },
+      {
+        role: 'CFO',
+        text: 'Does your vendor due diligence process include AI-specific risk assessment — governance, explainability, and regulatory alignment — not just security and data protection?',
+        anchors: [
+          { val: 0, text: 'Vendor due diligence is security-only. AI governance not assessed.' },
+          { val: 3, text: 'Some AI questions added informally to procurement. Not systematic.' },
+          { val: 5, text: 'AI governance assessed for some vendors. No standard framework applied.' },
+          { val: 7, text: 'AI-specific due diligence framework in use. Applied to most new vendors.' },
+          { val: 10, text: 'Rigorous AI due diligence: governance, explainability, EU AI Act alignment assessed at procurement.' }
+        ]
+      }
+    ]
+  }
+];
+
+const state = {};
+DOMAINS.forEach(d => {
+  d.questions.forEach((q, qi) => {
+    state[`${d.id}_q${qi}`] = null;
+  });
+});
+
+function getColor(val) {
+  if (val === null) return '';
+  if (val >= 7) return 'green';
+  if (val >= 4) return 'amber';
+  return 'red';
+}
+
+function getAnchorText(anchors, val) {
+  let best = anchors[0];
+  for (const a of anchors) {
+    if (val >= a.val) best = a;
+  }
+  return best.text;
+}
+
+function render() {
+  const container = document.getElementById('domains');
+  container.innerHTML = '';
+
+  DOMAINS.forEach(domain => {
+    const scores = domain.questions.map((q, qi) => state[`${domain.id}_q${qi}`]);
+    const allScored = scores.every(s => s !== null);
+    const domainScore = allScored ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+    const domainColor = getColor(domainScore);
+
+    const card = document.createElement('div');
+    card.className = 'domain' + (allScored ? ` scored scored-${domainColor === 'green' ? 'well' : domainColor === 'amber' ? 'mid' : 'low'}` : '');
+
+    let questionsHTML = domain.questions.map((q, qi) => {
+      const key = `${domain.id}_q${qi}`;
+      const val = state[key];
+      const color = getColor(val);
+      const anchor = val !== null ? getAnchorText(q.anchors, val) : q.anchors[0].text;
+      const displayVal = val !== null ? val : 0;
+
+      return `
+        <div class="q-block">
+          <div class="q-role">${q.role}</div>
+          <div class="q-content">
+            <div class="q-text">${q.text}</div>
+            <div class="q-hint" id="hint-${key}">${val !== null ? anchor : 'Move the slider to rate your organisation.'}</div>
+            <div class="slider-row">
+              <div class="slider-wrap">
+                <input type="range" min="0" max="10" step="1" value="${displayVal}"
+                  oninput="updateScore('${key}', this.value, '${domain.id}')"
+                  onchange="updateScore('${key}', this.value, '${domain.id}')"
+                  aria-label="${q.role} question for ${domain.title}">
+                <div class="slider-labels"><span>0 — None</span><span>5 — Partial</span><span>10 — Mature</span></div>
+              </div>
+              <div class="slider-val ${color}" id="val-${key}">${val !== null ? val : '·'}</div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    const scoreDisplay = domainScore !== null
+      ? `<div class="d-score-num ${domainColor}" id="dscore-${domain.id}">${domainScore.toFixed(1)}</div>`
+      : `<div class="d-score-num" id="dscore-${domain.id}">—</div>`;
+
+    const miniPct = domainScore !== null ? (domainScore / 10 * 100) : 0;
+    const miniColor = domainColor === 'green' ? 'var(--green)' : domainColor === 'amber' ? 'var(--amber)' : domainColor === 'red' ? 'var(--red)' : 'var(--faint)';
+
+    card.innerHTML = `
+      <div class="domain-header">
+        <div class="d-num">${domain.num}</div>
+        <div class="d-info">
+          <div class="d-title">${domain.title}</div>
+          <div class="d-sub">${domain.sub}</div>
+        </div>
+        <div class="d-score-badge">
+          ${scoreDisplay}
+          <div class="d-score-label">/10</div>
+          <div class="d-weight">Weight: ${Math.round(domain.weight * 100)}%</div>
+        </div>
+      </div>
+      <div class="d-mini-bar"><div class="d-mini-fill" style="width:${miniPct}%;background:${miniColor}"></div></div>
+      <div class="questions">${questionsHTML}</div>`;
+
+    container.appendChild(card);
+  });
+
+  updateSidebar();
+  renderBreakdown();
+}
+
+function updateScore(key, val, domainId) {
+  const numVal = parseInt(val);
+  state[key] = numVal;
+
+  const color = getColor(numVal);
+  const valEl = document.getElementById(`val-${key}`);
+  if (valEl) {
+    valEl.textContent = numVal;
+    valEl.className = `slider-val ${color}`;
+  }
+
+  const domain = DOMAINS.find(d => d.id === domainId);
+  if (domain) {
+    const qi = parseInt(key.split('_q')[1]);
+    const anchor = getAnchorText(domain.questions[qi].anchors, numVal);
+    const hintEl = document.getElementById(`hint-${key}`);
+    if (hintEl) hintEl.textContent = anchor;
+  }
+
+  updateDomainScore(domainId);
+  updateSidebar();
+  renderBreakdown();
+}
+
+function updateDomainScore(domainId) {
+  const domain = DOMAINS.find(d => d.id === domainId);
+  const scores = domain.questions.map((q, qi) => state[`${domain.id}_q${qi}`]);
+  const allScored = scores.every(s => s !== null);
+  const domainScore = allScored ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+  const color = getColor(domainScore);
+
+  const el = document.getElementById(`dscore-${domainId}`);
+  if (el) {
+    el.textContent = domainScore !== null ? domainScore.toFixed(1) : '—';
+    el.className = `d-score-num ${color}`;
+  }
+}
+
+function calcOverall() {
+  let weightedSum = 0;
+  let totalWeight = 0;
+  let answeredCount = 0;
+  const totalQ = DOMAINS.reduce((a, d) => a + d.questions.length, 0);
+
+  DOMAINS.forEach(domain => {
+    const scores = domain.questions.map((q, qi) => state[`${domain.id}_q${qi}`]).filter(s => s !== null);
+    if (scores.length === domain.questions.length) {
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      weightedSum += avg * domain.weight;
+      totalWeight += domain.weight;
+    }
+    answeredCount += scores.length;
+  });
+
+  const score = totalWeight > 0 ? (weightedSum / totalWeight) : null;
+  return { score, answeredCount, totalQ };
+}
+
+function updateSidebar() {
+  const { score, answeredCount, totalQ } = calcOverall();
+
+  const bigEl = document.getElementById('sc-big');
+  const pctEl = document.getElementById('sc-pct');
+  const heatFill = document.getElementById('heat-fill');
+  const heatLabel = document.getElementById('heat-pct-label');
+  const verdictStatus = document.getElementById('verdict-status');
+  const verdictText = document.getElementById('verdict-text');
+
+  if (score === null) {
+    bigEl.textContent = answeredCount > 0 ? '…' : '—';
+    bigEl.className = 'sc-big';
+    pctEl.textContent = `${answeredCount} of ${totalQ} questions rated`;
+    heatFill.style.width = '0%';
+    heatFill.style.background = 'var(--faint)';
+    heatLabel.textContent = '—';
+    verdictStatus.className = 'verdict-status muted';
+    verdictStatus.textContent = 'Awaiting assessment';
+    verdictText.textContent = 'Complete all ten questions to generate your compliance readiness verdict.';
+    return;
+  }
+
+  const pct = Math.round(score * 10);
+  const color = getColor(score);
+
+  bigEl.textContent = score.toFixed(1);
+  bigEl.className = `sc-big ${color}`;
+  pctEl.textContent = `${pct}% readiness — ${answeredCount}/${totalQ} questions rated`;
+
+  heatFill.style.width = `${pct}%`;
+  heatFill.style.background = color === 'green' ? 'var(--green)' : color === 'amber' ? 'var(--amber)' : 'var(--red)';
+  heatLabel.textContent = `${pct}%`;
+
+  const verdicts = {
+    green: {
+      status: '✓ Audit-ready foundations',
+      text: 'Strong governance evidence in place. Proceed with agentic deployments under continued monitoring. Ensure documentation stays current as models and systems change.'
+    },
+    amber: {
+      status: '⚠ Governance gaps identified',
+      text: 'Meaningful progress made but material gaps remain. Build a structured remediation programme before scaling further. Deloitte finds only 21% of organisations reach maturity — you are ahead of most, but not there yet.'
+    },
+    red: {
+      status: '✕ Material compliance exposure',
+      text: 'Significant governance gaps across foundational domains. Pause new agentic deployments until inventory, accountability, and oversight controls are established. Gartner predicts 40%+ of projects cancelled by 2027 — inadequate risk controls is the primary reason.'
+    }
+  };
+
+  const v = verdicts[color];
+  verdictStatus.className = `verdict-status ${color}`;
+  verdictStatus.textContent = v.status;
+  verdictText.textContent = v.text;
+}
+
+function renderBreakdown() {
+  const container = document.getElementById('breakdown-rows');
+  container.innerHTML = '';
+
+  DOMAINS.forEach(domain => {
+    const scores = domain.questions.map((q, qi) => state[`${domain.id}_q${qi}`]).filter(s => s !== null);
+    const allScored = scores.length === domain.questions.length;
+    const avg = allScored ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+    const color = getColor(avg);
+    const fillColor = color === 'green' ? 'var(--green)' : color === 'amber' ? 'var(--amber)' : color === 'red' ? 'var(--red)' : 'var(--faint)';
+    const pct = avg !== null ? (avg / 10 * 100) : 0;
+
+    const row = document.createElement('div');
+    row.className = 'bk-row';
+    row.innerHTML = `
+      <div class="bk-name">${domain.title}</div>
+      <div class="bk-bar-wrap">
+        <div class="bk-bar"><div class="bk-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+        <div class="bk-score" style="color:${fillColor}">${avg !== null ? avg.toFixed(1) : '—'}</div>
+      </div>`;
+    container.appendChild(row);
+  });
+}
+
+function resetAll() {
+  Object.keys(state).forEach(k => state[k] = null);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
