@@ -398,91 +398,88 @@
   }
   .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
 
-  /* PILLAR INDEX — full-width vertical list */
+  /* PILLAR INDEX — full-width indexed vertical list */
   .pillar-index {
     border-top: 1px solid var(--rule);
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .pillar-row {
     border-bottom: 1px solid var(--rule);
     display: grid;
-    grid-template-columns: 64px 1fr 1fr auto;
+    grid-template-columns: 80px 1fr auto;
     gap: 0;
-    align-items: start;
-    transition: background 0.15s;
+    align-items: stretch;
+    transition: background 0.2s;
     position: relative;
+    cursor: default;
   }
 
-  .pillar-row:hover { background: rgba(0,184,162,0.03); }
+  .pillar-row:hover { background: rgba(0,184,162,0.025); }
 
+  /* Left: large dim number */
   .pillar-row-num {
     font-family: 'DM Mono', monospace;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 500;
-    color: rgba(107,122,141,0.35);
+    color: rgba(107,122,141,0.25);
     line-height: 1;
-    padding: 32px 0 32px 48px;
-    letter-spacing: -0.02em;
+    padding: 36px 0 36px 48px;
+    letter-spacing: -0.03em;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 38px;
   }
 
+  /* Centre: title + desc + tags — takes up most of the width */
   .pillar-row-main {
-    padding: 32px 32px 32px 24px;
+    padding: 36px 48px 36px 32px;
     border-left: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .pillar-row-title {
     font-family: 'Playfair Display', serif;
-    font-size: 19px;
+    font-size: 21px;
     font-weight: 700;
     color: var(--off-white);
     margin-bottom: 10px;
     line-height: 1.2;
+    transition: color 0.15s;
   }
+
+  .pillar-row:hover .pillar-row-title { color: var(--teal); }
 
   .pillar-row-desc {
     font-family: 'DM Sans', sans-serif;
     font-size: 13.5px;
     color: var(--slate-70);
-    line-height: 1.65;
-    max-width: 440px;
+    line-height: 1.7;
+    max-width: 580px;
+    margin-bottom: 14px;
   }
 
-  .pillar-row-articles {
-    padding: 32px 24px;
-    border-left: 1px solid var(--rule);
-  }
-
-  .pillar-row-articles-label {
+  .pillar-row-tags {
     font-family: 'DM Mono', monospace;
     font-size: 8.5px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--slate);
-    margin-bottom: 12px;
+    color: rgba(107,122,141,0.55);
   }
 
-  .pillar-article-link {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12.5px;
-    color: var(--slate-70);
-    text-decoration: none;
-    line-height: 1.45;
-    padding: 5px 0;
-    border-bottom: 1px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .pillar-article-link:hover {
-    color: var(--teal);
-    border-bottom-color: var(--teal-border);
-  }
-
+  /* Right: assess CTA — vertically centred, pinned right */
   .pillar-row-assess {
-    padding: 32px 48px 32px 28px;
-    display: flex;
-    align-items: flex-start;
+    padding: 36px 48px 36px 32px;
     border-left: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    min-width: 220px;
   }
 
   .pillar-assess-cta {
@@ -495,48 +492,35 @@
     white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding-top: 4px;
+    gap: 7px;
     transition: gap 0.2s;
   }
-  .pillar-assess-cta:hover { gap: 10px; }
+  .pillar-assess-cta:hover { gap: 12px; }
   .pillar-assess-cta::after { content: '→'; }
 
-  .pillar-row-tags {
-    font-family: 'DM Mono', monospace;
-    font-size: 8.5px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-top: 8px;
-  }
-
-  /* Pillar index mobile */
+  /* Mobile */
   @media (max-width: 860px) {
     .pillar-row {
-      grid-template-columns: 40px 1fr;
-      grid-template-rows: auto auto auto;
+      grid-template-columns: 44px 1fr;
+      grid-template-rows: auto auto;
     }
     .pillar-row-num {
-      padding: 24px 0 0 20px;
-      font-size: 20px;
+      padding: 28px 0 0 20px;
+      font-size: 22px;
     }
     .pillar-row-main {
-      padding: 24px 20px 16px 16px;
+      padding: 28px 20px 20px 16px;
       grid-column: 2;
       border-left: none;
-    }
-    .pillar-row-articles {
-      grid-column: 1 / -1;
-      border-left: none;
-      border-top: 1px solid var(--rule);
-      padding: 16px 20px;
     }
     .pillar-row-assess {
       grid-column: 1 / -1;
       border-left: none;
       border-top: 1px solid var(--rule);
-      padding: 14px 20px 20px;
+      padding: 16px 20px 20px;
+      flex-direction: row;
+      align-items: center;
+      min-width: unset;
     }
   }
 
@@ -1488,7 +1472,7 @@
   <div class="section-label">Intelligence Pillars</div>
 </section>
 
-<div class="pillar-index" style="max-width:1200px;margin:0 auto 0;">
+<div class="pillar-index">
 
   <!-- 01 AI Cost Intelligence -->
   <div class="pillar-row">
@@ -1496,24 +1480,10 @@
     <div class="pillar-row-main">
       <div class="pillar-row-title">AI Cost Intelligence</div>
       <p class="pillar-row-desc">Agentic AI is creating a cost spiral most enterprises aren't ready for. When agents talk to agents, inference costs compound in ways invisible to the budget owners who signed off the original use case.</p>
-      <div class="pillar-row-tags">CFO · CIO · CAIO</div>
-    </div>
-    <div class="pillar-row-articles">
-      <div class="pillar-row-articles-label">Recent</div>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" target="_blank">The AI Bill Shock Nobody Is Budgeting For</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">When Agents Talk to Agents, Who Pays?</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Hidden Cost of the Wrong Model</a>
+      <div class="pillar-row-tags">CFO &middot; CIO &middot; CAIO</div>
     </div>
     <div class="pillar-row-assess">
       <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="AI Cost Governance" data-score="38">Assess this dimension</a>
-      <div class="pillar-assess-score">
-        <span>Readiness dimension:</span>
-        <span class="pillar-dimension-tag">AI Cost Governance</span>
-      </div>
-      <div class="pillar-assess-score">
-        <span>Current score:</span>
-        <span class="pillar-assess-score-val" style="color:#E8A838">38 / 100</span>
-      </div>
     </div>
   </div>
 
@@ -1523,24 +1493,10 @@
     <div class="pillar-row-main">
       <div class="pillar-row-title">Governance, Trust &amp; Risk</div>
       <p class="pillar-row-desc">Who owns the decision when the AI gets it wrong? Governance conversations happen too late — after something goes wrong. This pillar covers what responsible AI looks like in a production environment.</p>
-      <div class="pillar-row-tags">CIO · CTO · CFO · Board</div>
-    </div>
-    <div class="pillar-row-articles">
-      <div class="pillar-row-articles-label">Recent</div>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The EU AI Act Is Not an IT Problem</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Who Owns the Model When It's Wrong?</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Governance Without Theatre</a>
+      <div class="pillar-row-tags">CIO &middot; CTO &middot; CFO &middot; Board</div>
     </div>
     <div class="pillar-row-assess">
       <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Governance &amp; Trust" data-score="52">Assess this dimension</a>
-      <div class="pillar-assess-score">
-        <span>Readiness dimension:</span>
-        <span class="pillar-dimension-tag">Governance &amp; Trust</span>
-      </div>
-      <div class="pillar-assess-score">
-        <span>Current score:</span>
-        <span class="pillar-assess-score-val" style="color:#00B8A2">52 / 100</span>
-      </div>
     </div>
   </div>
 
@@ -1550,24 +1506,10 @@
     <div class="pillar-row-main">
       <div class="pillar-row-title">The Human &amp; Culture Layer</div>
       <p class="pillar-row-desc">The main reason AI value stays locked inside organisations is not the technology — it is the humans. Most AI transformation programmes treat change management as a checkbox. This pillar goes deep.</p>
-      <div class="pillar-row-tags">CHRO · CEO · CIO</div>
-    </div>
-    <div class="pillar-row-articles">
-      <div class="pillar-row-articles-label">Recent</div>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" target="_blank">Can You Prove This Role Can't Be Done by AI?</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Change Management Debt Nobody Accounts For</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Why AI Champions Burn Out</a>
+      <div class="pillar-row-tags">CHRO &middot; CEO &middot; CIO</div>
     </div>
     <div class="pillar-row-assess">
       <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Human &amp; Culture" data-score="61">Assess this dimension</a>
-      <div class="pillar-assess-score">
-        <span>Readiness dimension:</span>
-        <span class="pillar-dimension-tag">Human &amp; Culture</span>
-      </div>
-      <div class="pillar-assess-score">
-        <span>Current score:</span>
-        <span class="pillar-assess-score-val" style="color:#00B8A2">61 / 100</span>
-      </div>
     </div>
   </div>
 
@@ -1577,24 +1519,10 @@
     <div class="pillar-row-main">
       <div class="pillar-row-title">AI-Native Operating Model</div>
       <p class="pillar-row-desc">Deploying AI on top of existing processes is the least ambitious thing you can do with it. The enterprises extracting real, compounding value are reimagining how work gets done — not just which tools they use.</p>
-      <div class="pillar-row-tags">CEO · COO · CTO · CHRO</div>
-    </div>
-    <div class="pillar-row-articles">
-      <div class="pillar-row-articles-label">Recent</div>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Operating Model Is the Strategy</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">When Process Redesign Precedes the Prompt</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">What AI-Native Actually Looks Like at Scale</a>
+      <div class="pillar-row-tags">CEO &middot; COO &middot; CTO &middot; CHRO</div>
     </div>
     <div class="pillar-row-assess">
       <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Operating Model" data-score="33">Assess this dimension</a>
-      <div class="pillar-assess-score">
-        <span>Readiness dimension:</span>
-        <span class="pillar-dimension-tag">Operating Model</span>
-      </div>
-      <div class="pillar-assess-score">
-        <span>Current score:</span>
-        <span class="pillar-assess-score-val" style="color:#E8A838">33 / 100</span>
-      </div>
     </div>
   </div>
 
@@ -1604,24 +1532,10 @@
     <div class="pillar-row-main">
       <div class="pillar-row-title">PoC Purgatory</div>
       <p class="pillar-row-desc">30–50% of AI projects fail after the pilot. Not because the technology doesn't work — because the organisation isn't ready to operationalise it. This pillar covers what it takes to get from experiment to production.</p>
-      <div class="pillar-row-tags">CIO · CTO · CAIO</div>
-    </div>
-    <div class="pillar-row-articles">
-      <div class="pillar-row-articles-label">Recent</div>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" target="_blank">Vibe Coding Has a Stop Sign</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">The Pilot That Never Became a Product</a>
-      <a class="pillar-article-link" href="https://cspanswick.substack.com" target="_blank">Production Readiness Is Not a Technical Problem</a>
+      <div class="pillar-row-tags">CIO &middot; CTO &middot; CAIO</div>
     </div>
     <div class="pillar-row-assess">
       <a class="pillar-assess-cta" href="/eu-ai-act" data-dimension="Production Readiness" data-score="44">Assess this dimension</a>
-      <div class="pillar-assess-score">
-        <span>Readiness dimension:</span>
-        <span class="pillar-dimension-tag">Production Readiness</span>
-      </div>
-      <div class="pillar-assess-score">
-        <span>Current score:</span>
-        <span class="pillar-assess-score-val" style="color:#E8A838">44 / 100</span>
-      </div>
     </div>
   </div>
 
@@ -1680,6 +1594,36 @@
         <p class="instrument-desc">Understand which risk tier your AI systems fall into — and what that means for your P&amp;L, controls, and accountability structure.</p>
         <div class="instrument-card-footer">
           <span class="instrument-aud">CIO &middot; CFO &middot; Legal &middot; 5 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card" href="/dora">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">DORA AI Exposure Assessment</div>
+        <p class="instrument-desc">Map your AI-related exposures across DORA&rsquo;s five pillars. Gap register, risk scoring, and export-ready output for your ICT risk framework.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CIO &middot; CTO &middot; Risk &middot; 10 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card" href="/nis2">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">NIS2 AI Exposure Lens</div>
+        <p class="instrument-desc">Classify your entity type then assess AI-specific exposures across NIS2&rsquo;s security and incident obligations. Prioritised gap output included.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CISO &middot; CIO &middot; Legal &middot; 8 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card" href="/radar">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">AI Governance Exposure Radar</div>
+        <p class="instrument-desc">Pulls scores from all three assessments into a single 8-axis control view. See your aggregate regulatory exposure at a glance.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">Board &middot; CIO &middot; CFO &middot; 2 Min</span>
           <span class="instrument-cta"></span>
         </div>
       </a>
