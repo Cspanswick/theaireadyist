@@ -5,62 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EU AI Act Readiness Assessment — The AI Readyist</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #0c0f16;
-    --bg2:       #121620;
-    --bg3:       #181d28;
-    --border:    #1e2330;
-    --border2:   #262c3a;
-    --text:      #ddd8cc;
-    --muted:     #6a6d78;
-    --faint:     #2e3244;
-    --gold:      #c8a96e;
-    --gold-dim:  #7a6540;
-    --green:     #4caf7d;
-    --amber:     #e8a44a;
-    --red:       #d95f5f;
-    --blue:      #5b8fd4;
+    --navy:        #0D1B2A;
+    --deep:        #0C1118;
+    --teal:        #00C9A7;
+    --teal-border: rgba(0,201,167,0.20);
+    --teal-active: rgba(0,201,167,0.60);
+    --amber:       #E8A838;
+    --amber-border:rgba(232,168,56,0.35);
+    --off-white:   #F0F4F8;
+    --slate-70:    rgba(240,244,248,0.65);
+    --slate:       rgba(240,244,248,0.40);
+    --rule:        rgba(255,255,255,0.08);
+    --green:       #4caf7d;
+    --red:         #d95f5f;
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--navy);
+    color: var(--off-white);
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     line-height: 1.6;
     min-height: 100vh;
   }
 
-  /* ── HEADER ── */
-  .site-header {
-    border-bottom: 1px solid var(--border);
-    padding: 24px 40px;
+  /* ── NAV ── */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 56px;
+    background: rgba(13,27,42,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 48px;
   }
 
-  .brand {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    letter-spacing: 0.22em;
-    color: var(--gold);
-    text-transform: uppercase;
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--off-white);
     text-decoration: none;
+    letter-spacing: -0.01em;
   }
 
-  .back-link {
+  .nav-logo span { color: var(--teal); }
+
+  .nav-back {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+    color: var(--slate);
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -68,341 +75,360 @@
     transition: color 0.2s;
   }
 
-  .back-link:hover { color: var(--gold); }
-
-  .edition {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
+  .nav-back:hover { color: var(--teal); }
+  .nav-back::before { content: '←'; }
 
   /* ── HERO ── */
   .hero {
-    padding: 56px 40px 40px;
-    max-width: 960px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 48px 48px;
+    border-bottom: 1px solid var(--rule);
   }
 
   .hero-kicker {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    color: var(--teal);
+    margin-bottom: 20px;
   }
 
   .hero-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(36px, 5vw, 54px);
+    font-size: clamp(36px, 4.5vw, 52px);
     font-weight: 700;
-    line-height: 1.15;
-    color: #f0ece0;
-    margin-bottom: 16px;
+    line-height: 1.1;
+    color: var(--off-white);
+    margin-bottom: 20px;
   }
 
   .hero-title em {
     font-style: italic;
-    color: var(--gold);
+    color: var(--teal);
   }
 
   .hero-desc {
-    font-size: 17px;
-    color: var(--muted);
-    max-width: 600px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--slate-70);
+    max-width: 620px;
     line-height: 1.7;
   }
 
   /* ── LAYOUT ── */
   .main {
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: 1fr 360px;
     gap: 0;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 40px 80px;
+    padding: 0 48px 80px;
     align-items: start;
   }
 
-  @media (max-width: 900px) {
-    .main { grid-template-columns: 1fr; padding: 0 20px 60px; }
+  @media (max-width: 960px) {
+    .main { grid-template-columns: 1fr; padding: 0 24px 60px; }
     .sidebar { position: static !important; margin-top: 40px; }
-    .site-header, .hero { padding-left: 20px; padding-right: 20px; }
+    .hero { padding: 40px 24px 32px; }
+    .site-nav { padding: 0 24px; }
   }
 
   /* ── DOMAINS ── */
-  .domains { padding-right: 40px; }
-
-  .domain {
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--faint);
-    margin-bottom: 6px;
-    background: var(--bg2);
-    transition: border-color 0.3s;
+  .domains {
+    padding-right: 40px;
+    padding-top: 40px;
   }
 
-  .domain.scored { border-left-color: var(--gold-dim); }
-  .domain.scored-well { border-left-color: var(--green); }
-  .domain.scored-mid  { border-left-color: var(--amber); }
-  .domain.scored-low  { border-left-color: var(--red); }
+  @media (max-width: 960px) { .domains { padding-right: 0; } }
+
+  .domain {
+    border-top: 1px solid var(--rule);
+    margin-bottom: 0;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadeUp 0.4s ease forwards;
+    transition: background 0.2s;
+  }
+
+  .domain:last-child { border-bottom: 1px solid var(--rule); }
+
+  .domain:nth-child(1) { animation-delay: 0.05s; }
+  .domain:nth-child(2) { animation-delay: 0.12s; }
+  .domain:nth-child(3) { animation-delay: 0.18s; }
+  .domain:nth-child(4) { animation-delay: 0.24s; }
+  .domain:nth-child(5) { animation-delay: 0.30s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   .domain-header {
-    padding: 24px 28px 20px;
+    padding: 32px 0 24px;
     display: grid;
-    grid-template-columns: 60px 1fr auto;
-    gap: 0 16px;
+    grid-template-columns: 56px 1fr auto;
+    gap: 0 20px;
     align-items: start;
+    cursor: default;
   }
 
   .d-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--faint);
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: rgba(240,244,248,0.12);
     line-height: 1;
+    padding-top: 4px;
     transition: color 0.3s;
+    letter-spacing: -0.03em;
   }
 
-  .domain.scored .d-num,
-  .domain.scored-well .d-num,
-  .domain.scored-mid .d-num,
-  .domain.scored-low .d-num { color: var(--border2); }
-
-  .d-info {}
+  .domain.scored .d-num { color: rgba(240,244,248,0.20); }
 
   .d-title {
     font-family: 'Playfair Display', serif;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
-    color: #ece8dc;
+    color: var(--off-white);
     margin-bottom: 4px;
-    line-height: 1.3;
+    line-height: 1.2;
   }
 
   .d-sub {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    color: var(--muted);
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    color: var(--slate);
     text-transform: uppercase;
   }
 
-  .d-score-badge {
-    text-align: right;
-  }
+  .d-score-badge { text-align: right; }
 
   .d-score-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--faint);
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: rgba(240,244,248,0.15);
     line-height: 1;
     transition: color 0.3s;
+    letter-spacing: -0.02em;
   }
 
-  .d-score-num.green { color: var(--green); }
+  .d-score-num.teal  { color: var(--teal); }
   .d-score-num.amber { color: var(--amber); }
   .d-score-num.red   { color: var(--red); }
 
   .d-score-label {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
+    font-size: 8.5px;
     letter-spacing: 0.1em;
-    color: var(--muted);
+    color: var(--slate);
     text-transform: uppercase;
-    margin-top: 2px;
+    margin-top: 3px;
   }
 
   .d-weight {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 8px;
     letter-spacing: 0.08em;
-    color: var(--gold-dim);
-    margin-top: 4px;
+    color: rgba(240,244,248,0.25);
+    margin-top: 3px;
   }
 
-  /* domain mini bar */
-  .d-mini-bar {
-    height: 2px;
-    background: var(--faint);
-    margin: 0 28px;
-    border-radius: 1px;
-    overflow: hidden;
-    margin-bottom: 24px;
+  /* domain progress bar */
+  .d-progress {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 28px;
+    position: relative;
+    overflow: visible;
   }
-  .d-mini-fill {
-    height: 100%;
+
+  .d-progress-fill {
+    height: 1px;
     width: 0%;
-    border-radius: 1px;
     transition: width 0.5s ease, background 0.3s;
-    background: var(--faint);
+    background: var(--rule);
+    position: absolute;
+    top: 0; left: 0;
   }
 
   /* ── QUESTIONS ── */
   .questions {
-    padding: 0 28px 28px;
+    padding-bottom: 36px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 32px;
   }
 
   .q-block {
     display: grid;
-    grid-template-columns: 56px 1fr;
+    grid-template-columns: 48px 1fr;
     gap: 0 16px;
     align-items: start;
   }
 
   .q-role {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
+    font-size: 8px;
     letter-spacing: 0.14em;
-    color: var(--gold);
+    color: var(--teal);
     text-transform: uppercase;
-    padding-top: 4px;
-    font-weight: 400;
+    padding-top: 3px;
+    border: 1px solid var(--teal-border);
+    padding: 3px 6px;
+    text-align: center;
+    margin-top: 2px;
   }
 
-  .q-content {}
-
   .q-text {
-    font-size: 16px;
-    color: #b0aba0;
-    line-height: 1.65;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--slate-70);
+    line-height: 1.7;
     margin-bottom: 10px;
   }
 
   .q-hint {
-    font-size: 14px;
-    color: var(--muted);
-    font-style: italic;
-    margin-bottom: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--slate);
+    margin-bottom: 14px;
     line-height: 1.5;
+    padding: 8px 12px;
+    border-left: 2px solid var(--rule);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .q-hint.active {
+    border-left-color: var(--teal-border);
+    color: var(--slate-70);
   }
 
   /* ── SLIDER ── */
   .slider-row {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
   }
 
-  .slider-wrap {
-    flex: 1;
-    position: relative;
-  }
+  .slider-wrap { flex: 1; }
 
   input[type=range] {
     -webkit-appearance: none;
     width: 100%;
-    height: 5px;
-    border-radius: 3px;
-    background: var(--border2);
+    height: 2px;
+    background: var(--rule);
     outline: none;
     cursor: pointer;
+    border-radius: 0;
   }
 
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--gold);
+    width: 16px;
+    height: 16px;
+    border-radius: 0;
+    background: var(--teal);
     cursor: pointer;
-    border: 2px solid var(--bg);
+    border: none;
     transition: transform 0.15s, background 0.2s;
-    box-shadow: 0 0 0 0 rgba(200,169,110,0);
   }
 
   input[type=range]::-webkit-slider-thumb:hover {
-    transform: scale(1.25);
+    transform: scale(1.3);
   }
 
-  input[type=range]:focus::-webkit-slider-thumb {
-    box-shadow: 0 0 0 3px rgba(200,169,110,0.2);
-  }
+  input[type=range].amber-thumb::-webkit-slider-thumb { background: var(--amber); }
+  input[type=range].red-thumb::-webkit-slider-thumb   { background: var(--red); }
 
   .slider-labels {
     display: flex;
     justify-content: space-between;
-    margin-top: 6px;
+    margin-top: 8px;
   }
 
   .slider-labels span {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 9px;
+    color: var(--slate);
     letter-spacing: 0.06em;
   }
 
   .slider-val {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    font-weight: 700;
-    min-width: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    min-width: 28px;
     text-align: right;
+    color: rgba(240,244,248,0.15);
     transition: color 0.3s;
-    color: var(--faint);
+    letter-spacing: -0.02em;
   }
 
-  .slider-val.green { color: var(--green); }
+  .slider-val.teal  { color: var(--teal); }
   .slider-val.amber { color: var(--amber); }
   .slider-val.red   { color: var(--red); }
 
   /* ── SIDEBAR ── */
   .sidebar {
     position: sticky;
-    top: 24px;
+    top: 72px;
+    padding-top: 40px;
   }
 
   .score-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
+    border: 1px solid var(--teal-border);
     padding: 32px 28px;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.35s forwards;
   }
 
   .sc-label {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
+    font-size: 9px;
     letter-spacing: 0.18em;
-    color: var(--gold);
+    color: var(--slate);
     text-transform: uppercase;
     margin-bottom: 20px;
   }
 
   .sc-big {
-    font-family: 'Playfair Display', serif;
-    font-size: 84px;
-    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    font-size: 72px;
+    font-weight: 500;
     line-height: 1;
-    color: var(--faint);
+    color: rgba(240,244,248,0.12);
     transition: color 0.4s;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    letter-spacing: -0.04em;
   }
 
-  .sc-big.green { color: var(--green); }
+  .sc-big.teal  { color: var(--teal); }
   .sc-big.amber { color: var(--amber); }
   .sc-big.red   { color: var(--red); }
 
   .sc-pct {
     font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 24px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--slate);
+    margin-bottom: 28px;
   }
 
-  /* heat bar */
-  .heat-wrap {
-    margin-bottom: 24px;
-  }
+  /* exposure bar */
+  .heat-wrap { margin-bottom: 24px; }
 
   .heat-label {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 8.5px;
     letter-spacing: 0.12em;
-    color: var(--muted);
+    color: var(--slate);
     text-transform: uppercase;
     margin-bottom: 8px;
     display: flex;
@@ -410,9 +436,8 @@
   }
 
   .heat-track {
-    height: 10px;
-    background: var(--faint);
-    border-radius: 5px;
+    height: 2px;
+    background: var(--rule);
     overflow: hidden;
     position: relative;
   }
@@ -420,9 +445,8 @@
   .heat-fill {
     height: 100%;
     width: 0%;
-    border-radius: 5px;
     transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1), background 0.4s;
-    background: var(--faint);
+    background: var(--rule);
   }
 
   .heat-scale {
@@ -433,51 +457,58 @@
 
   .heat-scale span {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.06em;
+    font-size: 8.5px;
+    color: var(--slate);
+    letter-spacing: 0.04em;
   }
 
   /* verdict */
   .verdict-box {
-    border: 1px solid var(--border);
+    border: 1px solid var(--rule);
     padding: 16px 18px;
-    background: var(--bg3);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    transition: border-color 0.3s;
   }
+
+  .verdict-box.teal  { border-color: var(--teal-border); }
+  .verdict-box.amber { border-color: var(--amber-border); }
+  .verdict-box.red   { border-color: rgba(217,95,95,0.3); }
 
   .verdict-status {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.16em;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    color: var(--slate);
   }
 
-  .verdict-status.green { color: var(--green); }
+  .verdict-status.teal  { color: var(--teal); }
   .verdict-status.amber { color: var(--amber); }
   .verdict-status.red   { color: var(--red); }
-  .verdict-status.muted { color: var(--muted); }
 
   .verdict-text {
-    font-size: 15px;
-    color: #7a7870;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--slate-70);
     line-height: 1.65;
   }
 
-  /* domain breakdown */
+  /* breakdown */
   .breakdown {
-    background: var(--bg2);
-    border: 1px solid var(--border);
+    border: 1px solid var(--rule);
     padding: 24px 28px;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.4s forwards;
   }
 
   .breakdown-label {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
+    font-size: 9px;
     letter-spacing: 0.18em;
-    color: var(--muted);
+    color: var(--slate);
     text-transform: uppercase;
     margin-bottom: 18px;
   }
@@ -487,16 +518,18 @@
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .bk-name {
-    font-size: 14px;
-    color: #7a7870;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 300;
+    color: var(--slate-70);
   }
 
   .bk-bar-wrap {
-    width: 90px;
+    width: 80px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -504,26 +537,25 @@
 
   .bk-bar {
     flex: 1;
-    height: 4px;
-    background: var(--faint);
-    border-radius: 2px;
+    height: 1px;
+    background: var(--rule);
     overflow: hidden;
+    position: relative;
   }
 
   .bk-fill {
     height: 100%;
     width: 0%;
-    border-radius: 2px;
     transition: width 0.5s ease, background 0.3s;
-    background: var(--faint);
+    background: var(--rule);
   }
 
   .bk-score {
     font-family: 'DM Mono', monospace;
-    font-size: 13px;
+    font-size: 11px;
     min-width: 24px;
     text-align: right;
-    color: var(--muted);
+    color: var(--slate);
     transition: color 0.3s;
   }
 
@@ -533,78 +565,59 @@
     width: 100%;
     padding: 12px;
     background: transparent;
-    border: 1px solid var(--border2);
-    color: var(--muted);
+    border: 1px solid var(--rule);
+    color: var(--slate);
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
+    font-size: 9px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     cursor: pointer;
     transition: border-color 0.2s, color 0.2s;
-    margin-top: 6px;
+    margin-top: 2px;
   }
 
   .reset-btn:hover {
-    border-color: var(--gold-dim);
-    color: var(--gold);
+    border-color: var(--teal-border);
+    color: var(--teal);
   }
 
-  /* footer */
+  /* ── FOOTER ── */
   .site-footer {
-    border-top: 1px solid var(--border);
-    padding: 24px 40px;
+    border-top: 1px solid var(--rule);
+    padding: 24px 48px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 100%;
   }
 
-  .footer-sources {
+  .footer-note {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 10px;
+    color: var(--slate);
     letter-spacing: 0.06em;
     line-height: 1.9;
   }
 
-  .footer-brand {
+  .footer-reg {
     font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  /* animate in */
-  .domain {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: fadeUp 0.4s ease forwards;
-  }
-  .domain:nth-child(1) { animation-delay: 0.05s; }
-  .domain:nth-child(2) { animation-delay: 0.12s; }
-  .domain:nth-child(3) { animation-delay: 0.19s; }
-  .domain:nth-child(4) { animation-delay: 0.26s; }
-  .domain:nth-child(5) { animation-delay: 0.33s; }
-
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .score-card, .breakdown {
-    opacity: 0;
-    animation: fadeUp 0.5s ease 0.4s forwards;
+    font-size: 10px;
+    color: var(--slate);
+    letter-spacing: 0.08em;
+    text-align: right;
+    line-height: 1.9;
   }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <a class="brand" href="/">The AI Readyist</a>
-  <a class="back-link" href="/">← All tools</a>
-</header>
+<nav class="site-nav">
+  <a class="nav-logo" href="/">the<span>AI</span>Readyist</a>
+  <a class="nav-back" href="/">All Tools</a>
+</nav>
 
 <div class="hero">
-  <div class="hero-kicker">Interactive Self-Assessment · CIO &amp; CFO</div>
+  <div class="hero-kicker">Interactive Self-Assessment &middot; CIO &amp; CFO</div>
   <h1 class="hero-title">How ready are you for<br><em>EU AI Act</em> compliance?</h1>
   <p class="hero-desc">Rate your organisation across five governance domains. Each question has a 0–10 scale with anchor descriptions to calibrate your score. The weighted readiness score reflects where the Act places the highest governance burden.</p>
 </div>
@@ -633,8 +646,8 @@
           <span>Ready</span>
         </div>
       </div>
-      <div class="verdict-box">
-        <div class="verdict-status muted" id="verdict-status">Awaiting assessment</div>
+      <div class="verdict-box" id="verdict-box">
+        <div class="verdict-status" id="verdict-status">Awaiting assessment</div>
         <div class="verdict-text" id="verdict-text">Complete all ten questions to generate your compliance readiness verdict.</div>
       </div>
     </div>
@@ -644,16 +657,19 @@
       <div id="breakdown-rows"></div>
     </div>
 
-    <button class="reset-btn" onclick="resetAll()">↺ Reset assessment</button>
+    <button class="reset-btn" onclick="resetAll()">↺ &nbsp;Reset assessment</button>
   </aside>
 </div>
 
 <footer class="site-footer">
-  <div class="footer-sources">
-    Sources: Deloitte State of AI 2026 · McKinsey State of AI Trust 2026<br>
-    Gartner AI Agent Layer 2026 · EU AI Act, European Commission
+  <div class="footer-note">
+    Sources: Deloitte State of AI 2026 &middot; McKinsey State of AI Trust 2026<br>
+    Gartner AI Agent Layer 2026 &middot; EU AI Act, European Commission
   </div>
-  <div class="footer-brand">#AIReadyist</div>
+  <div class="footer-reg">
+    Regulation (EU) 2024/1689<br>
+    In force from Aug 2026
+  </div>
 </footer>
 
 <script>
@@ -669,21 +685,21 @@ const DOMAINS = [
         role: 'CIO',
         text: 'Can you produce a complete inventory of AI systems currently in production or active pilot, with a description of what decisions each system makes or influences?',
         anchors: [
-          { val: 0, text: 'No inventory exists. AI deployments are undocumented.' },
-          { val: 3, text: 'Partial list exists but is incomplete and not regularly maintained.' },
-          { val: 5, text: 'Inventory exists but lacks decision-level detail or is not current.' },
-          { val: 7, text: 'Inventory is maintained, covers most systems, includes decision descriptions.' },
+          { val: 0,  text: 'No inventory exists. AI deployments are undocumented.' },
+          { val: 3,  text: 'Partial list exists but is incomplete and not regularly maintained.' },
+          { val: 5,  text: 'Inventory exists but lacks decision-level detail or is not current.' },
+          { val: 7,  text: 'Inventory is maintained, covers most systems, includes decision descriptions.' },
           { val: 10, text: 'Complete, current, decision-level inventory. Reviewed quarterly. Owned by named role.' }
         ]
       },
       {
         role: 'CFO',
-        text: 'Do you know which deployments touch regulated data, critical infrastructure, customer rights, or employee-impacting workflows — the categories where the EU AI Act\'s governance burden rises materially?',
+        text: "Do you know which deployments touch regulated data, critical infrastructure, customer rights, or employee-impacting workflows — the categories where the EU AI Act's governance burden rises materially?",
         anchors: [
-          { val: 0, text: 'No risk classification has been applied to AI deployments.' },
-          { val: 3, text: 'Risk awareness exists informally but no formal classification process.' },
-          { val: 5, text: 'Some systems have been classified but not consistently across the estate.' },
-          { val: 7, text: 'Classification framework in place; most high-risk systems identified.' },
+          { val: 0,  text: 'No risk classification has been applied to AI deployments.' },
+          { val: 3,  text: 'Risk awareness exists informally but no formal classification process.' },
+          { val: 5,  text: 'Some systems have been classified but not consistently across the estate.' },
+          { val: 7,  text: 'Classification framework in place; most high-risk systems identified.' },
           { val: 10, text: 'Full risk classification complete. EU AI Act categories mapped. Audit committee briefed.' }
         ]
       }
@@ -700,10 +716,10 @@ const DOMAINS = [
         role: 'CIO',
         text: 'For each agent in production, is there a named business owner accountable for outcomes — not the vendor, not the platform team, but a business owner accountable for what the agent decides?',
         anchors: [
-          { val: 0, text: 'No named owners. Accountability defaults to the vendor or IT.' },
-          { val: 3, text: 'Ownership assumed but not formally assigned or documented.' },
-          { val: 5, text: 'Some agents have owners; coverage is inconsistent across deployments.' },
-          { val: 7, text: 'Named owners assigned for most production agents. RACI documented.' },
+          { val: 0,  text: 'No named owners. Accountability defaults to the vendor or IT.' },
+          { val: 3,  text: 'Ownership assumed but not formally assigned or documented.' },
+          { val: 5,  text: 'Some agents have owners; coverage is inconsistent across deployments.' },
+          { val: 7,  text: 'Named owners assigned for most production agents. RACI documented.' },
           { val: 10, text: 'Every agent has a named business owner. RACI board-approved. Decision rights defined.' }
         ]
       },
@@ -711,10 +727,10 @@ const DOMAINS = [
         role: 'CFO',
         text: 'Has your audit committee been briefed on which AI systems carry material operational or regulatory risk, and is that risk reflected in your controls framework?',
         anchors: [
-          { val: 0, text: 'Audit committee has not discussed AI risk. No controls framework.' },
-          { val: 3, text: 'AI mentioned in risk register but not as a material item. Controls absent.' },
-          { val: 5, text: 'Audit committee aware; formal risk classification or controls partial.' },
-          { val: 7, text: 'Audit committee briefed. AI risk reflected in controls framework at a high level.' },
+          { val: 0,  text: 'Audit committee has not discussed AI risk. No controls framework.' },
+          { val: 3,  text: 'AI mentioned in risk register but not as a material item. Controls absent.' },
+          { val: 5,  text: 'Audit committee aware; formal risk classification or controls partial.' },
+          { val: 7,  text: 'Audit committee briefed. AI risk reflected in controls framework at a high level.' },
           { val: 10, text: 'Regular audit committee reporting on AI risk. Controls framework current and tested.' }
         ]
       }
@@ -731,10 +747,10 @@ const DOMAINS = [
         role: 'CIO',
         text: 'Do your agentic systems have defined escalation thresholds — specific conditions under which the agent must pause and seek human approval before acting?',
         anchors: [
-          { val: 0, text: 'No escalation thresholds defined. Agents act without checkpoints.' },
-          { val: 3, text: 'Some informal escalation points exist but are not systematically designed.' },
-          { val: 5, text: 'Thresholds defined for some systems. Not consistently applied or tested.' },
-          { val: 7, text: 'Escalation thresholds documented and implemented for most production agents.' },
+          { val: 0,  text: 'No escalation thresholds defined. Agents act without checkpoints.' },
+          { val: 3,  text: 'Some informal escalation points exist but are not systematically designed.' },
+          { val: 5,  text: 'Thresholds defined for some systems. Not consistently applied or tested.' },
+          { val: 7,  text: 'Escalation thresholds documented and implemented for most production agents.' },
           { val: 10, text: 'All agents have tested escalation thresholds. Overrides logged and reviewed monthly.' }
         ]
       },
@@ -742,10 +758,10 @@ const DOMAINS = [
         role: 'CFO',
         text: 'Is oversight being measured and reported? If a regulator asked for evidence of human supervision over your highest-risk AI deployments, could you produce it within 48 hours?',
         anchors: [
-          { val: 0, text: 'No measurement. Could not produce oversight evidence under any timeline.' },
-          { val: 3, text: 'Anecdotal oversight exists but is not measured or documented.' },
-          { val: 5, text: 'Some oversight data exists. Evidence could be assembled but would take weeks.' },
-          { val: 7, text: 'Oversight is measured. Evidence could be produced but would require significant effort.' },
+          { val: 0,  text: 'No measurement. Could not produce oversight evidence under any timeline.' },
+          { val: 3,  text: 'Anecdotal oversight exists but is not measured or documented.' },
+          { val: 5,  text: 'Some oversight data exists. Evidence could be assembled but would take weeks.' },
+          { val: 7,  text: 'Oversight is measured. Evidence could be produced but would require significant effort.' },
           { val: 10, text: 'Oversight metrics tracked in real time. Regulatory evidence producible within 48 hours.' }
         ]
       }
@@ -762,10 +778,10 @@ const DOMAINS = [
         role: 'CIO',
         text: 'Do your agents produce structured, queryable logs of inputs, decisions, tool calls, and outputs — retained for a period consistent with your regulatory obligations?',
         anchors: [
-          { val: 0, text: 'No structured logging. Agent activity is not recorded in queryable form.' },
-          { val: 3, text: 'System logs exist but are not structured for AI decision reconstruction.' },
-          { val: 5, text: 'Some agents log decisions. Coverage is incomplete. Retention policy unclear.' },
-          { val: 7, text: 'Structured logging in place for most agents. Retention policy defined.' },
+          { val: 0,  text: 'No structured logging. Agent activity is not recorded in queryable form.' },
+          { val: 3,  text: 'System logs exist but are not structured for AI decision reconstruction.' },
+          { val: 5,  text: 'Some agents log decisions. Coverage is incomplete. Retention policy unclear.' },
+          { val: 7,  text: 'Structured logging in place for most agents. Retention policy defined.' },
           { val: 10, text: 'Full structured logging across all agents. Queryable. Retention aligned to regulatory obligation.' }
         ]
       },
@@ -773,10 +789,10 @@ const DOMAINS = [
         role: 'CFO',
         text: 'Has your internal audit function assessed AI agent logging as part of its current cycle, or is AI still treated as out of scope?',
         anchors: [
-          { val: 0, text: 'Internal audit has not considered AI agent logging. Treated as out of scope.' },
-          { val: 3, text: 'Audit function aware but has not yet formally assessed AI logging.' },
-          { val: 5, text: 'AI logging assessed informally. No formal audit finding or recommendation.' },
-          { val: 7, text: 'Formal audit assessment completed. Findings in remediation.' },
+          { val: 0,  text: 'Internal audit has not considered AI agent logging. Treated as out of scope.' },
+          { val: 3,  text: 'Audit function aware but has not yet formally assessed AI logging.' },
+          { val: 5,  text: 'AI logging assessed informally. No formal audit finding or recommendation.' },
+          { val: 7,  text: 'Formal audit assessment completed. Findings in remediation.' },
           { val: 10, text: 'AI agent logging is a standing internal audit item. Findings closed and verified.' }
         ]
       }
@@ -791,12 +807,12 @@ const DOMAINS = [
     questions: [
       {
         role: 'CIO',
-        text: 'Do your vendor contracts include audit rights, model change notification obligations, and documented evidence of how the system\'s decisions are generated?',
+        text: "Do your vendor contracts include audit rights, model change notification obligations, and documented evidence of how the system's decisions are generated?",
         anchors: [
-          { val: 0, text: 'Standard SaaS contracts. No AI-specific audit rights or change notifications.' },
-          { val: 3, text: 'Vendor provides some documentation but no contractual audit rights.' },
-          { val: 5, text: 'Audit rights exist in some contracts. Change notification inconsistent.' },
-          { val: 7, text: 'AI-specific clauses in most contracts. Audit rights and change notices included.' },
+          { val: 0,  text: 'Standard SaaS contracts. No AI-specific audit rights or change notifications.' },
+          { val: 3,  text: 'Vendor provides some documentation but no contractual audit rights.' },
+          { val: 5,  text: 'Audit rights exist in some contracts. Change notification inconsistent.' },
+          { val: 7,  text: 'AI-specific clauses in most contracts. Audit rights and change notices included.' },
           { val: 10, text: 'Full AI contractual governance: audit rights, change notification, explainability evidence.' }
         ]
       },
@@ -804,10 +820,10 @@ const DOMAINS = [
         role: 'CFO',
         text: 'Does your vendor due diligence process include AI-specific risk assessment — governance, explainability, and regulatory alignment — not just security and data protection?',
         anchors: [
-          { val: 0, text: 'Vendor due diligence is security-only. AI governance not assessed.' },
-          { val: 3, text: 'Some AI questions added informally to procurement. Not systematic.' },
-          { val: 5, text: 'AI governance assessed for some vendors. No standard framework applied.' },
-          { val: 7, text: 'AI-specific due diligence framework in use. Applied to most new vendors.' },
+          { val: 0,  text: 'Vendor due diligence is security-only. AI governance not assessed.' },
+          { val: 3,  text: 'Some AI questions added informally to procurement. Not systematic.' },
+          { val: 5,  text: 'AI governance assessed for some vendors. No standard framework applied.' },
+          { val: 7,  text: 'AI-specific due diligence framework in use. Applied to most new vendors.' },
           { val: 10, text: 'Rigorous AI due diligence: governance, explainability, EU AI Act alignment assessed at procurement.' }
         ]
       }
@@ -817,23 +833,19 @@ const DOMAINS = [
 
 const state = {};
 DOMAINS.forEach(d => {
-  d.questions.forEach((q, qi) => {
-    state[`${d.id}_q${qi}`] = null;
-  });
+  d.questions.forEach((q, qi) => { state[`${d.id}_q${qi}`] = null; });
 });
 
 function getColor(val) {
   if (val === null) return '';
-  if (val >= 7) return 'green';
+  if (val >= 7) return 'teal';
   if (val >= 4) return 'amber';
   return 'red';
 }
 
 function getAnchorText(anchors, val) {
   let best = anchors[0];
-  for (const a of anchors) {
-    if (val >= a.val) best = a;
-  }
+  for (const a of anchors) { if (val >= a.val) best = a; }
   return best.text;
 }
 
@@ -848,24 +860,26 @@ function render() {
     const domainColor = getColor(domainScore);
 
     const card = document.createElement('div');
-    card.className = 'domain' + (allScored ? ` scored scored-${domainColor === 'green' ? 'well' : domainColor === 'amber' ? 'mid' : 'low'}` : '');
+    card.className = 'domain' + (allScored ? ' scored' : '');
 
     let questionsHTML = domain.questions.map((q, qi) => {
       const key = `${domain.id}_q${qi}`;
       const val = state[key];
       const color = getColor(val);
-      const anchor = val !== null ? getAnchorText(q.anchors, val) : q.anchors[0].text;
+      const anchor = val !== null ? getAnchorText(q.anchors, val) : null;
       const displayVal = val !== null ? val : 0;
+      const thumbClass = color === 'amber' ? 'amber-thumb' : color === 'red' ? 'red-thumb' : '';
 
       return `
         <div class="q-block">
           <div class="q-role">${q.role}</div>
           <div class="q-content">
             <div class="q-text">${q.text}</div>
-            <div class="q-hint" id="hint-${key}">${val !== null ? anchor : 'Move the slider to rate your organisation.'}</div>
+            <div class="q-hint ${val !== null ? 'active' : ''}" id="hint-${key}">${val !== null ? anchor : 'Move the slider to rate your organisation.'}</div>
             <div class="slider-row">
               <div class="slider-wrap">
                 <input type="range" min="0" max="10" step="1" value="${displayVal}"
+                  class="${thumbClass}"
                   oninput="updateScore('${key}', this.value, '${domain.id}')"
                   onchange="updateScore('${key}', this.value, '${domain.id}')"
                   aria-label="${q.role} question for ${domain.title}">
@@ -882,7 +896,7 @@ function render() {
       : `<div class="d-score-num" id="dscore-${domain.id}">—</div>`;
 
     const miniPct = domainScore !== null ? (domainScore / 10 * 100) : 0;
-    const miniColor = domainColor === 'green' ? 'var(--green)' : domainColor === 'amber' ? 'var(--amber)' : domainColor === 'red' ? 'var(--red)' : 'var(--faint)';
+    const miniColor = domainColor === 'teal' ? 'var(--teal)' : domainColor === 'amber' ? 'var(--amber)' : domainColor === 'red' ? 'var(--red)' : 'var(--rule)';
 
     card.innerHTML = `
       <div class="domain-header">
@@ -897,7 +911,7 @@ function render() {
           <div class="d-weight">Weight: ${Math.round(domain.weight * 100)}%</div>
         </div>
       </div>
-      <div class="d-mini-bar"><div class="d-mini-fill" style="width:${miniPct}%;background:${miniColor}"></div></div>
+      <div class="d-progress"><div class="d-progress-fill" style="width:${miniPct}%;background:${miniColor}"></div></div>
       <div class="questions">${questionsHTML}</div>`;
 
     container.appendChild(card);
@@ -912,10 +926,13 @@ function updateScore(key, val, domainId) {
   state[key] = numVal;
 
   const color = getColor(numVal);
+
   const valEl = document.getElementById(`val-${key}`);
-  if (valEl) {
-    valEl.textContent = numVal;
-    valEl.className = `slider-val ${color}`;
+  if (valEl) { valEl.textContent = numVal; valEl.className = `slider-val ${color}`; }
+
+  const input = document.querySelector(`input[oninput*="${key}"]`);
+  if (input) {
+    input.className = color === 'amber' ? 'amber-thumb' : color === 'red' ? 'red-thumb' : '';
   }
 
   const domain = DOMAINS.find(d => d.id === domainId);
@@ -923,12 +940,13 @@ function updateScore(key, val, domainId) {
     const qi = parseInt(key.split('_q')[1]);
     const anchor = getAnchorText(domain.questions[qi].anchors, numVal);
     const hintEl = document.getElementById(`hint-${key}`);
-    if (hintEl) hintEl.textContent = anchor;
+    if (hintEl) { hintEl.textContent = anchor; hintEl.classList.add('active'); }
   }
 
   updateDomainScore(domainId);
   updateSidebar();
   renderBreakdown();
+  saveToLocalStorage();
 }
 
 function updateDomainScore(domainId) {
@@ -939,10 +957,7 @@ function updateDomainScore(domainId) {
   const color = getColor(domainScore);
 
   const el = document.getElementById(`dscore-${domainId}`);
-  if (el) {
-    el.textContent = domainScore !== null ? domainScore.toFixed(1) : '—';
-    el.className = `d-score-num ${color}`;
-  }
+  if (el) { el.textContent = domainScore !== null ? domainScore.toFixed(1) : '—'; el.className = `d-score-num ${color}`; }
 }
 
 function calcOverall() {
@@ -968,11 +983,12 @@ function calcOverall() {
 function updateSidebar() {
   const { score, answeredCount, totalQ } = calcOverall();
 
-  const bigEl = document.getElementById('sc-big');
-  const pctEl = document.getElementById('sc-pct');
-  const heatFill = document.getElementById('heat-fill');
-  const heatLabel = document.getElementById('heat-pct-label');
-  const verdictStatus = document.getElementById('verdict-status');
+  const bigEl       = document.getElementById('sc-big');
+  const pctEl       = document.getElementById('sc-pct');
+  const heatFill    = document.getElementById('heat-fill');
+  const heatLabel   = document.getElementById('heat-pct-label');
+  const verdictBox  = document.getElementById('verdict-box');
+  const verdictStat = document.getElementById('verdict-status');
   const verdictText = document.getElementById('verdict-text');
 
   if (score === null) {
@@ -980,10 +996,11 @@ function updateSidebar() {
     bigEl.className = 'sc-big';
     pctEl.textContent = `${answeredCount} of ${totalQ} questions rated`;
     heatFill.style.width = '0%';
-    heatFill.style.background = 'var(--faint)';
+    heatFill.style.background = 'var(--rule)';
     heatLabel.textContent = '—';
-    verdictStatus.className = 'verdict-status muted';
-    verdictStatus.textContent = 'Awaiting assessment';
+    verdictBox.className = 'verdict-box';
+    verdictStat.className = 'verdict-status';
+    verdictStat.textContent = 'Awaiting assessment';
     verdictText.textContent = 'Complete all ten questions to generate your compliance readiness verdict.';
     return;
   }
@@ -993,30 +1010,32 @@ function updateSidebar() {
 
   bigEl.textContent = score.toFixed(1);
   bigEl.className = `sc-big ${color}`;
-  pctEl.textContent = `${pct}% readiness — ${answeredCount}/${totalQ} questions rated`;
+  pctEl.textContent = `${pct}% readiness — ${answeredCount}/${totalQ} rated`;
 
   heatFill.style.width = `${pct}%`;
-  heatFill.style.background = color === 'green' ? 'var(--green)' : color === 'amber' ? 'var(--amber)' : 'var(--red)';
+  heatFill.style.background = color === 'teal' ? 'var(--teal)' : color === 'amber' ? 'var(--amber)' : 'var(--red)';
   heatLabel.textContent = `${pct}%`;
 
+  verdictBox.className = `verdict-box ${color}`;
+
   const verdicts = {
-    green: {
-      status: '✓ Audit-ready foundations',
+    teal: {
+      status: 'Audit-ready foundations',
       text: 'Strong governance evidence in place. Proceed with agentic deployments under continued monitoring. Ensure documentation stays current as models and systems change.'
     },
     amber: {
-      status: '⚠ Governance gaps identified',
+      status: 'Governance gaps identified',
       text: 'Meaningful progress made but material gaps remain. Build a structured remediation programme before scaling further. Deloitte finds only 21% of organisations reach maturity — you are ahead of most, but not there yet.'
     },
     red: {
-      status: '✕ Material compliance exposure',
+      status: 'Material compliance exposure',
       text: 'Significant governance gaps across foundational domains. Pause new agentic deployments until inventory, accountability, and oversight controls are established. Gartner predicts 40%+ of projects cancelled by 2027 — inadequate risk controls is the primary reason.'
     }
   };
 
   const v = verdicts[color];
-  verdictStatus.className = `verdict-status ${color}`;
-  verdictStatus.textContent = v.status;
+  verdictStat.className = `verdict-status ${color}`;
+  verdictStat.textContent = v.status;
   verdictText.textContent = v.text;
 }
 
@@ -1029,7 +1048,7 @@ function renderBreakdown() {
     const allScored = scores.length === domain.questions.length;
     const avg = allScored ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
     const color = getColor(avg);
-    const fillColor = color === 'green' ? 'var(--green)' : color === 'amber' ? 'var(--amber)' : color === 'red' ? 'var(--red)' : 'var(--faint)';
+    const fillColor = color === 'teal' ? 'var(--teal)' : color === 'amber' ? 'var(--amber)' : color === 'red' ? 'var(--red)' : 'var(--rule)';
     const pct = avg !== null ? (avg / 10 * 100) : 0;
 
     const row = document.createElement('div');
@@ -1044,8 +1063,18 @@ function renderBreakdown() {
   });
 }
 
+function saveToLocalStorage() {
+  const { score } = calcOverall();
+  if (score !== null) {
+    try {
+      localStorage.setItem('aiReadyist.euai.score', Math.round(score * 10));
+    } catch(e) {}
+  }
+}
+
 function resetAll() {
   Object.keys(state).forEach(k => state[k] = null);
+  try { localStorage.removeItem('aiReadyist.euai.score'); } catch(e) {}
   render();
 }
 
