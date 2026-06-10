@@ -50,13 +50,13 @@ function getScheduleMode() {
 }
 
 /**
- * Read all selected values from a <select multiple> element.
- * @param {string} id - element ID
+ * Read all checked values from a checkbox group container.
+ * @param {string} id - container element ID
  * @returns {string[]}
  */
 function getMultiSelect(id) {
-  const el = document.getElementById(id);
-  return Array.from(el.selectedOptions).map(opt => opt.value);
+  return Array.from(document.querySelectorAll('#' + CSS.escape(id) + ' input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
 }
 
 /**
@@ -312,8 +312,8 @@ function resetForm() {
  * @param {string} id
  */
 function clearMultiSelect(id) {
-  const el = document.getElementById(id);
-  Array.from(el.options).forEach(opt => { opt.selected = false; });
+  document.querySelectorAll('#' + CSS.escape(id) + ' input[type="checkbox"]')
+    .forEach(cb => { cb.checked = false; });
 }
 
 // =====================================================
@@ -402,11 +402,8 @@ function setChecked(id, val) {
 
 /** Helper: set selected options of a multi-select by value array */
 function setMultiSelect(id, values) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  Array.from(el.options).forEach(opt => {
-    opt.selected = values.includes(opt.value);
-  });
+  document.querySelectorAll('#' + CSS.escape(id) + ' input[type="checkbox"]')
+    .forEach(cb => { cb.checked = values.includes(cb.value); });
 }
 
 // =====================================================
