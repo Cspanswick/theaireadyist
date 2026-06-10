@@ -1,0 +1,47 @@
+name: Research News Agent
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'    # every Monday at 07:00 UTC
+  workflow_dispatch:
+    inputs:
+      config:
+        description: 'Config file to run (in agent/configs/)'
+        required: false
+        default: 'default.json'
+
+permissions:
+  contents: write
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Anthropic SDK
+        run: npm install @anthropic-ai/sdk
+
+      - name: Run research agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CONFIG_FILE: ${{ github.event.inputs.config || 'default.json' }}
+        run: node agent/run-agent.js
+
+      - name: Commit draft brief
+        run: |
+          git config user.name "research-agent-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add agent/output/
+          if git diff --cached --quiet; then
+            echo "No new brief to commit"
+          else
+            git commit -m "Add draft research brief (automated run)"
+            git push
+          fi
