@@ -7,96 +7,90 @@
   <title>Admin — The AI Readyist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #ffffff; --bg-surface: #f9f9f7; --bg-raised: #f4f4f1;
-      --border: #e2e2dc; --border-dark: #c8c8c0;
-      --text: #111111; --text-mid: #555555; --text-muted: #999990;
-      --green: #1a7a4a; --green-bg: rgba(26,122,74,0.07);
-      --amber: #b07a00; --amber-bg: rgba(176,122,0,0.07);
-      --font-body: 'Inter', -apple-system, sans-serif;
-      --font-mono: 'IBM Plex Mono', monospace;
+      --bg: #0D1B2A; --bg-surface: #0F2233; --bg-raised: #122739;
+      --teal: #00C9A7; --amber: #E8A838;
+      --text: #F0F4F8; --text-mid: rgba(240,244,248,0.65); --text-muted: rgba(240,244,248,0.40);
+      --border-card: rgba(0,201,167,0.20); --border-active: rgba(0,201,167,0.60);
+      --border-subtle: rgba(255,255,255,0.08); --border-warning: rgba(232,168,56,0.35);
+      --font-head: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+      --font-mono: 'DM Mono', monospace;
     }
     html, body { background: var(--bg); font-family: var(--font-body); -webkit-font-smoothing: antialiased; color: var(--text); }
 
-    /* NAV */
-    .nav { border-bottom: 2px solid var(--text); padding: 0 40px; height: 56px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 10; }
-    .nav-brand { font-family: Georgia, serif; font-size: 16px; font-style: italic; color: var(--text); text-decoration: none; }
-    .nav-right  { display: flex; align-items: center; gap: 24px; }
-    .nav-badge  { font-family: var(--font-mono); font-size: 10px; color: var(--green); background: var(--green-bg); border: 1px solid rgba(26,122,74,0.2); padding: 3px 8px; letter-spacing: 0.1em; text-transform: uppercase; }
-    .nav-signout { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); background: none; border: 1px solid var(--border-dark); padding: 6px 12px; cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.15s, border-color 0.15s; }
-    .nav-signout:hover { color: var(--text); border-color: var(--text); }
+    .nav { border-bottom: 1px solid var(--border-card); padding: 0 40px; height: 56px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(8px); }
+    .nav-brand { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-brand .accent { color: var(--teal); }
+    .nav-right  { display: flex; align-items: center; gap: 20px; }
+    .nav-badge  { font-family: var(--font-mono); font-size: 10px; color: var(--teal); border: 1px solid var(--border-card); padding: 3px 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .nav-signout { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); background: none; border: 1px solid var(--border-subtle); padding: 6px 12px; cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.15s, border-color 0.15s; }
+    .nav-signout:hover { color: var(--text); border-color: var(--border-active); }
 
-    /* HEADER */
-    .header { padding: 48px 40px 40px; border-bottom: 1px solid var(--border); }
-    .header-eyebrow { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
-    .header-title { font-family: Georgia, serif; font-size: 36px; font-weight: 400; font-style: italic; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px; }
-    .header-sub { font-size: 14px; color: var(--text-mid); font-weight: 300; max-width: 540px; line-height: 1.6; }
+    .header { padding: 48px 40px 40px; border-bottom: 1px solid var(--border-subtle); }
+    .header-eyebrow { font-family: var(--font-mono); font-size: 10px; color: var(--teal); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; }
+    .header-title { font-family: var(--font-head); font-size: 40px; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 14px; }
+    .header-title .accent { color: var(--teal); font-style: italic; }
+    .header-sub { font-size: 14px; color: var(--text-mid); max-width: 560px; line-height: 1.6; }
+    .info-row { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 20px; }
+    .info-item { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+    .info-item strong { color: var(--teal); font-weight: 500; }
 
-    /* MAIN */
-    .main { max-width: 960px; padding: 48px 40px; }
-
-    /* SECTION */
+    .main { max-width: 1100px; padding: 48px 40px; }
     .section { margin-bottom: 48px; }
-    .section-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .section-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); }
 
-    /* TOOL CARDS */
-    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-    .tool-card { background: var(--bg); padding: 24px; display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: inherit; transition: background 0.15s; position: relative; }
-    .tool-card:hover { background: var(--bg-surface); }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+    .tool-card { background: var(--bg-surface); border: 1px solid var(--border-card); padding: 24px; display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; position: relative; }
+    .tool-card:hover { border-color: var(--border-active); background: var(--bg-raised); }
+    .tool-card.disabled { opacity: 0.45; cursor: default; }
+    .tool-card.disabled:hover { border-color: var(--border-card); background: var(--bg-surface); }
     .tool-card-tag { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-    .tool-card-title { font-family: Georgia, serif; font-size: 17px; font-weight: 400; font-style: italic; color: var(--text); line-height: 1.3; }
-    .tool-card-desc { font-size: 13px; color: var(--text-mid); font-weight: 300; line-height: 1.55; flex: 1; }
-    .tool-card-cta { font-family: var(--font-mono); font-size: 11px; color: var(--text); letter-spacing: 0.06em; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
-    .tool-card-cta::after { content: '→'; }
-    .tool-card-status { position: absolute; top: 20px; right: 20px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; }
-    .status-live   { color: var(--green); background: var(--green-bg); border: 1px solid rgba(26,122,74,0.2); }
-    .status-soon   { color: var(--amber); background: var(--amber-bg); border: 1px solid rgba(176,122,0,0.2); }
+    .tool-card-title { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.25; }
+    .tool-card-desc { font-size: 13px; color: var(--text-mid); line-height: 1.55; flex: 1; }
+    .tool-card-cta { font-family: var(--font-mono); font-size: 11px; color: var(--teal); letter-spacing: 0.06em; margin-top: 4px; text-transform: uppercase; }
+    .tool-card-cta::after { content: ' →'; }
+    .tool-card-cta.muted { color: var(--text-muted); }
+    .tool-card-status { position: absolute; top: 22px; right: 22px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border: 1px solid; }
+    .status-live { color: var(--teal); border-color: var(--border-card); }
+    .status-soon { color: var(--amber); border-color: var(--border-warning); }
 
-    /* QUICK LINKS */
-    .link-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
-    .link-item  { background: var(--bg); display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; text-decoration: none; color: var(--text-mid); font-size: 13px; transition: background 0.15s; }
+    .link-list { border: 1px solid var(--border-subtle); }
+    .link-item  { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; text-decoration: none; color: var(--text-mid); font-size: 13px; border-bottom: 1px solid var(--border-subtle); transition: background 0.15s, color 0.15s; }
+    .link-item:last-child { border-bottom: none; }
     .link-item:hover { background: var(--bg-surface); color: var(--text); }
-    .link-item-label { font-weight: 400; }
     .link-item-url   { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
 
-    /* INFO ROW */
-    .info-row { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
-    .info-item { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
-    .info-item strong { color: var(--text-mid); font-weight: 500; }
-
-    /* FOOTER */
-    .footer { border-top: 1px solid var(--border); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
-    .footer-note  { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
-    .footer-link  { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-decoration: none; border-bottom: 1px solid var(--border); padding-bottom: 1px; }
-    .footer-link:hover { color: var(--text); border-color: var(--text); }
+    .footer { border-top: 1px solid var(--border-subtle); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-note { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
+    .footer-link { font-family: var(--font-mono); font-size: 10px; color: var(--teal); text-decoration: none; }
+    .footer-link:hover { color: var(--text); }
 
     @media (max-width: 640px) {
       .nav, .header, .main, .footer { padding-left: 20px; padding-right: 20px; }
       .header { padding-top: 32px; padding-bottom: 28px; }
-      .header-title { font-size: 26px; }
-      .info-row { flex-direction: column; gap: 8px; }
+      .header-title { font-size: 28px; }
+      .info-row { flex-direction: column; gap: 10px; }
       .footer { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav class="nav">
-    <a href="https://theaireadyist.com" class="nav-brand">theAIReadyist</a>
+    <a href="https://theaireadyist.com" class="nav-brand">the<span class="accent">AI</span>Readyist</a>
     <div class="nav-right">
       <span class="nav-badge">Admin</span>
       <button class="nav-signout" onclick="adminSignOut()">Sign out</button>
     </div>
   </nav>
 
-  <!-- HEADER -->
   <header class="header">
-    <div class="header-eyebrow">Admin control centre</div>
-    <h1 class="header-title">Tools & agent configuration</h1>
+    <div class="header-eyebrow">Admin Control Centre</div>
+    <h1 class="header-title">Tools &amp; <span class="accent">agent configuration</span></h1>
     <p class="header-sub">Internal tools for managing content, configuring research agents, and governing the AI Readyist platform. Not visible to public users.</p>
     <div class="info-row">
       <span class="info-item"><strong>Session</strong> Active — closes on browser exit</span>
@@ -105,15 +99,13 @@
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="main">
 
-    <!-- AGENT TOOLS -->
     <div class="section">
-      <div class="section-label">Agent tools</div>
+      <div class="section-label">Agent Tools</div>
       <div class="tool-grid">
 
-        <a href="./research-agent/index.html" class="tool-card">
+        <a href="/admin/research-agent/index.html" class="tool-card">
           <span class="tool-card-status status-live">Live</span>
           <div class="tool-card-tag">Research · Scheduling</div>
           <div class="tool-card-title">Research News Agent Control Centre</div>
@@ -121,72 +113,42 @@
           <div class="tool-card-cta">Open tool</div>
         </a>
 
-        <div class="tool-card" style="opacity:0.5; cursor: default;">
+        <div class="tool-card disabled">
           <span class="tool-card-status status-soon">Soon</span>
           <div class="tool-card-tag">Content · CMS</div>
           <div class="tool-card-title">Content Publishing Agent</div>
           <div class="tool-card-desc">Review agent-drafted articles, approve for publication, and push to CMS. Human approval required before any content goes live.</div>
-          <div class="tool-card-cta" style="color: var(--text-muted);">Coming soon</div>
+          <div class="tool-card-cta muted">Coming soon</div>
         </div>
 
-        <div class="tool-card" style="opacity:0.5; cursor: default;">
+        <div class="tool-card disabled">
           <span class="tool-card-status status-soon">Soon</span>
           <div class="tool-card-tag">Analytics · Intelligence</div>
           <div class="tool-card-title">Site Intelligence Dashboard</div>
           <div class="tool-card-desc">Traffic, engagement, and conversion data across all tools and editorial content. Connects to Vercel Analytics and Substack metrics.</div>
-          <div class="tool-card-cta" style="color: var(--text-muted);">Coming soon</div>
+          <div class="tool-card-cta muted">Coming soon</div>
         </div>
 
       </div>
     </div>
 
-    <!-- SITE PAGES -->
     <div class="section">
-      <div class="section-label">Live site pages</div>
+      <div class="section-label">Live Site Pages</div>
       <div class="link-list">
-        <a href="https://theaireadyist.com" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">Homepage</span>
-          <span class="link-item-url">theaireadyist.com/</span>
-        </a>
-        <a href="https://theaireadyist.com/eu-ai-act" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">EU AI Act Readiness Assessment</span>
-          <span class="link-item-url">/eu-ai-act</span>
-        </a>
-        <a href="https://theaireadyist.com/dora" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">DORA AI Exposure Assessment</span>
-          <span class="link-item-url">/dora</span>
-        </a>
-        <a href="https://theaireadyist.com/nis2" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">NIS2 AI Exposure Lens</span>
-          <span class="link-item-url">/nis2</span>
-        </a>
-        <a href="https://theaireadyist.com/radar" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">AI Governance Exposure Radar</span>
-          <span class="link-item-url">/radar</span>
-        </a>
-        <a href="https://theaireadyist.com/eu-ai-act-enforcement" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">EU AI Act Enforcement Article</span>
-          <span class="link-item-url">/eu-ai-act-enforcement</span>
-        </a>
+        <a href="https://theaireadyist.com" target="_blank" rel="noopener" class="link-item"><span>Homepage</span><span class="link-item-url">theaireadyist.com/</span></a>
+        <a href="https://theaireadyist.com/eu-ai-act" target="_blank" rel="noopener" class="link-item"><span>EU AI Act Readiness Assessment</span><span class="link-item-url">/eu-ai-act</span></a>
+        <a href="https://theaireadyist.com/dora" target="_blank" rel="noopener" class="link-item"><span>DORA AI Exposure Assessment</span><span class="link-item-url">/dora</span></a>
+        <a href="https://theaireadyist.com/nis2" target="_blank" rel="noopener" class="link-item"><span>NIS2 AI Exposure Lens</span><span class="link-item-url">/nis2</span></a>
+        <a href="https://theaireadyist.com/radar" target="_blank" rel="noopener" class="link-item"><span>AI Governance Exposure Radar</span><span class="link-item-url">/radar</span></a>
+        <a href="https://theaireadyist.com/eu-ai-act-enforcement" target="_blank" rel="noopener" class="link-item"><span>EU AI Act Enforcement Article</span><span class="link-item-url">/eu-ai-act-enforcement</span></a>
       </div>
     </div>
 
-    <!-- EXTERNAL LINKS -->
     <div class="section">
-      <div class="section-label">Platform links</div>
+      <div class="section-label">Platform Links</div>
       <div class="link-list">
-        <a href="https://github.com/Cspanswick/theaireadyist" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">GitHub repository</span>
-          <span class="link-item-url">Cspanswick/theaireadyist</span>
-        </a>
-        <a href="https://vercel.com/spanswickclive-6538s-projects/ai-readyist" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">Vercel project dashboard</span>
-          <span class="link-item-url">vercel.com · ai-readyist</span>
-        </a>
-        <a href="https://cspanswick.substack.com" target="_blank" rel="noopener" class="link-item">
-          <span class="link-item-label">Substack publication</span>
-          <span class="link-item-url">cspanswick.substack.com</span>
-        </a>
+        <a href="https://github.com/Cspanswick/theaireadyist" target="_blank" rel="noopener" class="link-item"><span>GitHub repository</span><span class="link-item-url">Cspanswick/theaireadyist</span></a>
+        <a href="https://cspanswick.substack.com" target="_blank" rel="noopener" class="link-item"><span>Substack publication</span><span class="link-item-url">cspanswick.substack.com</span></a>
       </div>
     </div>
 
@@ -198,10 +160,7 @@
   </footer>
 
   <script src="auth.js"></script>
-  <script>
-    // Guard: redirect to login if not authenticated
-    guardAdmin();
-  </script>
+  <script>guardAdmin();</script>
 
 </body>
 </html>
