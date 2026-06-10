@@ -104,6 +104,7 @@ function buildPayload() {
   ];
 
   const payload = {
+    briefTitle: document.getElementById('brief-title').value.trim(),
     agentName: 'Market News Research Agent',
     businessOutcome: 'Produce scheduled, evidence-led market news and research briefs on a selected subject.',
     topic:       document.getElementById('topic').value.trim(),
@@ -266,54 +267,21 @@ function syntaxHighlight(json) {
 }
 
 // =====================================================
-// SAVE / LOAD / RESET
+// RESET
 // =====================================================
 
-const STORAGE_KEY = 'researchAgentConfig_v1';
-
 /**
- * Serialize current form state to localStorage.
- */
-function saveConfig() {
-  const config = readFormState();
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    showMessage('Configuration saved.', 'success');
-  } catch (e) {
-    showMessage('Save failed — localStorage may be unavailable.', 'error');
-  }
-}
-
-/**
- * Restore form state from localStorage.
- */
-function loadConfig() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      showMessage('No saved configuration found.', 'info');
-      return;
-    }
-    const config = JSON.parse(raw);
-    applyFormState(config);
-    showMessage('Configuration loaded.', 'success');
-  } catch (e) {
-    showMessage('Load failed — saved data may be corrupted.', 'error');
-  }
-}
-
-/**
- * Clear localStorage and reset all form fields to defaults.
+ * Reset all form fields to defaults.
  */
 function resetForm() {
-  if (!confirm('Reset all fields to defaults and clear saved configuration?')) return;
+  if (!confirm('Reset all fields to defaults?')) return;
 
-  localStorage.removeItem(STORAGE_KEY);
   window._currentPayload = null;
   if (window._editingId) cancelEdit(false);
 
   // Reset fields
   setScheduleMode('frequency');
+  document.getElementById('brief-title').value = '';
   document.getElementById('freq-amount').value  = '1';
   document.getElementById('freq-unit').value    = 'week';
   document.getElementById('run-date').value     = '';
@@ -369,6 +337,7 @@ function clearMultiSelect(id) {
  */
 function readFormState() {
   return {
+    briefTitle:        document.getElementById('brief-title').value,
     scheduleMode:      getScheduleMode(),
     freqAmount:        document.getElementById('freq-amount').value,
     freqUnit:          document.getElementById('freq-unit').value,
@@ -403,6 +372,7 @@ function readFormState() {
 function applyFormState(config) {
   setScheduleMode(config.scheduleMode || 'frequency');
 
+  setValue('brief-title',      config.briefTitle     || '');
   setValue('freq-amount',      config.freqAmount     || '1');
   setValue('freq-unit',        config.freqUnit       || 'week');
   setValue('run-date',         config.runDate        || '');
@@ -568,7 +538,8 @@ function renderRegister() {
 
   list.innerHTML = entries.map(e => {
     const p     = e.payload || {};
-    const topic = p.topic ? escapeHTML(p.topic) : 'Untitled brief';
+    const title = p.briefTitle ? escapeHTML(p.briefTitle)
+                : (p.topic ? escapeHTML(p.topic) : 'Untitled brief');
     const meta  = [(p.marketFocus || []).join(', '), (p.region || []).join(', ')]
       .filter(Boolean).join(' · ') || 'No sector or region selected';
     const updated = String(e.updatedAt || '').slice(0, 16).replace('T', ' ');
@@ -581,7 +552,7 @@ function renderRegister() {
         <span class="register-status">${escapeHTML(e.status || 'scheduled')}</span>
       </div>
       <div class="register-cell-main">
-        <span class="register-topic">${topic}</span>
+        <span class="register-topic">${title}</span>
         <span class="register-meta">${escapeHTML(meta)}</span>
       </div>
       <div class="register-cell-schedule">${escapeHTML(scheduleSummary(p))}</div>
