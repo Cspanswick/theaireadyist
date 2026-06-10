@@ -1,19 +1,21 @@
 {
+  "briefId": "BRIEF-002",
+  "briefTitle": "AI Governance",
   "agentName": "Market News Research Agent",
   "businessOutcome": "Produce scheduled, evidence-led market news and research briefs on a selected subject.",
-  "topic": "Agentic AI adoption in UK financial services",
-  "marketFocus": ["BFSI"],
-  "region": ["UK&Ireland"],
+  "topic": "AI governance — regulation, enterprise accountability and responsible AI deployment",
+  "marketFocus": ["BFSI", "Energy", "Retail", "CMT", "Technology", "FMCG", "Pharma"],
+  "region": ["UK&Ireland", "Europe", "Africa"],
   "schedule": {
     "mode": "frequency",
-    "frequencyAmount": 1,
-    "frequencyUnit": "week",
+    "frequencyAmount": 4,
+    "frequencyUnit": "day",
     "specificDate": "",
-    "preferredRunTime": "07:00"
+    "preferredRunTime": "08:00"
   },
   "output": {
-    "documentLengthWords": 1000,
-    "outputFormat": "executive-brief",
+    "documentLengthWords": 250,
+    "outputFormat": "website-news-draft",
     "tone": "Executive"
   },
   "sourcePreferences": {
@@ -21,7 +23,9 @@
       "Official announcements",
       "Regulators and public bodies",
       "Analyst firms and consultancies",
-      "Trade press and specialist media"
+      "Trade press and specialist media",
+      "Vendor blogs and reports",
+      "Academic or research papers"
     ],
     "excludedSources": ""
   },
