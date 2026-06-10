@@ -661,6 +661,57 @@ function exportRegister() {
 }
 
 // =====================================================
+// RUN AGENT NOW
+// =====================================================
+
+/**
+ * Get the admin key for the private API, prompting once and caching locally.
+ */
+function getAdminKey(forcePrompt) {
+  let key = localStorage.getItem('adminApiKey');
+  if (!key || forcePrompt) {
+    key = window.prompt('Enter the admin key:');
+    if (key) localStorage.setItem('adminApiKey', key.trim());
+  }
+  return key ? key.trim() : null;
+}
+
+/**
+ * Trigger an immediate agent run via the private API.
+ */
+async function runAgentNow() {
+  if (!confirm('Run the research agent now? This makes one Claude API call and stages a draft for your approval.')) return;
+
+  const key = getAdminKey();
+  if (!key) { showMessage('Run cancelled — no admin key provided.', 'info'); return; }
+
+  const btn = document.getElementById('btn-run-now');
+  btn.disabled = true;
+  showMessage('Starting agent run…', 'info');
+
+  try {
+    const res = await fetch('/api/run-agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+      body: JSON.stringify({ config: 'default.json' })
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok) {
+      showMessage('Agent run started — the draft will appear in Approvals in about 3 minutes.', 'success');
+    } else if (res.status === 401) {
+      localStorage.removeItem('adminApiKey');
+      showMessage('Admin key rejected — click Run Agent Now again to re-enter it.', 'error');
+    } else {
+      showMessage('Run failed: ' + (data.error || ('HTTP ' + res.status)), 'error');
+    }
+  } catch (e) {
+    showMessage('Run failed — could not reach the API.', 'error');
+  }
+  btn.disabled = false;
+}
+
+// =====================================================
 // UI HELPERS
 // =====================================================
 

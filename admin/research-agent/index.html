@@ -54,10 +54,14 @@
 
         <div class="field-group">
           <label class="field-label">Schedule Mode</label>
-          <div class="toggle-group" role="radiogroup" aria-label="Schedule mode">
-            <button type="button" class="toggle-btn active" id="btn-frequency" aria-pressed="true" onclick="setScheduleMode('frequency')">Frequency</button>
-            <button type="button" class="toggle-btn" id="btn-specific" aria-pressed="false" onclick="setScheduleMode('specific')">Specific Date</button>
+          <div class="schedule-mode-row">
+            <div class="toggle-group" role="radiogroup" aria-label="Schedule mode">
+              <button type="button" class="toggle-btn active" id="btn-frequency" aria-pressed="true" onclick="setScheduleMode('frequency')">Frequency</button>
+              <button type="button" class="toggle-btn" id="btn-specific" aria-pressed="false" onclick="setScheduleMode('specific')">Specific Date</button>
+            </div>
+            <button type="button" class="btn-run-now" id="btn-run-now" onclick="runAgentNow()">▶ Run Agent Now</button>
           </div>
+          <p class="field-hint">Run Agent Now triggers an immediate run with the current repo config — the draft lands in <a class="hint-link" href="/admin/approvals">Approvals</a></p>
         </div>
 
         <!-- Frequency Options -->
