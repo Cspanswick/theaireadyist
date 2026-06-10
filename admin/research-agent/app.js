@@ -171,43 +171,49 @@ function buildPayload() {
  * schedule register (new entry, or update when editing), and render it
  * in the preview panel.
  */
-function generateBrief() {
+async function generateBrief() {
   const payload = buildPayload();
-  const entries = loadRegister();
   const now     = new Date().toISOString();
   let entryId;
 
-  if (window._editingId) {
-    // Update the entry being edited
-    const entry = entries.find(e => e.id === window._editingId);
-    if (entry) {
-      entryId          = entry.id;
-      payload.briefId  = entryId;
-      entry.payload    = payload;
-      entry.formState  = readFormState();
-      entry.updatedAt  = now;
-      saveRegisterData(entries);
+  try {
+    if (window._editingId) {
+      // Update the entry being edited
+      entryId         = window._editingId;
+      payload.briefId = entryId;
+      const res = await fetch(BRIEFS_URL + '?id=eq.' + encodeURIComponent(entryId), {
+        method:  'PATCH',
+        headers: sbHeaders({ 'Prefer': 'return=minimal' }),
+        body:    JSON.stringify({ payload, form_state: readFormState(), updated_at: now })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       showMessage(`Brief ${entryId} updated in the schedule register.`, 'success');
+      cancelEdit(false);
+    } else {
+      // Add a new entry
+      entryId         = nextBriefId(loadRegister());
+      payload.briefId = entryId;
+      const res = await fetch(BRIEFS_URL, {
+        method:  'POST',
+        headers: sbHeaders({ 'Prefer': 'return=minimal' }),
+        body:    JSON.stringify({
+          id:         entryId,
+          status:     'scheduled',
+          created_at: now,
+          updated_at: now,
+          form_state: readFormState(),
+          payload
+        })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      showMessage(`Agent brief generated and added to the register as ${entryId}.`, 'success');
     }
-    cancelEdit(false);
-  } else {
-    // Add a new entry
-    entryId         = nextBriefId(entries);
-    payload.briefId = entryId;
-    entries.push({
-      id:        entryId,
-      status:    'scheduled',
-      createdAt: now,
-      updatedAt: now,
-      formState: readFormState(),
-      payload
-    });
-    saveRegisterData(entries);
-    showMessage(`Agent brief generated and added to the register as ${entryId}.`, 'success');
+  } catch (e) {
+    showMessage('Register save failed — could not reach the database.', 'error');
   }
 
   window._selectedId = entryId;
-  renderRegister();
+  await refreshRegister();
 
   // Render in preview
   const jsonString  = JSON.stringify(payload, null, 2);
@@ -474,27 +480,48 @@ function exportJSON() {
 // SCHEDULE REGISTER
 // =====================================================
 
-const REGISTER_KEY = 'researchAgentRegister_v1';
+// Supabase project — the register lives in the public.briefs table.
+// The publishable key is safe to expose; access is governed by RLS policies.
+const SUPABASE_URL  = 'https://mydxofjvpuurwwaohqys.supabase.co';
+const SUPABASE_KEY  = 'sb_publishable_gAIR6BSI1ZwMNSzafJCAdQ_hAb6jtAR';
+const BRIEFS_URL    = SUPABASE_URL + '/rest/v1/briefs';
 
-window._editingId  = null;  // register entry currently loaded into the form for editing
-window._selectedId = null;  // register entry currently highlighted / shown in preview
+window._editingId     = null;  // register entry currently loaded into the form for editing
+window._selectedId    = null;  // register entry currently highlighted / shown in preview
+window._registerCache = [];    // local copy of the register, refreshed from Supabase
 
-/** Load the register entries array from localStorage. */
-function loadRegister() {
-  try {
-    return JSON.parse(localStorage.getItem(REGISTER_KEY)) || [];
-  } catch (e) {
-    return [];
-  }
+/** Standard headers for Supabase REST calls. */
+function sbHeaders(extra) {
+  return Object.assign({
+    'apikey':        SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type':  'application/json'
+  }, extra || {});
 }
 
-/** Persist the register entries array to localStorage. */
-function saveRegisterData(entries) {
+/** Return the cached register entries array. */
+function loadRegister() {
+  return window._registerCache;
+}
+
+/** Fetch the register from Supabase into the cache and re-render. */
+async function refreshRegister() {
   try {
-    localStorage.setItem(REGISTER_KEY, JSON.stringify(entries));
+    const res = await fetch(BRIEFS_URL + '?select=*&order=id.asc', { headers: sbHeaders() });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const rows = await res.json();
+    window._registerCache = rows.map(r => ({
+      id:        r.id,
+      status:    r.status,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+      formState: r.form_state,
+      payload:   r.payload
+    }));
   } catch (e) {
-    showMessage('Register save failed — localStorage may be unavailable.', 'error');
+    showMessage('Could not reach the register database — check your connection.', 'error');
   }
+  renderRegister();
 }
 
 /** Generate the next sequential brief ID, e.g. BRIEF-004. */
@@ -611,16 +638,24 @@ function cancelEdit(showMsg = true) {
 }
 
 /** Delete a register entry after confirmation. */
-function deleteRegisterEntry(id) {
+async function deleteRegisterEntry(id) {
   if (!confirm(`Delete ${id} from the schedule register? The agent will no longer run this brief.`)) return;
 
-  const entries = loadRegister().filter(e => e.id !== id);
-  saveRegisterData(entries);
+  try {
+    const res = await fetch(BRIEFS_URL + '?id=eq.' + encodeURIComponent(id), {
+      method:  'DELETE',
+      headers: sbHeaders()
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+  } catch (e) {
+    showMessage('Delete failed — could not reach the database.', 'error');
+    return;
+  }
 
   if (window._editingId === id) cancelEdit(false);
   if (window._selectedId === id) window._selectedId = null;
 
-  renderRegister();
+  await refreshRegister();
   showMessage(`${id} deleted from the register.`, 'info');
 }
 
@@ -686,5 +721,5 @@ function showMessage(text, type) {
 document.addEventListener('DOMContentLoaded', function () {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('run-date').value = today;
-  renderRegister();
+  refreshRegister();
 });
