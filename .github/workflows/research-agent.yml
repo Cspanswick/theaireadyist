@@ -31,6 +31,7 @@ jobs:
       - name: Run research agent
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           CONFIG_FILE: ${{ github.event.inputs.config || 'default.json' }}
         run: node agent/run-agent.js
 
