@@ -13,7 +13,7 @@
  * Change before deploying to production.
  */
 
-const ADMIN_HASH = '7a3f9c2e1b4d6f8a0c2e4f6b8d0a2c4e6f8b0d2e4a6c8e0f2b4d6a8c0e2f4b6';
+const ADMIN_HASH = '73ceb15f18bb0a313c8880abe54bf61a529dd8f1e75b084dd39926a1518d3d2f';
 
 // ─────────────────────────────────────────────
 // Core: async SHA-256 hash using Web Crypto API
