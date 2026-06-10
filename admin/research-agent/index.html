@@ -327,6 +327,34 @@
 
   </main>
 
+  <!-- SCHEDULE REGISTER -->
+  <section class="register-panel" aria-label="Schedule Register">
+    <div class="register-inner">
+      <div class="register-header">
+        <div class="register-heading">
+          <span class="section-num">11</span>
+          <h2 class="section-title">Schedule Register</h2>
+          <span class="register-count" id="register-count">0 briefs</span>
+        </div>
+        <div class="register-tools">
+          <span class="register-editing hidden" id="register-editing">
+            Editing <strong id="register-editing-id"></strong>
+            <button type="button" class="register-cancel" onclick="cancelEdit()">Cancel</button>
+          </span>
+          <button type="button" class="btn btn-export" onclick="exportRegister()" id="btn-export-register" disabled>
+            <span class="btn-icon">⤓</span> Export Register
+          </button>
+        </div>
+      </div>
+      <p class="register-desc">
+        Every generated brief is recorded here — this register is the agent's run list.
+        Export it as <code>register.json</code> and the agent runner takes its instructions from it.
+        Select a brief to view its payload, edit to amend it, or delete to remove it from the schedule.
+      </p>
+      <div class="register-list" id="register-list"></div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">

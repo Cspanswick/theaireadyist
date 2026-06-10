@@ -167,19 +167,57 @@ function buildPayload() {
 // =====================================================
 
 /**
- * Generate the agent brief from the current form state and render it in the preview panel.
+ * Generate the agent brief from the current form state, record it in the
+ * schedule register (new entry, or update when editing), and render it
+ * in the preview panel.
  */
 function generateBrief() {
-  const payload    = buildPayload();
-  const jsonString = JSON.stringify(payload, null, 2);
-  const highlighted = syntaxHighlight(jsonString);
+  const payload = buildPayload();
+  const entries = loadRegister();
+  const now     = new Date().toISOString();
+  let entryId;
+
+  if (window._editingId) {
+    // Update the entry being edited
+    const entry = entries.find(e => e.id === window._editingId);
+    if (entry) {
+      entryId          = entry.id;
+      payload.briefId  = entryId;
+      entry.payload    = payload;
+      entry.formState  = readFormState();
+      entry.updatedAt  = now;
+      saveRegisterData(entries);
+      showMessage(`Brief ${entryId} updated in the schedule register.`, 'success');
+    }
+    cancelEdit(false);
+  } else {
+    // Add a new entry
+    entryId         = nextBriefId(entries);
+    payload.briefId = entryId;
+    entries.push({
+      id:        entryId,
+      status:    'scheduled',
+      createdAt: now,
+      updatedAt: now,
+      formState: readFormState(),
+      payload
+    });
+    saveRegisterData(entries);
+    showMessage(`Agent brief generated and added to the register as ${entryId}.`, 'success');
+  }
+
+  window._selectedId = entryId;
+  renderRegister();
 
   // Render in preview
+  const jsonString  = JSON.stringify(payload, null, 2);
+  const highlighted = syntaxHighlight(jsonString);
+
   const previewBody   = document.getElementById('preview-body');
   const previewStatus = document.getElementById('preview-status');
 
   previewBody.innerHTML = `<pre class="json-output">${highlighted}</pre>`;
-  previewStatus.textContent = 'Generated';
+  previewStatus.textContent = entryId ? `Generated — ${entryId}` : 'Generated';
   previewStatus.classList.add('ready');
 
   // Enable export
@@ -187,8 +225,6 @@ function generateBrief() {
 
   // Store payload globally for export
   window._currentPayload = payload;
-
-  showMessage('Agent brief generated successfully.', 'success');
 }
 
 // =====================================================
@@ -268,6 +304,7 @@ function resetForm() {
 
   localStorage.removeItem(STORAGE_KEY);
   window._currentPayload = null;
+  if (window._editingId) cancelEdit(false);
 
   // Reset fields
   setScheduleMode('frequency');
@@ -434,6 +471,190 @@ function exportJSON() {
 }
 
 // =====================================================
+// SCHEDULE REGISTER
+// =====================================================
+
+const REGISTER_KEY = 'researchAgentRegister_v1';
+
+window._editingId  = null;  // register entry currently loaded into the form for editing
+window._selectedId = null;  // register entry currently highlighted / shown in preview
+
+/** Load the register entries array from localStorage. */
+function loadRegister() {
+  try {
+    return JSON.parse(localStorage.getItem(REGISTER_KEY)) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+/** Persist the register entries array to localStorage. */
+function saveRegisterData(entries) {
+  try {
+    localStorage.setItem(REGISTER_KEY, JSON.stringify(entries));
+  } catch (e) {
+    showMessage('Register save failed — localStorage may be unavailable.', 'error');
+  }
+}
+
+/** Generate the next sequential brief ID, e.g. BRIEF-004. */
+function nextBriefId(entries) {
+  const max = entries.reduce((m, e) => {
+    const n = parseInt(String(e.id || '').replace('BRIEF-', ''), 10);
+    return isNaN(n) ? m : Math.max(m, n);
+  }, 0);
+  return 'BRIEF-' + String(max + 1).padStart(3, '0');
+}
+
+/** Escape text for safe insertion into HTML. */
+function escapeHTML(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/** Human-readable schedule summary for a payload. */
+function scheduleSummary(p) {
+  const s = (p && p.schedule) || {};
+  const t = s.preferredRunTime || '08:00';
+  if (s.mode === 'frequency') {
+    return `${s.frequencyAmount || 1}× per ${s.frequencyUnit || 'week'} · ${t}`;
+  }
+  return `On ${s.specificDate || '—'} · ${t}`;
+}
+
+/** Render the register list, count and export button state. */
+function renderRegister() {
+  const entries   = loadRegister();
+  const list      = document.getElementById('register-list');
+  const count     = document.getElementById('register-count');
+  const exportBtn = document.getElementById('btn-export-register');
+  if (!list) return;
+
+  count.textContent  = entries.length + (entries.length === 1 ? ' brief' : ' briefs');
+  exportBtn.disabled = entries.length === 0;
+
+  if (!entries.length) {
+    list.innerHTML = '<div class="register-empty">No briefs in the register yet. Generate an agent brief and it will be recorded here.</div>';
+    return;
+  }
+
+  list.innerHTML = entries.map(e => {
+    const p     = e.payload || {};
+    const topic = p.topic ? escapeHTML(p.topic) : 'Untitled brief';
+    const meta  = [(p.marketFocus || []).join(', '), (p.region || []).join(', ')]
+      .filter(Boolean).join(' · ') || 'No sector or region selected';
+    const updated = String(e.updatedAt || '').slice(0, 16).replace('T', ' ');
+    const classes = 'register-row'
+      + (e.id === window._selectedId ? ' selected' : '')
+      + (e.id === window._editingId  ? ' editing'  : '');
+    return `<div class="${classes}" onclick="selectRegisterEntry('${e.id}')">
+      <div class="register-cell-id">
+        <span class="register-id">${e.id}</span>
+        <span class="register-status">${escapeHTML(e.status || 'scheduled')}</span>
+      </div>
+      <div class="register-cell-main">
+        <span class="register-topic">${topic}</span>
+        <span class="register-meta">${escapeHTML(meta)}</span>
+      </div>
+      <div class="register-cell-schedule">${escapeHTML(scheduleSummary(p))}</div>
+      <div class="register-cell-updated">${escapeHTML(updated)}</div>
+      <div class="register-cell-actions">
+        <button type="button" class="register-btn" onclick="event.stopPropagation(); editRegisterEntry('${e.id}')">Edit</button>
+        <button type="button" class="register-btn register-btn-danger" onclick="event.stopPropagation(); deleteRegisterEntry('${e.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/** Select a register entry: highlight it and show its payload in the preview. */
+function selectRegisterEntry(id) {
+  const entry = loadRegister().find(e => e.id === id);
+  if (!entry) return;
+
+  window._selectedId = id;
+  renderRegister();
+
+  const previewBody   = document.getElementById('preview-body');
+  const previewStatus = document.getElementById('preview-status');
+  previewBody.innerHTML = `<pre class="json-output">${syntaxHighlight(JSON.stringify(entry.payload, null, 2))}</pre>`;
+  previewStatus.textContent = `Viewing ${id}`;
+  previewStatus.classList.add('ready');
+
+  window._currentPayload = entry.payload;
+  document.getElementById('btn-export').disabled = false;
+}
+
+/** Load a register entry back into the form for editing. */
+function editRegisterEntry(id) {
+  const entry = loadRegister().find(e => e.id === id);
+  if (!entry) return;
+
+  applyFormState(entry.formState || {});
+  window._editingId  = id;
+  window._selectedId = id;
+
+  document.getElementById('register-editing').classList.remove('hidden');
+  document.getElementById('register-editing-id').textContent = id;
+  renderRegister();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showMessage(`Editing ${id} — amend the form and click Generate Agent Brief to update it.`, 'info');
+}
+
+/** Exit edit mode without saving changes to the entry. */
+function cancelEdit(showMsg = true) {
+  window._editingId = null;
+  document.getElementById('register-editing').classList.add('hidden');
+  renderRegister();
+  if (showMsg) showMessage('Edit cancelled — the register entry was not changed.', 'info');
+}
+
+/** Delete a register entry after confirmation. */
+function deleteRegisterEntry(id) {
+  if (!confirm(`Delete ${id} from the schedule register? The agent will no longer run this brief.`)) return;
+
+  const entries = loadRegister().filter(e => e.id !== id);
+  saveRegisterData(entries);
+
+  if (window._editingId === id) cancelEdit(false);
+  if (window._selectedId === id) window._selectedId = null;
+
+  renderRegister();
+  showMessage(`${id} deleted from the register.`, 'info');
+}
+
+/** Download the full register as register.json for the agent runner. */
+function exportRegister() {
+  const entries = loadRegister();
+  const doc = {
+    register:   'Research News Agent — Schedule Register',
+    agentName:  'Market News Research Agent',
+    exportedAt: new Date().toISOString(),
+    briefCount: entries.length,
+    briefs: entries.map(e => ({
+      id:          e.id,
+      status:      e.status || 'scheduled',
+      createdAt:   e.createdAt,
+      updatedAt:   e.updatedAt,
+      instruction: e.payload
+    }))
+  };
+
+  const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href     = url;
+  link.download = 'register.json';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  showMessage(`Exported register.json (${entries.length} brief${entries.length === 1 ? '' : 's'}).`, 'success');
+}
+
+// =====================================================
 // UI HELPERS
 // =====================================================
 
@@ -465,4 +686,5 @@ function showMessage(text, type) {
 document.addEventListener('DOMContentLoaded', function () {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('run-date').value = today;
+  renderRegister();
 });
