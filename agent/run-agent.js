@@ -64,8 +64,10 @@ GUARDRAILS ACTIVE THIS RUN:
 ${(config.guardrails || []).map(g => `- ${g}`).join('\n')}
 
 OUTPUT FORMAT: ${config.output?.outputFormat || 'executive-brief'}
-TARGET LENGTH: ~${config.output?.documentLengthWords || 1000} words
+TARGET LENGTH: ~${config.output?.documentLengthWords || 1000} words — this is a hard constraint, stay within ±20% of it. Compress the section structure to fit; fewer, tighter developments beat overrunning.
 TONE: ${config.output?.tone || 'Executive'}
+
+CRITICAL OUTPUT RULE: Respond with ONLY the final markdown document, starting directly with the # title heading. No commentary about your search process, no preamble, no notes before or after the document.
 
 Produce the brief in clean markdown with these sections:
 1. Configuration summary
@@ -114,7 +116,7 @@ async function run() {
   });
 
   // Assemble the text output from all text blocks
-  const brief = response.content
+  let brief = response.content
     .filter(block => block.type === 'text')
     .map(block => block.text)
     .join('\n');
@@ -123,6 +125,10 @@ async function run() {
     console.error('No text returned from the API.');
     process.exit(1);
   }
+
+  // Strip any process commentary that leaked in before the document title
+  const firstHeading = brief.search(/^#\s/m);
+  if (firstHeading > 0) brief = brief.slice(firstHeading);
 
   // ── Write the output ─────────────────────────────────
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
@@ -149,6 +155,70 @@ status: DRAFT — awaiting human approval
 
   fs.writeFileSync(outPath, header + brief, 'utf-8');
   console.log(`Brief written: agent/output/${outName}`);
+
+  // ── Stage as a DRAFT insight in Supabase (awaiting human approval) ────
+  // Invisible to the public site until approved via /admin/approvals.
+  await stageDraftInsight(brief, timestamp, safeTopic);
+}
+
+/**
+ * Insert the brief into the Supabase insights table with status 'draft'.
+ * Requires SUPABASE_SECRET_KEY in the environment (GitHub Actions secret).
+ * Skips gracefully when not configured so the markdown output still lands.
+ */
+async function stageDraftInsight(brief, timestamp, safeTopic) {
+  const secret = process.env.SUPABASE_SECRET_KEY;
+  if (!secret) {
+    console.log('SUPABASE_SECRET_KEY not set — skipping draft insight staging.');
+    return;
+  }
+
+  // Title: first heading of the document, cleaned of emoji/decoration
+  const headingMatch = brief.match(/^#\s+(.+)$/m);
+  const title = (headingMatch ? headingMatch[1] : (config.briefTitle || config.topic || 'Untitled insight'))
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
+    .trim();
+
+  // Summary: first paragraph of the Executive Summary section, else first prose paragraph
+  let summary = '';
+  const execMatch = brief.match(/##[^\n]*Executive Summary[^\n]*\n+([\s\S]+?)(?:\n##|\n---)/i);
+  const source = execMatch ? execMatch[1] : brief;
+  const para = source.split(/\n\s*\n/).find(p => {
+    const t = p.trim();
+    return t && !t.startsWith('#') && !t.startsWith('|') && !t.startsWith('---') && t.length > 80;
+  });
+  if (para) {
+    summary = para.replace(/\*\*/g, '').replace(/\s+/g, ' ').trim();
+    if (summary.length > 320) summary = summary.slice(0, 317).replace(/\s+\S*$/, '') + '…';
+  }
+
+  const row = {
+    id: 'INS-' + timestamp,
+    slug: safeTopic + '-' + timestamp.slice(0, 10),
+    title,
+    summary,
+    sectors: Array.isArray(config.marketFocus) ? config.marketFocus : [],
+    regions: Array.isArray(config.region) ? config.region : [],
+    status: 'draft',
+    body: brief
+  };
+
+  const res = await fetch('https://mydxofjvpuurwwaohqys.supabase.co/rest/v1/insights', {
+    method: 'POST',
+    headers: {
+      'apikey': secret,
+      'Authorization': 'Bearer ' + secret,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(row)
+  });
+
+  if (res.ok) {
+    console.log(`Draft insight staged for approval: ${row.id} ("${title}")`);
+  } else {
+    console.error(`Draft insight staging failed (HTTP ${res.status}) — markdown output is still committed.`);
+  }
 }
 
 run().catch(err => {
