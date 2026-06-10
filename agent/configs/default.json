@@ -1,0 +1,36 @@
+{
+  "agentName": "Market News Research Agent",
+  "businessOutcome": "Produce scheduled, evidence-led market news and research briefs on a selected subject.",
+  "topic": "Agentic AI adoption in UK financial services",
+  "marketFocus": ["BFSI"],
+  "region": ["UK&Ireland"],
+  "schedule": {
+    "mode": "frequency",
+    "frequencyAmount": 1,
+    "frequencyUnit": "week",
+    "specificDate": "",
+    "preferredRunTime": "07:00"
+  },
+  "output": {
+    "documentLengthWords": 1000,
+    "outputFormat": "executive-brief",
+    "tone": "Executive"
+  },
+  "sourcePreferences": {
+    "preferredSourceTypes": [
+      "Official announcements",
+      "Regulators and public bodies",
+      "Analyst firms and consultancies",
+      "Trade press and specialist media"
+    ],
+    "excludedSources": ""
+  },
+  "guardrails": [
+    "Require citations for all factual claims",
+    "Separate facts, opinions and vendor claims",
+    "Flag weak or conflicting evidence",
+    "Do not publish without human approval",
+    "Record source list and run timestamp",
+    "Show confidence level for major findings"
+  ]
+}
