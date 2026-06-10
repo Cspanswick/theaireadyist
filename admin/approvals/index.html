@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insight Approvals — theAIReadyist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0D1B2A; --surface: #0F2233; --raised: #122739;
+      --teal: #00C9A7; --amber: #E8A838;
+      --text: #F0F4F8; --text-sec: rgba(240,244,248,0.65); --text-mut: rgba(240,244,248,0.40);
+      --border: rgba(0,201,167,0.20); --border-hi: rgba(0,201,167,0.55);
+      --border-sub: rgba(255,255,255,0.08); --border-warn: rgba(232,168,56,0.35);
+      --red: #e05c5c;
+      --head: 'Playfair Display', Georgia, serif;
+      --body: 'DM Sans', -apple-system, sans-serif;
+      --mono: 'DM Mono', 'Courier New', monospace;
+    }
+    html { font-size: 17px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.6; min-height: 100vh; }
+
+    .header { border-bottom: 1px solid var(--border); padding: 48px 48px 36px; }
+    .header-inner { max-width: 1000px; margin: 0 auto; }
+    .eyebrow {
+      display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--teal); letter-spacing: 0.14em; text-transform: uppercase;
+      border: 1px solid var(--border); padding: 4px 10px; margin-bottom: 18px;
+    }
+    h1 { font-family: var(--head); font-size: clamp(30px, 4vw, 44px); font-weight: 700; line-height: 1.12; margin-bottom: 12px; }
+    h1 em { color: var(--teal); font-style: italic; }
+    .header-desc { font-size: 16px; color: var(--text-sec); max-width: 620px; }
+    .header-nav { margin-top: 20px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+    .nav-link {
+      font-family: var(--mono); font-size: 12px; color: var(--text); text-decoration: none;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border); padding-bottom: 2px;
+    }
+    .nav-link:hover { color: var(--teal); border-color: var(--teal); }
+    .pending-count { font-family: var(--mono); font-size: 12px; color: var(--text-mut); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .main { max-width: 1000px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    .status-line { font-family: var(--mono); font-size: 13px; min-height: 22px; margin-bottom: 24px; letter-spacing: 0.03em; }
+    .status-line.success { color: var(--teal); }
+    .status-line.error { color: var(--red); }
+    .status-line.info { color: var(--amber); }
+
+    .empty {
+      border: 1px dashed var(--border); padding: 56px 32px; text-align: center;
+      color: var(--text-mut); font-size: 16px;
+    }
+    .empty-icon { font-family: var(--head); font-size: 44px; color: var(--border-hi); display: block; margin-bottom: 12px; }
+
+    .draft-card { background: var(--surface); border: 1px solid var(--border); border-left: 2px solid var(--amber); margin-bottom: 28px; }
+    .draft-head { padding: 26px 30px 20px; border-bottom: 1px solid var(--border-sub); }
+    .draft-meta {
+      display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+      font-family: var(--mono); font-size: 11.5px; color: var(--text-mut);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .draft-id { color: var(--amber); }
+    .draft-title { font-family: var(--head); font-size: 26px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+    .draft-summary { font-size: 15px; color: var(--text-sec); max-width: 760px; }
+    .draft-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+    .tag {
+      font-family: var(--mono); font-size: 10px; color: var(--text-sec);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1px solid var(--border-sub); padding: 3px 8px;
+    }
+
+    .draft-body-toggle {
+      width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+      padding: 14px 30px; font-family: var(--mono); font-size: 12px; color: var(--teal);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border-sub);
+    }
+    .draft-body-toggle:hover { background: var(--raised); }
+
+    .draft-body { display: none; padding: 28px 30px; border-bottom: 1px solid var(--border-sub); background: var(--bg); max-height: 640px; overflow-y: auto; }
+    .draft-body.open { display: block; }
+    .draft-body h1, .draft-body h2, .draft-body h3 { font-family: var(--head); line-height: 1.25; margin: 22px 0 10px; }
+    .draft-body h1 { font-size: 24px; } .draft-body h2 { font-size: 20px; } .draft-body h3 { font-size: 17px; }
+    .draft-body p, .draft-body li { font-size: 14.5px; color: var(--text-sec); margin-bottom: 10px; }
+    .draft-body ul, .draft-body ol { padding-left: 22px; margin-bottom: 12px; }
+    .draft-body strong { color: var(--text); }
+    .draft-body a { color: var(--teal); }
+    .draft-body hr { border: none; border-top: 1px solid var(--border-sub); margin: 20px 0; }
+    .draft-body table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 13px; }
+    .draft-body th, .draft-body td { border: 1px solid var(--border-sub); padding: 8px 10px; text-align: left; color: var(--text-sec); }
+    .draft-body th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); }
+    .draft-body code { font-family: var(--mono); font-size: 13px; color: var(--teal); }
+    .draft-body::-webkit-scrollbar { width: 4px; }
+    .draft-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .draft-actions { display: flex; gap: 12px; padding: 20px 30px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      font-family: var(--mono); font-size: 13px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 13px 24px; cursor: pointer; border: 1px solid transparent; border-radius: 0;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn:disabled { opacity: 0.4; cursor: wait; }
+    .btn-approve { background: var(--teal); border-color: var(--teal); color: var(--bg); font-weight: 700; }
+    .btn-approve:hover:not(:disabled) { background: #00e0ba; }
+    .btn-reject { background: transparent; border-color: var(--border-sub); color: var(--text-mut); }
+    .btn-reject:hover:not(:disabled) { border-color: var(--red); color: var(--red); }
+    .gate-note { font-family: var(--mono); font-size: 11px; color: var(--text-mut); letter-spacing: 0.06em; margin-left: auto; }
+
+    .footer { border-top: 1px solid var(--border); padding: 22px 48px; }
+    .footer-inner { max-width: 1000px; margin: 0 auto; font-family: var(--mono); font-size: 11.5px; color: var(--text-mut); letter-spacing: 0.05em; }
+
+    @media (max-width: 640px) {
+      .header, .main { padding-left: 20px; padding-right: 20px; }
+      .draft-head, .draft-actions, .draft-body, .draft-body-toggle { padding-left: 18px; padding-right: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <span class="eyebrow">Approval Gate</span>
+      <h1>Insight <em>Approvals</em></h1>
+      <p class="header-desc">Agent-produced drafts awaiting your decision. Approve to publish to the Live Insights section on theaireadyist.com — reject to archive. Nothing goes public without you.</p>
+      <div class="header-nav">
+        <a class="nav-link" href="/admin">← Dashboard</a>
+        <a class="nav-link" href="/admin/research-agent">Control Centre</a>
+        <span class="pending-count" id="pending-count"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="status-line" id="status-line" aria-live="polite"></div>
+    <div id="drafts-list">
+      <div class="empty"><span class="empty-icon">◎</span>Loading drafts…</div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">Insight Approvals — the human gate between agent output and the public site.</div>
+  </footer>
+
+<script>
+(function () {
+  const list = document.getElementById('drafts-list');
+  const counter = document.getElementById('pending-count');
+  const statusLine = document.getElementById('status-line');
+
+  function setStatus(text, type) {
+    statusLine.textContent = text;
+    statusLine.className = 'status-line ' + (type || '');
+    clearTimeout(window._stTimer);
+    if (text) window._stTimer = setTimeout(() => { statusLine.textContent = ''; }, 5000);
+  }
+
+  function getAdminKey(forcePrompt) {
+    let key = localStorage.getItem('adminApiKey');
+    if (!key || forcePrompt) {
+      key = window.prompt('Enter the admin key:');
+      if (key) localStorage.setItem('adminApiKey', key.trim());
+    }
+    return key ? key.trim() : null;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  async function load(forcePrompt) {
+    const key = getAdminKey(forcePrompt);
+    if (!key) {
+      list.innerHTML = '<div class="empty"><span class="empty-icon">◎</span>Admin key required — reload the page to enter it.</div>';
+      return;
+    }
+    try {
+      const res = await fetch('/api/insights-pending', { headers: { 'x-admin-key': key } });
+      if (res.status === 401) {
+        localStorage.removeItem('adminApiKey');
+        list.innerHTML = '<div class="empty"><span class="empty-icon">◎</span>Admin key rejected.</div>';
+        if (!forcePrompt) load(true);
+        return;
+      }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      render(data.drafts || []);
+    } catch (e) {
+      list.innerHTML = '<div class="empty"><span class="empty-icon">◎</span>Could not load drafts — is the API configured?</div>';
+    }
+  }
+
+  function render(drafts) {
+    counter.textContent = drafts.length + ' awaiting approval';
+    if (!drafts.length) {
+      list.innerHTML = '<div class="empty"><span class="empty-icon">◎</span>Nothing awaiting approval. Drafts appear here after each agent run.</div>';
+      return;
+    }
+    list.innerHTML = drafts.map(d => {
+      const created = d.created_at ? new Date(d.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+      const tags = [].concat(d.sectors || [], d.regions || []).map(t => '<span class="tag">' + esc(t) + '</span>').join('');
+      const bodyHTML = window.DOMPurify && window.marked
+        ? DOMPurify.sanitize(marked.parse(d.body || '_No body stored._'))
+        : esc(d.body || '');
+      return `
+      <article class="draft-card" data-id="${esc(d.id)}">
+        <div class="draft-head">
+          <div class="draft-meta">
+            <span class="draft-id">${esc(d.id)}</span>
+            <span>Draft</span>
+            <span>${esc(created)}</span>
+          </div>
+          <div class="draft-title">${esc(d.title)}</div>
+          <p class="draft-summary">${esc(d.summary || '')}</p>
+          <div class="draft-tags">${tags}</div>
+        </div>
+        <button type="button" class="draft-body-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.nextElementSibling.classList.contains('open') ? '▾ Hide full text' : '▸ Read full text';">▸ Read full text</button>
+        <div class="draft-body">${bodyHTML}</div>
+        <div class="draft-actions">
+          <button type="button" class="btn btn-approve" onclick="window._decide('${esc(d.id)}','approve',this)">✓ Approve &amp; Publish</button>
+          <button type="button" class="btn btn-reject" onclick="window._decide('${esc(d.id)}','reject',this)">✕ Reject</button>
+          <span class="gate-note">Approve = live on theaireadyist.com immediately</span>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  window._decide = async function (id, action, btn) {
+    const verb = action === 'approve' ? 'Publish this insight to the live site?' : 'Reject this draft? It is archived, not deleted.';
+    if (!confirm(verb)) return;
+    const key = getAdminKey();
+    if (!key) return;
+
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/insights-decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+        body: JSON.stringify({ id, action })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        const card = document.querySelector('.draft-card[data-id="' + CSS.escape(id) + '"]');
+        if (card) card.remove();
+        const remaining = document.querySelectorAll('.draft-card').length;
+        counter.textContent = remaining + ' awaiting approval';
+        if (!remaining) render([]);
+        setStatus(action === 'approve'
+          ? id + ' published — it is now live in the Insights section.'
+          : id + ' rejected and archived.', 'success');
+      } else if (res.status === 401) {
+        localStorage.removeItem('adminApiKey');
+        setStatus('Admin key rejected — action not taken. Reload to re-enter the key.', 'error');
+      } else {
+        setStatus('Action failed: ' + (data.error || 'HTTP ' + res.status), 'error');
+      }
+    } catch (e) {
+      setStatus('Action failed — could not reach the API.', 'error');
+    }
+    btn.disabled = false;
+  };
+
+  load();
+})();
+</script>
+</body>
+</html>
