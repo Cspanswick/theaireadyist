@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research News Agent Control Centre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-badge">AGENT v1.0</span>
+        <h1 class="header-title">Research News Agent<br><span class="header-title-accent">Control Centre</span></h1>
+        <p class="header-desc">Configure, schedule and govern a structured market research agent. Outputs are evidence-led, cited and require human approval before any external distribution.</p>
+      </div>
+      <div class="header-status">
+        <div class="status-dot"></div>
+        <span class="status-label">READY TO CONFIGURE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT COLUMN: FORM -->
+    <section class="form-panel" aria-label="Agent Configuration">
+
+      <!-- SECTION 1: SCHEDULER -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-title">Scheduler</h2>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Schedule Mode</label>
+          <div class="toggle-group" role="radiogroup" aria-label="Schedule mode">
+            <button type="button" class="toggle-btn active" id="btn-frequency" aria-pressed="true" onclick="setScheduleMode('frequency')">Frequency</button>
+            <button type="button" class="toggle-btn" id="btn-specific" aria-pressed="false" onclick="setScheduleMode('specific')">Specific Date</button>
+          </div>
+        </div>
+
+        <!-- Frequency Options -->
+        <div id="frequency-options" class="conditional-block">
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label" for="freq-amount">Number of Runs</label>
+              <input type="number" id="freq-amount" class="field-input" min="1" max="99" value="1" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="freq-unit">Per</label>
+              <select id="freq-unit" class="field-select">
+                <option value="day">Day</option>
+                <option value="week" selected>Week</option>
+                <option value="month">Month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specific Date Options -->
+        <div id="specific-options" class="conditional-block hidden">
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label" for="run-date">Run Date</label>
+              <input type="date" id="run-date" class="field-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="run-time">Preferred Run Time</label>
+          <input type="time" id="run-time" class="field-input" value="08:00" />
+        </div>
+      </div>
+
+      <!-- SECTION 2: DOCUMENT FORMAT -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Document Format</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="doc-length">Output Length</label>
+          <select id="doc-length" class="field-select">
+            <option value="250">250 words</option>
+            <option value="500">500 words</option>
+            <option value="1000" selected>1000 words</option>
+            <option value="2000">2000 words</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 3: MARKET FOCUS -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Market Focus / Vertical Sector</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="market-focus">Select Sector(s)</label>
+          <select id="market-focus" class="field-select field-select-multi" multiple size="6" aria-label="Market focus sectors">
+            <option value="BFSI">BFSI — Banking, Financial Services, Insurance</option>
+            <option value="Energy">Energy &amp; Utilities</option>
+            <option value="Retail">Retail</option>
+            <option value="CMT">Comms, Media and Telecoms</option>
+            <option value="Technology">Technology providers / vendors</option>
+            <option value="FMCG">FMCG</option>
+            <option value="Manufacturing">Manufacturing</option>
+            <option value="Pharma">Pharmaceuticals</option>
+            <option value="Petrochem">Petrochemicals</option>
+            <option value="PublicSector">Public Sector</option>
+            <option value="Transport">Transport and travel</option>
+          </select>
+          <p class="field-hint">Hold Ctrl / Cmd to select multiple</p>
+        </div>
+      </div>
+
+      <!-- SECTION 4: REGION -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-title">Region</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="region">Select Region(s)</label>
+          <select id="region" class="field-select field-select-multi" multiple size="5" aria-label="Regions">
+            <option value="UK&Ireland">UK &amp; Ireland</option>
+            <option value="Europe">Europe</option>
+            <option value="MiddleEast">Middle East</option>
+            <option value="Africa">Africa</option>
+            <option value="India">India</option>
+            <option value="APAC">APAC</option>
+            <option value="NorthAmerica">North America</option>
+            <option value="SouthAmerica">South America</option>
+          </select>
+          <p class="field-hint">Hold Ctrl / Cmd to select multiple</p>
+        </div>
+      </div>
+
+      <!-- SECTION 5: TOPIC -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <h2 class="section-title">Research Topic</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="topic">Topic</label>
+          <textarea id="topic" class="field-textarea" rows="4" placeholder="e.g. Agentic AI adoption in UK financial services&#10;e.g. Cybersecurity regulation in European banking&#10;e.g. Energy transition technology in the Middle East"></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 6: SOURCE PREFERENCES -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">06</span>
+          <h2 class="section-title">Source Preferences</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Preferred Source Types</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-official" value="Official announcements" />
+              <span class="checkbox-custom"></span>
+              Official announcements
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-regulators" value="Regulators and public bodies" />
+              <span class="checkbox-custom"></span>
+              Regulators and public bodies
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-analysts" value="Analyst firms and consultancies" />
+              <span class="checkbox-custom"></span>
+              Analyst firms and consultancies
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-trade" value="Trade press and specialist media" />
+              <span class="checkbox-custom"></span>
+              Trade press and specialist media
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-vendor" value="Vendor blogs and reports" />
+              <span class="checkbox-custom"></span>
+              Vendor blogs and reports
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-academic" value="Academic or research papers" />
+              <span class="checkbox-custom"></span>
+              Academic or research papers
+            </label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="excluded-sources">Excluded Sources or Domains</label>
+          <textarea id="excluded-sources" class="field-textarea" rows="3" placeholder="e.g. example-domain.com, specific-vendor.com"></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 7: OUTPUT FORMAT -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">07</span>
+          <h2 class="section-title">Output Format</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="output-format">Format</label>
+          <select id="output-format" class="field-select">
+            <option value="executive-brief">Executive brief</option>
+            <option value="research-document">Research document</option>
+            <option value="website-news-draft">Website news draft</option>
+            <option value="source-register-only">Source register only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 8: TONE -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">08</span>
+          <h2 class="section-title">Tone</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="tone">Output Tone</label>
+          <select id="tone" class="field-select">
+            <option value="Executive">Executive</option>
+            <option value="Analyst-style">Analyst-style</option>
+            <option value="Editorial">Editorial</option>
+            <option value="Neutral research">Neutral research</option>
+            <option value="Board briefing">Board briefing</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 9: GUARDRAILS -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">09</span>
+          <h2 class="section-title">Guardrails</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Active Guardrails</label>
+          <div class="checkbox-grid checkbox-grid-single">
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-citations" value="Require citations for all factual claims" checked />
+              <span class="checkbox-custom"></span>
+              Require citations for all factual claims
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-separate" value="Separate facts, opinions and vendor claims" checked />
+              <span class="checkbox-custom"></span>
+              Separate facts, opinions and vendor claims
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-flag" value="Flag weak or conflicting evidence" checked />
+              <span class="checkbox-custom"></span>
+              Flag weak or conflicting evidence
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-approval" value="Do not publish without human approval" checked />
+              <span class="checkbox-custom"></span>
+              Do not publish without human approval
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-record" value="Record source list and run timestamp" checked />
+              <span class="checkbox-custom"></span>
+              Record source list and run timestamp
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-confidence" value="Show confidence level for major findings" checked />
+              <span class="checkbox-custom"></span>
+              Show confidence level for major findings
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 10: ACTIONS -->
+      <div class="form-section form-section-actions">
+        <div class="section-header">
+          <span class="section-num">10</span>
+          <h2 class="section-title">Actions</h2>
+        </div>
+        <div class="action-grid">
+          <button type="button" class="btn btn-primary" onclick="generateBrief()">
+            <span class="btn-icon">▶</span> Generate Agent Brief
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="saveConfig()">
+            <span class="btn-icon">↓</span> Save Configuration
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="loadConfig()">
+            <span class="btn-icon">↑</span> Load Saved Config
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="resetForm()">
+            <span class="btn-icon">↺</span> Reset
+          </button>
+          <button type="button" class="btn btn-export" onclick="exportJSON()" id="btn-export" disabled>
+            <span class="btn-icon">⤓</span> Export JSON
+          </button>
+        </div>
+        <div id="action-message" class="action-message" aria-live="polite"></div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: PREVIEW -->
+    <section class="preview-panel" aria-label="Generated Agent Brief">
+      <div class="preview-header">
+        <h2 class="preview-title">Agent Brief Preview</h2>
+        <span class="preview-status" id="preview-status">Awaiting generation</span>
+      </div>
+      <div class="preview-body" id="preview-body">
+        <div class="preview-empty">
+          <div class="preview-empty-icon">◎</div>
+          <p>Configure the agent and click <strong>Generate Agent Brief</strong> to produce the configuration payload.</p>
+          <p class="preview-empty-sub">The JSON will appear here and can be exported for backend integration.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-note">Research News Agent Control Centre — No content is published without explicit human approval.</span>
+      <span class="footer-build">Built for agent orchestration workflows</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
