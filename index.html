@@ -1466,7 +1466,7 @@
     </div>
     <div class="li-head-right">
       <span class="li-updated" id="li-updated"></span>
-      <a class="li-viewall" href="/admin/approvals">View all &rarr;</a>
+      <a class="li-viewall" href="/insights">View all &rarr;</a>
     </div>
   </div>
 
@@ -1681,7 +1681,7 @@
     + `?select=id,slug,title,summary,sectors,regions,published_at`
     + `&status=eq.published`
     + `&order=published_at.desc`
-    + `&limit=8`;
+    + `&limit=40`;
 
   fetch(url, {
     headers: {
@@ -1700,8 +1700,16 @@
     });
 
   function renderTicker(rows) {
-    // Build card HTML for each insight
-    const cards = rows.map(cardHTML).join('');
+    // Dedupe by normalised title (agent runs same topic multiple times)
+    const seen = new Set();
+    const unique = rows.filter(row => {
+      const key = (row.title || row.slug || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 20);
+    // Build card HTML for each distinct insight
+    const cards = unique.map(cardHTML).join('');
 
     // Duplicate the set so the -50% scroll loops seamlessly
     track.innerHTML = cards + cards;
@@ -1726,7 +1734,7 @@
       .slice(0, 3)
       .map(t => `<span class="li-tag">${esc(t)}</span>`)
       .join('');
-    const href = row.slug ? `/insights.html#${encodeURIComponent(row.slug)}` : '/insights.html';
+    const href = row.slug ? `/insights/${row.slug}` : '/insights';
 
     return `
       <a class="li-card" href="${href}">
