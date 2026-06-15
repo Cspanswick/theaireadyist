@@ -8,6 +8,85 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/research-agent/styles.css" />
+  <style>
+    /* ── Approval tracking additions ───────────────────── */
+    .btn-approvals {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1.5px solid #00C9A7;
+      color: #00C9A7;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-approvals:hover {
+      background: #00C9A7;
+      color: #0D1B2A;
+    }
+    .register-cell-approval {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 96px;
+    }
+    .approval-check-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .approval-check-wrap input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #3a4d60;
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .approval-check-wrap input[type="checkbox"]:checked {
+      background: #00C9A7;
+      border-color: #00C9A7;
+    }
+    .approval-check-wrap input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #0D1B2A;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .approval-check-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: #3a4d60;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+    .approval-check-wrap:has(input:checked) .approval-check-label {
+      color: #00C9A7;
+    }
+  </style>
 </head>
 <body>
 
@@ -59,10 +138,9 @@
               <button type="button" class="toggle-btn active" id="btn-frequency" aria-pressed="true" onclick="setScheduleMode('frequency')">Frequency</button>
               <button type="button" class="toggle-btn" id="btn-specific" aria-pressed="false" onclick="setScheduleMode('specific')">Specific Date</button>
             </div>
-            <button type="button" class="btn-run-now" id="btn-run-now" onclick="runAgentNow()">▶ Run Agent Now</button>
+            <button type="button" class="btn-run-now" id="btn-run-now" onclick="runAgentNow()">&#9654; Run Agent Now</button>
           </div>
           <p class="field-hint">Run Agent Now triggers an immediate run with the current repo config — the draft lands in <a class="hint-link" href="/admin/approvals">Approvals</a></p>
-          <a href="/admin/approvals" style="display:inline-block;margin-top:10px;padding:8px 20px;background:transparent;border:1px solid #00C9A7;color:#00C9A7;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">View Approvals →</a>
         </div>
 
         <!-- Frequency Options -->
@@ -150,7 +228,7 @@
         <div class="field-group">
           <label class="field-label">Select Region(s)</label>
           <div class="checkbox-grid" id="region" role="group" aria-label="Regions">
-            <label class="checkbox-label"><input type="checkbox" value="UK&Ireland" /><span class="checkbox-custom"></span>UK &amp; Ireland</label>
+            <label class="checkbox-label"><input type="checkbox" value="UK&amp;Ireland" /><span class="checkbox-custom"></span>UK &amp; Ireland</label>
             <label class="checkbox-label"><input type="checkbox" value="Europe" /><span class="checkbox-custom"></span>Europe</label>
             <label class="checkbox-label"><input type="checkbox" value="MiddleEast" /><span class="checkbox-custom"></span>Middle East</label>
             <label class="checkbox-label"><input type="checkbox" value="Africa" /><span class="checkbox-custom"></span>Africa</label>
@@ -308,13 +386,13 @@
         </div>
         <div class="action-grid">
           <button type="button" class="btn btn-primary" onclick="generateBrief()">
-            <span class="btn-icon">▶</span> Generate Agent Brief
+            <span class="btn-icon">&#9654;</span> Generate Agent Brief
           </button>
           <button type="button" class="btn btn-ghost" onclick="resetForm()">
-            <span class="btn-icon">↺</span> Reset
+            <span class="btn-icon">&#8634;</span> Reset
           </button>
           <button type="button" class="btn btn-export" onclick="exportJSON()" id="btn-export" disabled>
-            <span class="btn-icon">⤓</span> Export JSON
+            <span class="btn-icon">&#10515;</span> Export JSON
           </button>
         </div>
         <div id="action-message" class="action-message" aria-live="polite"></div>
@@ -330,7 +408,7 @@
       </div>
       <div class="preview-body" id="preview-body">
         <div class="preview-empty">
-          <div class="preview-empty-icon">◎</div>
+          <div class="preview-empty-icon">&#9678;</div>
           <p>Configure the agent and click <strong>Generate Agent Brief</strong> to produce the configuration payload.</p>
           <p class="preview-empty-sub">The JSON will appear here and can be exported for backend integration.</p>
         </div>
@@ -349,12 +427,13 @@
           <span class="register-count" id="register-count">0 briefs</span>
         </div>
         <div class="register-tools">
+          <a href="/admin/approvals" class="btn-approvals">&#10003; View Approvals</a>
           <span class="register-editing hidden" id="register-editing">
             Editing <strong id="register-editing-id"></strong>
             <button type="button" class="register-cancel" onclick="cancelEdit()">Cancel</button>
           </span>
           <button type="button" class="btn btn-export" onclick="exportRegister()" id="btn-export-register" disabled>
-            <span class="btn-icon">⤓</span> Export Register
+            <span class="btn-icon">&#10515;</span> Export Register
           </button>
         </div>
       </div>
