@@ -7,11 +7,6 @@
 // SCHEDULE MODE TOGGLE
 // =====================================================
 
-/**
- * Switch between "frequency" and "specific date" scheduling modes.
- * Shows/hides the relevant input fields and updates toggle button state.
- * @param {string} mode - 'frequency' or 'specific'
- */
 function setScheduleMode(mode) {
   const freqOptions  = document.getElementById('frequency-options');
   const specOptions  = document.getElementById('specific-options');
@@ -39,31 +34,17 @@ function setScheduleMode(mode) {
 // READ FORM VALUES
 // =====================================================
 
-/**
- * Determine the current active schedule mode.
- * @returns {string} 'frequency' or 'specific'
- */
 function getScheduleMode() {
   return document.getElementById('btn-frequency').classList.contains('active')
     ? 'frequency'
     : 'specific';
 }
 
-/**
- * Read all checked values from a checkbox group container.
- * @param {string} id - container element ID
- * @returns {string[]}
- */
 function getMultiSelect(id) {
   return Array.from(document.querySelectorAll('#' + CSS.escape(id) + ' input[type="checkbox"]:checked'))
     .map(cb => cb.value);
 }
 
-/**
- * Collect all checked checkbox values within a container.
- * @param {string[]} ids - array of checkbox element IDs
- * @returns {string[]}
- */
 function getCheckedValues(ids) {
   return ids
     .map(id => document.getElementById(id))
@@ -71,10 +52,6 @@ function getCheckedValues(ids) {
     .map(el => el.value);
 }
 
-/**
- * Build the full configuration payload from the current form state.
- * @returns {Object} structured agent configuration
- */
 function buildPayload() {
   const mode = getScheduleMode();
 
@@ -167,11 +144,6 @@ function buildPayload() {
 // GENERATE BRIEF
 // =====================================================
 
-/**
- * Generate the agent brief from the current form state, record it in the
- * schedule register (new entry, or update when editing), and render it
- * in the preview panel.
- */
 async function generateBrief() {
   const payload = buildPayload();
   const now     = new Date().toISOString();
@@ -179,7 +151,6 @@ async function generateBrief() {
 
   try {
     if (window._editingId) {
-      // Update the entry being edited
       entryId         = window._editingId;
       payload.briefId = entryId;
       const res = await fetch(BRIEFS_URL + '?id=eq.' + encodeURIComponent(entryId), {
@@ -188,10 +159,9 @@ async function generateBrief() {
         body:    JSON.stringify({ payload, form_state: readFormState(), updated_at: now })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      showMessage(`Brief ${entryId} updated in the schedule register.`, 'success');
+      showMessage('Brief ' + entryId + ' updated in the schedule register.', 'success');
       cancelEdit(false);
     } else {
-      // Add a new entry
       entryId         = nextBriefId(loadRegister());
       payload.briefId = entryId;
       const res = await fetch(BRIEFS_URL, {
@@ -207,7 +177,7 @@ async function generateBrief() {
         })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      showMessage(`Agent brief generated and added to the register as ${entryId}.`, 'success');
+      showMessage('Agent brief generated and added to the register as ' + entryId + '.', 'success');
     }
   } catch (e) {
     showMessage('Register save failed — could not reach the database.', 'error');
@@ -216,21 +186,17 @@ async function generateBrief() {
   window._selectedId = entryId;
   await refreshRegister();
 
-  // Render in preview
   const jsonString  = JSON.stringify(payload, null, 2);
   const highlighted = syntaxHighlight(jsonString);
 
   const previewBody   = document.getElementById('preview-body');
   const previewStatus = document.getElementById('preview-status');
 
-  previewBody.innerHTML = `<pre class="json-output">${highlighted}</pre>`;
-  previewStatus.textContent = entryId ? `Generated — ${entryId}` : 'Generated';
+  previewBody.innerHTML = '<pre class="json-output">' + highlighted + '</pre>';
+  previewStatus.textContent = entryId ? ('Generated — ' + entryId) : 'Generated';
   previewStatus.classList.add('ready');
 
-  // Enable export
   document.getElementById('btn-export').disabled = false;
-
-  // Store payload globally for export
   window._currentPayload = payload;
 }
 
@@ -238,13 +204,7 @@ async function generateBrief() {
 // SYNTAX HIGHLIGHTING
 // =====================================================
 
-/**
- * Apply basic JSON syntax highlighting by wrapping tokens in <span> tags.
- * @param {string} json - JSON string
- * @returns {string} HTML string with spans
- */
 function syntaxHighlight(json) {
-  // Escape HTML entities first
   json = json
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -261,7 +221,7 @@ function syntaxHighlight(json) {
       } else if (/null/.test(match)) {
         cls = 'json-null';
       }
-      return `<span class="${cls}">${match}</span>`;
+      return '<span class="' + cls + '">' + match + '</span>';
     }
   );
 }
@@ -270,16 +230,12 @@ function syntaxHighlight(json) {
 // RESET
 // =====================================================
 
-/**
- * Reset all form fields to defaults.
- */
 function resetForm() {
   if (!confirm('Reset all fields to defaults?')) return;
 
   window._currentPayload = null;
   if (window._editingId) cancelEdit(false);
 
-  // Reset fields
   setScheduleMode('frequency');
   document.getElementById('brief-title').value = '';
   document.getElementById('freq-amount').value  = '1';
@@ -292,25 +248,21 @@ function resetForm() {
   document.getElementById('tone').value         = 'Executive';
   document.getElementById('excluded-sources').value = '';
 
-  // Clear multi-selects
   clearMultiSelect('market-focus');
   clearMultiSelect('region');
 
-  // Reset source checkboxes (uncheck all)
   ['src-official','src-regulators','src-analysts','src-trade','src-vendor','src-academic']
     .forEach(id => { document.getElementById(id).checked = false; });
 
-  // Reset guardrails to all checked
   ['gr-citations','gr-separate','gr-flag','gr-approval','gr-record','gr-confidence']
     .forEach(id => { document.getElementById(id).checked = true; });
 
-  // Reset preview
-  document.getElementById('preview-body').innerHTML = `
-    <div class="preview-empty">
-      <div class="preview-empty-icon">◎</div>
-      <p>Configure the agent and click <strong>Generate Agent Brief</strong> to produce the configuration payload.</p>
-      <p class="preview-empty-sub">The JSON will appear here and can be exported for backend integration.</p>
-    </div>`;
+  document.getElementById('preview-body').innerHTML =
+    '<div class="preview-empty">' +
+      '<div class="preview-empty-icon">&#9678;</div>' +
+      '<p>Configure the agent and click <strong>Generate Agent Brief</strong> to produce the configuration payload.</p>' +
+      '<p class="preview-empty-sub">The JSON will appear here and can be exported for backend integration.</p>' +
+    '</div>';
   document.getElementById('preview-status').textContent = 'Awaiting generation';
   document.getElementById('preview-status').classList.remove('ready');
   document.getElementById('btn-export').disabled = true;
@@ -318,10 +270,6 @@ function resetForm() {
   showMessage('Form reset to defaults.', 'info');
 }
 
-/**
- * Deselect all options in a multi-select element.
- * @param {string} id
- */
 function clearMultiSelect(id) {
   document.querySelectorAll('#' + CSS.escape(id) + ' input[type="checkbox"]')
     .forEach(cb => { cb.checked = false; });
@@ -331,10 +279,6 @@ function clearMultiSelect(id) {
 // FORM STATE SERIALISATION
 // =====================================================
 
-/**
- * Read the current form state into a plain object for storage.
- * @returns {Object}
- */
 function readFormState() {
   return {
     briefTitle:        document.getElementById('brief-title').value,
@@ -365,10 +309,6 @@ function readFormState() {
   };
 }
 
-/**
- * Apply a saved form state object back onto the form.
- * @param {Object} config
- */
 function applyFormState(config) {
   setScheduleMode(config.scheduleMode || 'frequency');
 
@@ -401,19 +341,16 @@ function applyFormState(config) {
   setChecked('gr-confidence', config.grConfidence);
 }
 
-/** Helper: set value of an input/select/textarea by ID */
 function setValue(id, val) {
   const el = document.getElementById(id);
   if (el) el.value = val;
 }
 
-/** Helper: set checked state of a checkbox by ID */
 function setChecked(id, val) {
   const el = document.getElementById(id);
   if (el) el.checked = !!val;
 }
 
-/** Helper: set selected options of a multi-select by value array */
 function setMultiSelect(id, values) {
   document.querySelectorAll('#' + CSS.escape(id) + ' input[type="checkbox"]')
     .forEach(cb => { cb.checked = values.includes(cb.value); });
@@ -423,9 +360,6 @@ function setMultiSelect(id, values) {
 // EXPORT JSON
 // =====================================================
 
-/**
- * Download the current payload as a .json file.
- */
 function exportJSON() {
   const payload = window._currentPayload || buildPayload();
   const jsonString = JSON.stringify(payload, null, 2);
@@ -433,7 +367,7 @@ function exportJSON() {
   const url  = URL.createObjectURL(blob);
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  const filename  = `research-agent-config-${timestamp}.json`;
+  const filename  = 'research-agent-config-' + timestamp + '.json';
 
   const link = document.createElement('a');
   link.href     = url;
@@ -443,24 +377,21 @@ function exportJSON() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 
-  showMessage(`Exported: ${filename}`, 'success');
+  showMessage('Exported: ' + filename, 'success');
 }
 
 // =====================================================
 // SCHEDULE REGISTER
 // =====================================================
 
-// Supabase project — the register lives in the public.briefs table.
-// The publishable key is safe to expose; access is governed by RLS policies.
 const SUPABASE_URL  = 'https://mydxofjvpuurwwaohqys.supabase.co';
 const SUPABASE_KEY  = 'sb_publishable_gAIR6BSI1ZwMNSzafJCAdQ_hAb6jtAR';
 const BRIEFS_URL    = SUPABASE_URL + '/rest/v1/briefs';
 
-window._editingId     = null;  // register entry currently loaded into the form for editing
-window._selectedId    = null;  // register entry currently highlighted / shown in preview
-window._registerCache = [];    // local copy of the register, refreshed from Supabase
+window._editingId     = null;
+window._selectedId    = null;
+window._registerCache = [];
 
-/** Standard headers for Supabase REST calls. */
 function sbHeaders(extra) {
   return Object.assign({
     'apikey':        SUPABASE_KEY,
@@ -469,12 +400,10 @@ function sbHeaders(extra) {
   }, extra || {});
 }
 
-/** Return the cached register entries array. */
 function loadRegister() {
   return window._registerCache;
 }
 
-/** Fetch the register from Supabase into the cache and re-render. */
 async function refreshRegister() {
   try {
     const res = await fetch(BRIEFS_URL + '?select=*&order=id.asc', { headers: sbHeaders() });
@@ -494,7 +423,6 @@ async function refreshRegister() {
   renderRegister();
 }
 
-/** Generate the next sequential brief ID, e.g. BRIEF-004. */
 function nextBriefId(entries) {
   const max = entries.reduce((m, e) => {
     const n = parseInt(String(e.id || '').replace('BRIEF-', ''), 10);
@@ -503,24 +431,59 @@ function nextBriefId(entries) {
   return 'BRIEF-' + String(max + 1).padStart(3, '0');
 }
 
-/** Escape text for safe insertion into HTML. */
 function escapeHTML(s) {
   return String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-/** Human-readable schedule summary for a payload. */
 function scheduleSummary(p) {
   const s = (p && p.schedule) || {};
   const t = s.preferredRunTime || '08:00';
   if (s.mode === 'frequency') {
-    return `${s.frequencyAmount || 1}× per ${s.frequencyUnit || 'week'} · ${t}`;
+    return (s.frequencyAmount || 1) + '\u00d7 per ' + (s.frequencyUnit || 'week') + ' \u00b7 ' + t;
   }
-  return `On ${s.specificDate || '—'} · ${t}`;
+  return 'On ' + (s.specificDate || '\u2014') + ' \u00b7 ' + t;
 }
 
-/** Render the register list, count and export button state. */
+// =====================================================
+// APPROVAL TRACKING (localStorage — per-browser, per-brief)
+// =====================================================
+
+/**
+ * Check whether this brief has been manually marked as approved.
+ * @param {string} id — brief ID e.g. BRIEF-002
+ * @returns {boolean}
+ */
+function isApprovalTracked(id) {
+  try {
+    return localStorage.getItem('approval_tracked_' + id) === '1';
+  } catch (_) {
+    return false;
+  }
+}
+
+/**
+ * Toggle the approval-tracked state for a brief and re-render the register.
+ * Called from the inline onchange handler on the checkbox.
+ * @param {string} id
+ * @param {boolean} checked
+ */
+function toggleApprovalTracked(id, checked) {
+  try {
+    if (checked) {
+      localStorage.setItem('approval_tracked_' + id, '1');
+    } else {
+      localStorage.removeItem('approval_tracked_' + id);
+    }
+  } catch (_) { /* storage unavailable — silently ignore */ }
+  renderRegister();
+}
+
+// =====================================================
+// RENDER REGISTER
+// =====================================================
+
 function renderRegister() {
   const entries   = loadRegister();
   const list      = document.getElementById('register-list');
@@ -537,35 +500,48 @@ function renderRegister() {
   }
 
   list.innerHTML = entries.map(e => {
-    const p     = e.payload || {};
-    const title = p.briefTitle ? escapeHTML(p.briefTitle)
-                : (p.topic ? escapeHTML(p.topic) : 'Untitled brief');
-    const meta  = [(p.marketFocus || []).join(', '), (p.region || []).join(', ')]
-      .filter(Boolean).join(' · ') || 'No sector or region selected';
-    const updated = String(e.updatedAt || '').slice(0, 16).replace('T', ' ');
-    const classes = 'register-row'
+    const p        = e.payload || {};
+    const title    = p.briefTitle ? escapeHTML(p.briefTitle)
+                   : (p.topic ? escapeHTML(p.topic) : 'Untitled brief');
+    const meta     = [(p.marketFocus || []).join(', '), (p.region || []).join(', ')]
+      .filter(Boolean).join(' \u00b7 ') || 'No sector or region selected';
+    const updated  = String(e.updatedAt || '').slice(0, 16).replace('T', ' ');
+    const approved = isApprovalTracked(e.id);
+    const classes  = 'register-row'
       + (e.id === window._selectedId ? ' selected' : '')
-      + (e.id === window._editingId  ? ' editing'  : '');
-    return `<div class="${classes}" onclick="selectRegisterEntry('${e.id}')">
-      <div class="register-cell-id">
-        <span class="register-id">${e.id}</span>
-        <span class="register-status">${escapeHTML(e.status || 'scheduled')}</span>
-      </div>
-      <div class="register-cell-main">
-        <span class="register-topic">${title}</span>
-        <span class="register-meta">${escapeHTML(meta)}</span>
-      </div>
-      <div class="register-cell-schedule">${escapeHTML(scheduleSummary(p))}</div>
-      <div class="register-cell-updated">${escapeHTML(updated)}</div>
-      <div class="register-cell-actions">
-        <button type="button" class="register-btn" onclick="event.stopPropagation(); editRegisterEntry('${e.id}')">Edit</button>
-        <button type="button" class="register-btn register-btn-danger" onclick="event.stopPropagation(); deleteRegisterEntry('${e.id}')">Delete</button>
-      </div>
-    </div>`;
+      + (e.id === window._editingId  ? ' editing'  : '')
+      + (approved                    ? ' approval-done' : '');
+
+    return '<div class="' + classes + '" onclick="selectRegisterEntry(\'' + e.id + '\')">' +
+      '<div class="register-cell-id">' +
+        '<span class="register-id">' + e.id + '</span>' +
+        '<span class="register-status">' + escapeHTML(e.status || 'scheduled') + '</span>' +
+      '</div>' +
+      '<div class="register-cell-main">' +
+        '<span class="register-topic">' + title + '</span>' +
+        '<span class="register-meta">' + escapeHTML(meta) + '</span>' +
+      '</div>' +
+      '<div class="register-cell-schedule">' + escapeHTML(scheduleSummary(p)) + '</div>' +
+      '<div class="register-cell-updated">' + escapeHTML(updated) + '</div>' +
+      '<div class="register-cell-approval">' +
+        '<label class="approval-check-wrap" onclick="event.stopPropagation()" title="Mark latest run as approved">' +
+          '<input type="checkbox" ' + (approved ? 'checked' : '') + ' ' +
+            'onchange="event.stopPropagation(); toggleApprovalTracked(\'' + e.id + '\', this.checked)" />' +
+          '<span class="approval-check-label">' + (approved ? 'Approved' : 'Pending') + '</span>' +
+        '</label>' +
+      '</div>' +
+      '<div class="register-cell-actions">' +
+        '<button type="button" class="register-btn" onclick="event.stopPropagation(); editRegisterEntry(\'' + e.id + '\')">Edit</button>' +
+        '<button type="button" class="register-btn register-btn-danger" onclick="event.stopPropagation(); deleteRegisterEntry(\'' + e.id + '\')">Delete</button>' +
+      '</div>' +
+    '</div>';
   }).join('');
 }
 
-/** Select a register entry: highlight it and show its payload in the preview. */
+// =====================================================
+// REGISTER INTERACTIONS
+// =====================================================
+
 function selectRegisterEntry(id) {
   const entry = loadRegister().find(e => e.id === id);
   if (!entry) return;
@@ -575,15 +551,14 @@ function selectRegisterEntry(id) {
 
   const previewBody   = document.getElementById('preview-body');
   const previewStatus = document.getElementById('preview-status');
-  previewBody.innerHTML = `<pre class="json-output">${syntaxHighlight(JSON.stringify(entry.payload, null, 2))}</pre>`;
-  previewStatus.textContent = `Viewing ${id}`;
+  previewBody.innerHTML = '<pre class="json-output">' + syntaxHighlight(JSON.stringify(entry.payload, null, 2)) + '</pre>';
+  previewStatus.textContent = 'Viewing ' + id;
   previewStatus.classList.add('ready');
 
   window._currentPayload = entry.payload;
   document.getElementById('btn-export').disabled = false;
 }
 
-/** Load a register entry back into the form for editing. */
 function editRegisterEntry(id) {
   const entry = loadRegister().find(e => e.id === id);
   if (!entry) return;
@@ -597,20 +572,19 @@ function editRegisterEntry(id) {
   renderRegister();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  showMessage(`Editing ${id} — amend the form and click Generate Agent Brief to update it.`, 'info');
+  showMessage('Editing ' + id + ' — amend the form and click Generate Agent Brief to update it.', 'info');
 }
 
-/** Exit edit mode without saving changes to the entry. */
-function cancelEdit(showMsg = true) {
+function cancelEdit(showMsg) {
+  if (showMsg === undefined) showMsg = true;
   window._editingId = null;
   document.getElementById('register-editing').classList.add('hidden');
   renderRegister();
   if (showMsg) showMessage('Edit cancelled — the register entry was not changed.', 'info');
 }
 
-/** Delete a register entry after confirmation. */
 async function deleteRegisterEntry(id) {
-  if (!confirm(`Delete ${id} from the schedule register? The agent will no longer run this brief.`)) return;
+  if (!confirm('Delete ' + id + ' from the schedule register? The agent will no longer run this brief.')) return;
 
   try {
     const res = await fetch(BRIEFS_URL + '?id=eq.' + encodeURIComponent(id), {
@@ -623,14 +597,16 @@ async function deleteRegisterEntry(id) {
     return;
   }
 
+  // Also clear any approval tracking for this brief
+  try { localStorage.removeItem('approval_tracked_' + id); } catch (_) {}
+
   if (window._editingId === id) cancelEdit(false);
   if (window._selectedId === id) window._selectedId = null;
 
   await refreshRegister();
-  showMessage(`${id} deleted from the register.`, 'info');
+  showMessage(id + ' deleted from the register.', 'info');
 }
 
-/** Download the full register as register.json for the agent runner. */
 function exportRegister() {
   const entries = loadRegister();
   const doc = {
@@ -643,6 +619,7 @@ function exportRegister() {
       status:      e.status || 'scheduled',
       createdAt:   e.createdAt,
       updatedAt:   e.updatedAt,
+      approvalTracked: isApprovalTracked(e.id),
       instruction: e.payload
     }))
   };
@@ -657,16 +634,13 @@ function exportRegister() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 
-  showMessage(`Exported register.json (${entries.length} brief${entries.length === 1 ? '' : 's'}).`, 'success');
+  showMessage('Exported register.json (' + entries.length + ' brief' + (entries.length === 1 ? '' : 's') + ').', 'success');
 }
 
 // =====================================================
 // RUN AGENT NOW
 // =====================================================
 
-/**
- * Get the admin key for the private API, prompting once and caching locally.
- */
 function getAdminKey(forcePrompt) {
   let key = localStorage.getItem('adminApiKey');
   if (!key || forcePrompt) {
@@ -676,9 +650,6 @@ function getAdminKey(forcePrompt) {
   return key ? key.trim() : null;
 }
 
-/**
- * Trigger an immediate agent run via the private API.
- */
 async function runAgentNow() {
   if (!confirm('Run the research agent now? This makes one Claude API call and stages a draft for your approval.')) return;
 
@@ -687,7 +658,7 @@ async function runAgentNow() {
 
   const btn = document.getElementById('btn-run-now');
   btn.disabled = true;
-  showMessage('Starting agent run…', 'info');
+  showMessage('Starting agent run\u2026', 'info');
 
   try {
     const res = await fetch('/api/run-agent', {
@@ -715,17 +686,11 @@ async function runAgentNow() {
 // UI HELPERS
 // =====================================================
 
-/**
- * Show a temporary status message in the action area.
- * @param {string} text
- * @param {'success'|'error'|'info'} type
- */
 function showMessage(text, type) {
   const el = document.getElementById('action-message');
   el.textContent = text;
-  el.className   = `action-message ${type}`;
+  el.className   = 'action-message ' + type;
 
-  // Clear after 3.5 seconds
   clearTimeout(window._msgTimer);
   window._msgTimer = setTimeout(() => {
     el.textContent = '';
@@ -737,9 +702,6 @@ function showMessage(text, type) {
 // INIT
 // =====================================================
 
-/**
- * On page load, set today's date as the default for the date picker.
- */
 document.addEventListener('DOMContentLoaded', function () {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('run-date').value = today;
