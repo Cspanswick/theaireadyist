@@ -8,6 +8,8 @@
  *   2. Mark any currently-published row with that slug as 'superseded'
  *      (kept for audit, removed from the public ticker/list/detail).
  *   3. Publish the draft with the canonical slug + fresh published_at.
+ *   4. Prune: keep only MAX_PUBLISHED most-recently-published rows;
+ *      older ones become 'superseded' so the ticker stays fresh.
  *   Result: re-approving a topic REFRESHES the live insight instead of
  *   stacking duplicates in the Live Insights ticker.
  *
@@ -24,6 +26,9 @@
  *   SUPABASE_SECRET_KEY  — Supabase secret key (server-side only)
  */
 const SUPABASE_URL = 'https://mydxofjvpuurwwaohqys.supabase.co';
+
+/** Maximum number of published insights to keep live at any one time. */
+const MAX_PUBLISHED = 10;
 
 function sbHeaders(extra) {
   return Object.assign({
@@ -74,6 +79,38 @@ async function publishDraft(id, slug) {
       })
     }
   );
+}
+
+/**
+ * Keep only the MAX_PUBLISHED most-recently-published rows live.
+ * Anything older gets marked 'superseded'. Non-fatal: errors are
+ * swallowed so a prune failure never blocks a successful approve.
+ */
+async function pruneOldPublished(maxKeep) {
+  try {
+    const listRes = await fetch(
+      SUPABASE_URL + '/rest/v1/insights'
+        + '?status=eq.published'
+        + '&select=id'
+        + '&order=published_at.desc',
+      { headers: sbHeaders() }
+    );
+    if (!listRes.ok) return;
+    const all = await listRes.json();
+    if (all.length <= maxKeep) return;
+    const toSupersede = all.slice(maxKeep).map(r => r.id);
+    await fetch(
+      SUPABASE_URL + '/rest/v1/insights'
+        + '?id=in.(' + toSupersede.map(encodeURIComponent).join(',') + ')',
+      {
+        method: 'PATCH',
+        headers: sbHeaders({ 'Prefer': 'return=minimal' }),
+        body: JSON.stringify({ status: 'superseded' })
+      }
+    );
+  } catch (_) {
+    // non-fatal — prune best-effort only
+  }
 }
 
 module.exports = async (req, res) => {
@@ -153,5 +190,9 @@ module.exports = async (req, res) => {
   if (!rows.length) {
     return res.status(404).json({ error: 'No draft found with that id (already decided?)' });
   }
+
+  // 4. Prune oldest published rows beyond MAX_PUBLISHED (best-effort)
+  await pruneOldPublished(MAX_PUBLISHED);
+
   return res.status(200).json({ ok: true, id, action, slug, insight: rows[0] });
 };
