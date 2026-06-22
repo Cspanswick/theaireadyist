@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/research-agent/styles.css" />
   <style>
-    /* ── Approval tracking additions ───────────────────── */
+    /* ââ Approval tracking additions âââââââââââââââââââââ */
     .btn-approvals {
       display: inline-flex;
       align-items: center;
@@ -120,7 +120,7 @@
         <div class="field-group">
           <label class="field-label" for="brief-title">Title</label>
           <input type="text" id="brief-title" class="field-input" maxlength="120" placeholder="e.g. Weekly BFSI agentic AI briefing" />
-          <p class="field-hint">A short name for this brief — shown in the schedule register</p>
+          <p class="field-hint">A short name for this brief â shown in the schedule register</p>
         </div>
       </div>
 
@@ -140,25 +140,22 @@
             </div>
             <button type="button" class="btn-run-now" id="btn-run-now" onclick="runAgentNow()">&#9654; Run Agent Now</button>
           </div>
-          <p class="field-hint">Run Agent Now triggers an immediate run with the current repo config — the draft lands in <a class="hint-link" href="/admin/approvals">Approvals</a></p>
+          <p class="field-hint">Run Agent Now triggers an immediate run with the current repo config â the draft lands in <a class="hint-link" href="/admin/approvals">Approvals</a></p>
         </div>
 
         <!-- Frequency Options -->
         <div id="frequency-options" class="conditional-block">
           <div class="field-row">
             <div class="field-group">
-              <label class="field-label" for="freq-amount">Number of Runs</label>
-              <input type="number" id="freq-amount" class="field-input" min="1" max="99" value="1" />
-            </div>
-            <div class="field-group">
-              <label class="field-label" for="freq-unit">Per</label>
+              <label class="field-label" for="freq-unit">Frequency</label>
               <select id="freq-unit" class="field-select">
-                <option value="day">Day</option>
-                <option value="week" selected>Week</option>
-                <option value="month">Month</option>
+                <option value="day">Once per day</option>
+                <option value="week" selected>Once per week</option>
+                <option value="month">Once per month</option>
               </select>
             </div>
           </div>
+          <p class="field-hint" style="font-family:var(--mono);font-size:11px;color:var(--text-mut);margin-top:8px;">Each brief runs at most once per day. For more coverage, add another brief.</p>
         </div>
 
         <!-- Specific Date Options -->
@@ -203,7 +200,7 @@
         <div class="field-group">
           <label class="field-label">Select Sector(s)</label>
           <div class="checkbox-grid" id="market-focus" role="group" aria-label="Market focus sectors">
-            <label class="checkbox-label"><input type="checkbox" value="BFSI" /><span class="checkbox-custom"></span>BFSI — Banking, Financial Services, Insurance</label>
+            <label class="checkbox-label"><input type="checkbox" value="BFSI" /><span class="checkbox-custom"></span>BFSI â Banking, Financial Services, Insurance</label>
             <label class="checkbox-label"><input type="checkbox" value="Energy" /><span class="checkbox-custom"></span>Energy &amp; Utilities</label>
             <label class="checkbox-label"><input type="checkbox" value="Retail" /><span class="checkbox-custom"></span>Retail</label>
             <label class="checkbox-label"><input type="checkbox" value="CMT" /><span class="checkbox-custom"></span>Comms, Media and Telecoms</label>
@@ -211,7 +208,7 @@
             <label class="checkbox-label"><input type="checkbox" value="FMCG" /><span class="checkbox-custom"></span>FMCG</label>
             <label class="checkbox-label"><input type="checkbox" value="Manufacturing" /><span class="checkbox-custom"></span>Manufacturing</label>
             <label class="checkbox-label"><input type="checkbox" value="Pharma" /><span class="checkbox-custom"></span>Pharmaceuticals</label>
-            <label class="checkbox-label"><input type="checkbox" value="Petrochem" /><span class="checkbox-custom"></span>Petrochemicals</label>
+            <label class="checkbox-label"><input type="checkbox" value="Petrochem" /><span class="checkbox-custom"></span>Petrochemicals</span></label>
             <label class="checkbox-label"><input type="checkbox" value="PublicSector" /><span class="checkbox-custom"></span>Public Sector</label>
             <label class="checkbox-label"><input type="checkbox" value="Transport" /><span class="checkbox-custom"></span>Transport and travel</label>
           </div>
@@ -233,7 +230,7 @@
             <label class="checkbox-label"><input type="checkbox" value="MiddleEast" /><span class="checkbox-custom"></span>Middle East</label>
             <label class="checkbox-label"><input type="checkbox" value="Africa" /><span class="checkbox-custom"></span>Africa</label>
             <label class="checkbox-label"><input type="checkbox" value="India" /><span class="checkbox-custom"></span>India</label>
-            <label class="checkbox-label"><input type="checkbox" value="APAC" /><span class="checkbox-custom"></span>APAC</label>
+            <label class="checkbox-label"><input type="checkbox" value="APAC" /><span class="checkbox-custom"></span>APACÂ¼</label>
             <label class="checkbox-label"><input type="checkbox" value="NorthAmerica" /><span class="checkbox-custom"></span>North America</label>
             <label class="checkbox-label"><input type="checkbox" value="SouthAmerica" /><span class="checkbox-custom"></span>South America</label>
           </div>
@@ -438,7 +435,7 @@
         </div>
       </div>
       <p class="register-desc">
-        Every generated brief is recorded here in a central database — this register is the agent's run list,
+        Every generated brief is recorded here in a central database â this register is the agent's run list,
         and the agent queries it live for its instructions. Select a brief to view its payload,
         edit to amend it, or delete to remove it from the schedule. Export downloads a
         <code>register.json</code> snapshot.
@@ -450,7 +447,7 @@
   <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
-      <span class="footer-note">Research News Agent Control Centre — No content is published without explicit human approval.</span>
+      <span class="footer-note">Research News Agent Control Centre â No content is published without explicit human approval.</span>
       <span class="footer-build">Built for agent orchestration workflows</span>
     </div>
   </footer>
