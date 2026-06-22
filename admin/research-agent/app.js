@@ -662,7 +662,7 @@ amsync function runAgentNow() {
     const res = await fetch('/api/run-agent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
-      body: JSON.stringify({ config: 'default.json' })
+      body: JSON.stringify(window._selectedId ? { briefId: window._selectedId } : { config: 'default.json' })
     });
     const data = await res.json().catch(() => ({}));
 
