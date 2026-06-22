@@ -2,13 +2,17 @@ name: Research News Agent
 
 on:
   schedule:
-    - cron: '0 7 * * 1'    # every Monday at 07:00 UTC
+    - cron: '0 7 * * 1' # every Monday at 07:00 UTC
   workflow_dispatch:
     inputs:
       config:
-        description: 'Config file to run (in agent/configs/)'
+        description: 'Config file to run (in agent/configs/) — ignored when brief_id is set'
         required: false
         default: 'default.json'
+      brief_id:
+        description: 'Brief ID from Supabase (e.g. BRIEF-002) — overrides config when set'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -33,6 +37,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           CONFIG_FILE: ${{ github.event.inputs.config || 'default.json' }}
+          BRIEF_ID: ${{ github.event.inputs.brief_id || '' }}
         run: node agent/run-agent.js
 
       - name: Commit draft brief
