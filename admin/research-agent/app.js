@@ -1,5 +1,5 @@
 /**
- * Research News Agent Control Centre — app.js
+ * Research News Agent Control Centre â app.js
  * Handles: schedule toggle, payload generation, localStorage, JSON export
  */
 
@@ -61,7 +61,7 @@ function buildPayload() {
   };
 
   if (mode === 'frequency') {
-    schedule.frequencyAmount = parseInt(document.getElementById('freq-amount').value, 10) || 1;
+    schedule.frequencyAmount = 1;                              // always 1 â capped at daily
     schedule.frequencyUnit   = document.getElementById('freq-unit').value;
     schedule.specificDate    = '';
   } else {
@@ -180,7 +180,7 @@ async function generateBrief() {
       showMessage('Agent brief generated and added to the register as ' + entryId + '.', 'success');
     }
   } catch (e) {
-    showMessage('Register save failed — could not reach the database.', 'error');
+    showMessage('Register save failed â could not reach the database.', 'error');
   }
 
   window._selectedId = entryId;
@@ -193,7 +193,7 @@ async function generateBrief() {
   const previewStatus = document.getElementById('preview-status');
 
   previewBody.innerHTML = '<pre class="json-output">' + highlighted + '</pre>';
-  previewStatus.textContent = entryId ? ('Generated — ' + entryId) : 'Generated';
+  previewStatus.textContent = entryId ? ('Generated â ' + entryId) : 'Generated';
   previewStatus.classList.add('ready');
 
   document.getElementById('btn-export').disabled = false;
@@ -238,7 +238,6 @@ function resetForm() {
 
   setScheduleMode('frequency');
   document.getElementById('brief-title').value = '';
-  document.getElementById('freq-amount').value  = '1';
   document.getElementById('freq-unit').value    = 'week';
   document.getElementById('run-date').value     = '';
   document.getElementById('run-time').value     = '08:00';
@@ -283,7 +282,6 @@ function readFormState() {
   return {
     briefTitle:        document.getElementById('brief-title').value,
     scheduleMode:      getScheduleMode(),
-    freqAmount:        document.getElementById('freq-amount').value,
     freqUnit:          document.getElementById('freq-unit').value,
     runDate:           document.getElementById('run-date').value,
     runTime:           document.getElementById('run-time').value,
@@ -313,7 +311,6 @@ function applyFormState(config) {
   setScheduleMode(config.scheduleMode || 'frequency');
 
   setValue('brief-title',      config.briefTitle     || '');
-  setValue('freq-amount',      config.freqAmount     || '1');
   setValue('freq-unit',        config.freqUnit       || 'week');
   setValue('run-date',         config.runDate        || '');
   setValue('run-time',         config.runTime        || '08:00');
@@ -418,7 +415,7 @@ async function refreshRegister() {
       payload:   r.payload
     }));
   } catch (e) {
-    showMessage('Could not reach the register database — check your connection.', 'error');
+    showMessage('Could not reach the register database â check your connection.', 'error');
   }
   renderRegister();
 }
@@ -441,18 +438,19 @@ function scheduleSummary(p) {
   const s = (p && p.schedule) || {};
   const t = s.preferredRunTime || '08:00';
   if (s.mode === 'frequency') {
-    return (s.frequencyAmount || 1) + '\u00d7 per ' + (s.frequencyUnit || 'week') + ' \u00b7 ' + t;
+    const unit = s.frequencyUnit || 'week';
+    return 'Once per ' + unit + ' \u00b7 ' + t;
   }
   return 'On ' + (s.specificDate || '\u2014') + ' \u00b7 ' + t;
 }
 
 // =====================================================
-// APPROVAL TRACKING (localStorage — per-browser, per-brief)
+// APPROVAL TRACKING (localStorage â per-browser, per-brief)
 // =====================================================
 
 /**
  * Check whether this brief has been manually marked as approved.
- * @param {string} id — brief ID e.g. BRIEF-002
+ * @param {string} id â brief ID e.g. BRIEF-002
  * @returns {boolean}
  */
 function isApprovalTracked(id) {
@@ -465,7 +463,7 @@ function isApprovalTracked(id) {
 
 /**
  * Toggle the approval-tracked state for a brief and re-render the register.
- * Called from the inline onchange handler on the checkbox.
+ * Called from the inline onchange handler on The checkbox.
  * @param {string} id
  * @param {boolean} checked
  */
@@ -476,7 +474,7 @@ function toggleApprovalTracked(id, checked) {
     } else {
       localStorage.removeItem('approval_tracked_' + id);
     }
-  } catch (_) { /* storage unavailable — silently ignore */ }
+  } catch (_) { /* storage unavailable â silently ignore */ }
   renderRegister();
 }
 
@@ -572,7 +570,7 @@ function editRegisterEntry(id) {
   renderRegister();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  showMessage('Editing ' + id + ' — amend the form and click Generate Agent Brief to update it.', 'info');
+  showMessage('Editing ' + id + ' â amend the form and click Generate Agent Brief to update it.', 'info');
 }
 
 function cancelEdit(showMsg) {
@@ -580,10 +578,10 @@ function cancelEdit(showMsg) {
   window._editingId = null;
   document.getElementById('register-editing').classList.add('hidden');
   renderRegister();
-  if (showMsg) showMessage('Edit cancelled — the register entry was not changed.', 'info');
+  if (showMsg) showMessage('Edit cancelled â the register entry was not changed.', 'info');
 }
 
-async function deleteRegisterEntry(id) {
+aproof function deleteRegisterEntry(id) {
   if (!confirm('Delete ' + id + ' from the schedule register? The agent will no longer run this brief.')) return;
 
   try {
@@ -593,7 +591,7 @@ async function deleteRegisterEntry(id) {
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
   } catch (e) {
-    showMessage('Delete failed — could not reach the database.', 'error');
+    showMessage('Delete failed â could not reach the database.', 'error');
     return;
   }
 
@@ -610,7 +608,7 @@ async function deleteRegisterEntry(id) {
 function exportRegister() {
   const entries = loadRegister();
   const doc = {
-    register:   'Research News Agent — Schedule Register',
+    register:   'Research News Agent â Schedule Register',
     agentName:  'Market News Research Agent',
     exportedAt: new Date().toISOString(),
     briefCount: entries.length,
@@ -644,17 +642,17 @@ function exportRegister() {
 function getAdminKey(forcePrompt) {
   let key = localStorage.getItem('adminApiKey');
   if (!key || forcePrompt) {
-    key = window.prompt('Enter the admin key:');
+    key = window.prompt('Enter the admin key::');
     if (key) localStorage.setItem('adminApiKey', key.trim());
   }
   return key ? key.trim() : null;
 }
 
-async function runAgentNow() {
+amsync function runAgentNow() {
   if (!confirm('Run the research agent now? This makes one Claude API call and stages a draft for your approval.')) return;
 
   const key = getAdminKey();
-  if (!key) { showMessage('Run cancelled — no admin key provided.', 'info'); return; }
+  if (!key) { showMessage('Run cancelled â no admin key provided.', 'info'); return; }
 
   const btn = document.getElementById('btn-run-now');
   btn.disabled = true;
@@ -669,15 +667,15 @@ async function runAgentNow() {
     const data = await res.json().catch(() => ({}));
 
     if (res.ok) {
-      showMessage('Agent run started — the draft will appear in Approvals in about 3 minutes.', 'success');
+      showMessage('Agent run started â the draft will appear in Approvals in about 3 minutes.', 'success');
     } else if (res.status === 401) {
       localStorage.removeItem('adminApiKey');
-      showMessage('Admin key rejected — click Run Agent Now again to re-enter it.', 'error');
+      showMessage('Admin key rejected â click Run Agent Now again to re-enter it.', 'error');
     } else {
       showMessage('Run failed: ' + (data.error || ('HTTP ' + res.status)), 'error');
     }
   } catch (e) {
-    showMessage('Run failed — could not reach the API.', 'error');
+    showMessage('Run failed â could not reach the API.', 'error');
   }
   btn.disabled = false;
 }
