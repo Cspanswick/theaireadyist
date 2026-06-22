@@ -2,9 +2,13 @@
  * run-agent.js — Scheduled Research News Agent runner
  * theAIReadyist
  *
- * Reads a config JSON (produced by the control centre), calls the Claude API
- * with web search enabled, applies the agent instructions and guardrails,
- * and writes a markdown brief to agent/output/.
+ * Config loading (in priority order):
+ *   1. BRIEF_ID env var → fetch brief.payload from Supabase (set by /api/run-agent when a
+ *      specific brief is triggered from the admin control centre)
+ *   2. CONFIG_FILE env var → read agent/configs/<file>.json (legacy / cron default)
+ *
+ * Calls Claude with web search, writes a markdown brief to agent/output/,
+ * and stages a draft insight in Supabase for human approval.
  *
  * Nothing is published. The output is a draft for human review.
  */
@@ -19,23 +23,61 @@ const Anthropic = require('@anthropic-ai/sdk');
 const MODEL = 'claude-sonnet-4-6';
 
 // ── Load config ────────────────────────────────────────
-const configFile = process.env.CONFIG_FILE || 'default.json';
-const configPath = path.join(__dirname, 'configs', configFile);
+// Returns the config object (same shape as agent/configs/*.json).
+// Async to support the Supabase fetch path.
+async function loadConfig() {
+  const briefId = process.env.BRIEF_ID;
 
-if (!fs.existsSync(configPath)) {
-  console.error(`Config not found: ${configPath}`);
-  process.exit(1);
+  if (briefId && briefId.trim()) {
+    // Path 1: fetch brief config from Supabase
+    const secret = process.env.SUPABASE_SECRET_KEY;
+    if (!secret) {
+      console.error('BRIEF_ID is set but SUPABASE_SECRET_KEY is missing — cannot fetch brief config.');
+      process.exit(1);
+    }
+    const url = 'https://mydxofjvpuurwwaohqys.supabase.co/rest/v1/briefs'
+      + '?id=eq.' + encodeURIComponent(briefId.trim())
+      + '&select=id,title,payload&limit=1';
+    const sbRes = await fetch(url, {
+      headers: {
+        'apikey': secret,
+        'Authorization': 'Bearer ' + secret
+      }
+    });
+    if (!sbRes.ok) {
+      console.error(`Failed to fetch brief ${briefId}: HTTP ${sbRes.status}`);
+      process.exit(1);
+    }
+    const rows = await sbRes.json();
+    if (!rows.length) {
+      console.error(`Brief not found in Supabase: ${briefId}`);
+      process.exit(1);
+    }
+    const cfg = rows[0].payload;
+    console.log(`Loaded brief from Supabase: ${briefId} ("${rows[0].title || cfg.briefTitle || cfg.topic}")`);
+    console.log(`Topic: ${cfg.topic}`);
+    return cfg;
+  }
+
+  // Path 2: file-based config
+  const configFile = process.env.CONFIG_FILE || 'default.json';
+  const configPath = path.join(__dirname, 'configs', configFile);
+  if (!fs.existsSync(configPath)) {
+    console.error(`Config not found: ${configPath}`);
+    process.exit(1);
+  }
+  const cfg = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+  console.log(`Loaded config: ${configFile}`);
+  console.log(`Topic: ${cfg.topic}`);
+  return cfg;
 }
 
-const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-console.log(`Loaded config: ${configFile}`);
-console.log(`Topic: ${config.topic}`);
+// ── Call the Claude API ────────────────────────────────
+async function run() {
+  const config = await loadConfig();
 
-// ── Build the agent system prompt ──────────────────────
-// This encodes the agent-instructions.md rules: source hierarchy,
-// confidence levels, fact/opinion/vendor separation, and the
-// mandatory human-approval notice.
-const systemPrompt = `You are a Scheduled Market News Research Agent for theAIReadyist.
+  // ── Build the agent system prompt ──────────────────────
+  const systemPrompt = `You are a Scheduled Market News Research Agent for theAIReadyist.
 
 Your job: research recent, credible sources on the configured topic and produce a structured, cited, evidence-led brief.
 
@@ -80,13 +122,13 @@ Produce the brief in clean markdown with these sections:
 8. Recommended follow-up
 9. Human approval notice`;
 
-// ── Build the user message ─────────────────────────────
-const sectors = Array.isArray(config.marketFocus) ? config.marketFocus.join(', ') : config.marketFocus;
-const regions = Array.isArray(config.region) ? config.region.join(', ') : config.region;
-const sourceTypes = config.sourcePreferences?.preferredSourceTypes?.join(', ') || 'any credible source';
-const excluded = config.sourcePreferences?.excludedSources || 'none';
+  // ── Build the user message ─────────────────────────────
+  const sectors    = Array.isArray(config.marketFocus) ? config.marketFocus.join(', ') : config.marketFocus;
+  const regions    = Array.isArray(config.region)      ? config.region.join(', ')      : config.region;
+  const sourceTypes = config.sourcePreferences?.preferredSourceTypes?.join(', ') || 'any credible source';
+  const excluded   = config.sourcePreferences?.excludedSources || 'none';
 
-const userMessage = `Research this topic and produce the brief:
+  const userMessage = `Research this topic and produce the brief:
 
 TOPIC: ${config.topic}
 SECTOR(S): ${sectors || 'not specified'}
@@ -96,8 +138,6 @@ EXCLUDED SOURCES: ${excluded}
 
 Focus on developments from the last 3 months. Use web search to find current, credible sources. Today's date is ${new Date().toISOString().split('T')[0]}.`;
 
-// ── Call the Claude API ────────────────────────────────
-async function run() {
   const client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
 
   console.log('Calling Claude API with web search...');
@@ -137,7 +177,7 @@ async function run() {
     .replace(/[^a-z0-9]+/g, '-')
     .slice(0, 50);
   const outName = `${timestamp}_${safeTopic}.md`;
-  const outDir = path.join(__dirname, 'output');
+  const outDir  = path.join(__dirname, 'output');
   const outPath = path.join(outDir, outName);
 
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
@@ -158,7 +198,7 @@ status: DRAFT — awaiting human approval
 
   // ── Stage as a DRAFT insight in Supabase (awaiting human approval) ────
   // Invisible to the public site until approved via /admin/approvals.
-  await stageDraftInsight(brief, timestamp, safeTopic);
+  await stageDraftInsight(brief, timestamp, safeTopic, config);
 }
 
 /**
@@ -166,7 +206,7 @@ status: DRAFT — awaiting human approval
  * Requires SUPABASE_SECRET_KEY in the environment (GitHub Actions secret).
  * Skips gracefully when not configured so the markdown output still lands.
  */
-async function stageDraftInsight(brief, timestamp, safeTopic) {
+async function stageDraftInsight(brief, timestamp, safeTopic, config) {
   const secret = process.env.SUPABASE_SECRET_KEY;
   if (!secret) {
     console.log('SUPABASE_SECRET_KEY not set — skipping draft insight staging.');
@@ -193,23 +233,23 @@ async function stageDraftInsight(brief, timestamp, safeTopic) {
   }
 
   const row = {
-    id: 'INS-' + timestamp,
-    slug: safeTopic + '-' + timestamp.slice(0, 10),
+    id:      'INS-' + timestamp,
+    slug:    safeTopic + '-' + timestamp.slice(0, 10),
     title,
     summary,
     sectors: Array.isArray(config.marketFocus) ? config.marketFocus : [],
-    regions: Array.isArray(config.region) ? config.region : [],
-    status: 'draft',
-    body: brief
+    regions: Array.isArray(config.region)      ? config.region      : [],
+    status:  'draft',
+    body:    brief
   };
 
   const res = await fetch('https://mydxofjvpuurwwaohqys.supabase.co/rest/v1/insights', {
     method: 'POST',
     headers: {
-      'apikey': secret,
+      'apikey':        secret,
       'Authorization': 'Bearer ' + secret,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
+      'Content-Type':  'application/json',
+      'Prefer':        'return=minimal'
     },
     body: JSON.stringify(row)
   });
@@ -217,7 +257,7 @@ async function stageDraftInsight(brief, timestamp, safeTopic) {
   if (res.ok) {
     console.log(`Draft insight staged for approval: ${row.id} ("${title}")`);
   } else {
-    console.error(`Draft insight staging failed (HTTP ${res.status}) — markdown output is still committed.`);
+    console.error(`Draft insight staging failed (HTTP ${res.status}) — }arkdown output is still committed.`);
   }
 }
 
