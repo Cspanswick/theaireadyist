@@ -4,6 +4,20 @@ All notable changes to the editorial taxonomy, site structure, and agent configu
 
 ---
 
+## [Governance/Ops] — Post-WP12 direction (DR-001 + Phase A + observation)
+
+**Date:** 2026-06-23
+
+- `docs/decisions/DR-001-operating-model.md` — **DR-001 (Approved):** Mission AI Readiness · Category Decision Performance · Engine Constraint Intelligence · Discipline Decision Intelligence. All future build packages must reference DR-001.
+- `docs/builds/executive-signal-agent-v1-operations.md` — operations & monitoring runbook (checks, failure modes, recovery, cost, alerting).
+- `docs/builds/executive-signal-agent-v1-deployment-report.md` — Phase A deployment report (build-complete; go-live pending credentialed owner steps A1–A2; first-run result fields to complete).
+- `docs/observation/observation-plan.md` + `observation-log.md` — 30–60 day observation measurement plan (metric definitions, ready-to-run SQL, weekly log). Notes v1 captures volume/editorial/pillar natively; persona/themes captured manually.
+- `docs/observation/constraint-intelligence-readiness-report.md` — evidence-review template (5 questions + decision gate). **Constraint Intelligence is not built until evidence justifies it.**
+
+No code, migrations, features or assessments added — operational learning phase per DR-001.
+
+---
+
 ## [Strategy] — `feature/wp12-operating-model` (Work Package 12)
 
 ### Added — Decision Performance Operating Model (strategy only, no code)
