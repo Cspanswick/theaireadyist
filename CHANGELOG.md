@@ -4,6 +4,21 @@ All notable changes to the editorial taxonomy, site structure, and agent configu
 
 ---
 
+## [Strategy] — `feature/wp12-operating-model` (Work Package 12)
+
+### Added — Decision Performance Operating Model (strategy only, no code)
+
+**Date:** 2026-06-23
+
+Canonical strategic architecture for the platform. **No code, UI, migrations or assessments** — strategic architecture only. In `docs/strategy/`:
+
+- `wp12-category-model-decision.md` — A/B/C category evaluation. **Ratified Model C**: Category = Decision Performance; proprietary engine = Constraint Intelligence; mission = AI Readiness; Decision Intelligence retained as internal discipline. Scorecard: A 20/50, B 32/50, C 44/50.
+- `wp12-decision-performance-operating-model.md` — the canonical operating model (D1 concept hierarchy, D2 asset map, D3 proprietary analysis, D4 data model, D5 constraint intelligence framework, D6 category ownership, D7 3-year north star).
+
+Key decision: **Constraint Intelligence is the proprietary engine, not the category** (partially retracts an interim WP12 working statement). Organising principle: *become AI Ready by improving Decision Performance through Decision Intelligence, using Constraint Intelligence to find the one limit that matters most.* Non-negotiables honoured: pillars/DPI/six-pillar model unchanged.
+
+---
+
 ## [Design] — `feature/executive-signal-agent-v2` (Work Package 11)
 
 ### Added — Decision Performance Alignment design package (no code changes)
