@@ -2,9 +2,9 @@
 
 **Aligns to:** DR-001 · **Phase:** A (take v1 live)
 **Date:** 2026-06-23
-**Status:** **Build-complete and packaged for go-live. Live activation pending two credentialed owner steps (A1–A2).**
+**Status:** **Migration live; secrets confirmed. The only remaining blocker is landing the code on GitHub (PR into `main`).**
 
-> Honest scope note: the build, configuration, tests and documentation are complete and committed. Actual go-live requires running the migration in your Supabase project and setting the GitHub/Vercel secrets — these need your credentials and cannot be performed from the build environment. The result fields below are pre-filled where known and marked **⧗ pending go-live** where they can only be captured on the first live run.
+> Progress update (2026-06-23): the database migration has been **run and verified in production**, and all required secrets are **already present** in GitHub and Vercel (set Jun 10 for the existing research agent / DPI; the signal agent reuses them). The sole outstanding step is getting the committed code onto `main` (handed off as `signal-agent-deliverables/` for a reviewable PR). Once merged + deployed, the first live run can be executed.
 
 ---
 
@@ -16,7 +16,7 @@ Executive Signals v1 is a pillar-based executive signal engine: it ingests publi
 
 | Required output | Status | Evidence |
 |---|---|---|
-| Successful deployment | ⧗ pending go-live (A1–A4) | Code committed on `feature/executive-signal-agent-v1` |
+| Successful deployment | ⧗ pending A3 (PR to `main`) | Migration live; secrets confirmed; code committed + handed off as `signal-agent-deliverables/` |
 | Working ingestion pipeline | ✅ built; mock-tested end-to-end | `agent/run-signal-agent.js`; 13 feeds verified across 7 groups |
 | Editorial review workflow | ✅ built | `/admin/signals` + `api/signals-pending.js` + `api/signals-decision.js` |
 | Published signals capability | ✅ built | `/signals.html` (reads published only); publish action in admin |
@@ -26,10 +26,10 @@ Executive Signals v1 is a pillar-based executive signal engine: it ingests publi
 
 | # | Step | Owner | Status |
 |---|---|---|---|
-| A1 | Run `migration_build5.sql` in Supabase | Owner | ⧗ pending |
-| A2 | Set `ANTHROPIC_API_KEY` + `SUPABASE_SECRET_KEY` (GitHub); confirm `ADMIN_API_KEY` + secret (Vercel) | Owner | ⧗ pending |
-| A3 | Merge/push `feature/executive-signal-agent-v1` so the schedule registers | Owner | ⧗ pending |
-| A4 | Dry-run dispatch (`dry_run=1`) → small live run (`max_items=20`) → review in `/admin/signals` | Owner + editorial | ⧗ pending |
+| A1 | Run `migration_build5.sql` in Supabase | Owner | ✅ **done 2026-06-23** — table + 1 RLS policy + 7 indexes + 11 check constraints verified |
+| A2 | Set `ANTHROPIC_API_KEY` + `SUPABASE_SECRET_KEY` (GitHub); confirm `ADMIN_API_KEY` + secret (Vercel) | Owner | ✅ **already present** — GitHub: both secrets; Vercel: `ADMIN_API_KEY`, `SUPABASE_SECRET_KEY`, `GITHUB_TOKEN` (verified 2026-06-23) |
+| A3 | Land the code on `main` via PR (from `signal-agent-deliverables/`) so the schedule registers | Owner / dev | ⧗ **pending — the one remaining blocker** |
+| A4 | Dry-run dispatch (`dry_run=1`) → small live run (`max_items=20`) → review in `/admin/signals` | Owner + editorial | ⧗ pending (post-A3) |
 | A5 | Confirm & enable remaining feeds from first-run logs | Build | ⧗ pending (post-A4) |
 | A6 | Delete stale `.git/index.lock` / `.git/HEAD.lock` locally | Owner | ⧗ pending (cosmetic) |
 
