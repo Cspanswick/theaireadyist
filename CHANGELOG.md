@@ -4,6 +4,19 @@ All notable changes to the editorial taxonomy, site structure, and agent configu
 
 ---
 
+## [Ops] — Editorial Operating Model v1 (Work Package 13)
+
+**Date:** 2026-06-23
+
+Operating package for the first 60 live days (docs only; no code/schema/strategy):
+
+- `docs/editorial/editorial-operating-model-v1.md` — D1 Signal Publishing Framework (+ editorial decision tree), D2 Executive Relevance Scoring Model (1–5 with anchors), D3 Weekly Intelligence Review process + template, D4 Observation Methodology, D5 30-Day Success Criteria + template, D6 60-Day Evidence Gate framework, D7 Operational Dashboard Specification.
+- `docs/editorial/observation-register.md` — canonical Observation Register (WP13 fields incl. Editorial Notes); supersedes the earlier emerging-pattern-register.
+
+D6 uses the existing `constraint-intelligence-readiness-report.md` as its instrument; D7 documents the already-live `/admin/observation` dashboard (no schema changes). Non-negotiables honoured.
+
+---
+
 ## [Ops] — Execute DR-001: operational baseline tooling
 
 **Date:** 2026-06-23

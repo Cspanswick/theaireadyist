@@ -1,5 +1,7 @@
 # Emerging Pattern Register
 
+> **⚠ Superseded (2026-06-23) by `docs/editorial/observation-register.md`** (Editorial Operating Model v1, D4). The canonical register now uses the WP13 field set (adds `Editorial Notes`; "Observation ID" / "Associated Pillar"). Use the new register going forward; this file is retained for history.
+
 **Aligns to:** DR-001 · Precursor to (not yet) Constraint Intelligence
 **Purpose:** capture recurring observations during the observation period as **evidence**.
 
