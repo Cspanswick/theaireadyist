@@ -129,10 +129,10 @@
       "name": "McKinsey (Insights)",
       "group": "Analyst / Advisory",
       "feed_url": "https://www.mckinsey.com/insights/rss",
-      "enabled": false,
-      "verified": false,
+      "enabled": true,
+      "verified": true,
       "default_region": "Global",
-      "notes": "Covers McKinsey Quarterly + Technology/Digital. Feed URL unverified."
+      "notes": "Feed verified (text/xml, full RSS) during v1 build (second wave). Covers McKinsey Quarterly + Technology/Digital. High-relevance source (AI transformation, operating models, agentic AI, CIO budgets)."
     },
     {
       "name": "CRN",
@@ -219,10 +219,10 @@
       "name": "Everest Group (Blog)",
       "group": "Analyst / Advisory",
       "feed_url": "https://www.everestgrp.com/feed",
-      "enabled": false,
-      "verified": false,
+      "enabled": true,
+      "verified": true,
       "default_region": "Global",
-      "notes": "Feed URL unverified."
+      "notes": "Feed verified (application/rss+xml) during v1 build (second wave)."
     },
     {
       "name": "Deloitte Insights",

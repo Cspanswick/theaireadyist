@@ -164,7 +164,7 @@ Two-tier design (Haiku triage all items; Sonnet only on score 4–5). For a real
 - Verify and enable the remaining sources; add a small feed-health checker.
 - Prompt-cache the (static) classification system prompt to cut input cost further.
 - Editor backfill of `pillar` onto historical insights using the same classifier.
-- Surface approved/published signals on the homepage, insights page, daily signal page and pillar pages (v1 stores and prepares; it does not wire these in).
+- Surface approved/published signals on the homepage, insights page, daily signal page and pillar pages (v1 stores and prepares; it does not wire these in — the homepage source is not in this workspace). A ready-to-paste, design-token-consistent embed module is provided in `docs/builds/signals-homepage-embed.md`.
 - Optional weekly digest (explicitly out of scope for v1 — no newsletter functionality).
 - DST-safe scheduling guard (see above).
 
