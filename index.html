@@ -1466,7 +1466,7 @@
     </div>
     <div class="li-head-right">
       <span class="li-updated" id="li-updated"></span>
-      <a class="li-viewall" href="/insights">View all &rarr;</a>
+      <a class="li-viewall" href="/signals">View all &rarr;</a>
     </div>
   </div>
 
@@ -1670,7 +1670,7 @@
   // insights table RLS grants anon SELECT but NOT write.
   const SUPABASE_URL = 'https://mydxofjvpuurwwaohqys.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_gAIR6BSI1ZwMNSzafJCAdQ_hAb6jtAR';
-  const TABLE = 'insights';
+  const TABLE = 'executive_signals';
 
   const track = document.getElementById('li-track');
   const empty = document.getElementById('li-empty');
@@ -1678,9 +1678,9 @@
 
   // Fetch published insights, newest first, limit 8
   const url = `${SUPABASE_URL}/rest/v1/${TABLE}`
-    + `?select=id,slug,title,summary,sectors,regions,published_at`
-    + `&status=eq.published`
-    + `&order=published_at.desc`
+    + `?select=signal_title,why_it_matters,primary_pillar,secondary_pillar,executive_relevance_score,published_at,created_at`
+    + `&approval_status=eq.published`
+    + `&order=created_at.desc`
     + `&limit=40`;
 
   fetch(url, {
@@ -1703,7 +1703,7 @@
     // Dedupe by normalised title (agent runs same topic multiple times)
     const seen = new Set();
     const unique = rows.filter(row => {
-      const key = (row.title || row.slug || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      const key = (row.signal_title || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
       if (!key || seen.has(key)) return false;
       seen.add(key);
       return true;
@@ -1716,7 +1716,7 @@
     if (empty) empty.remove();
 
     // "Updated" stamp from the newest item
-    const newest = rows[0].published_at;
+    const newest = rows[0].created_at || rows[0].published_at;
     if (newest) {
       const d = new Date(newest);
       updatedEl.textContent = 'Updated ' + d.toLocaleDateString('en-GB', {
@@ -1726,26 +1726,26 @@
   }
 
   function cardHTML(row) {
-    const date = row.published_at
-      ? new Date(row.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+    const date = (row.created_at || row.published_at)
+      ? new Date(row.created_at || row.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
       : '';
-    const tags = []
-      .concat(row.sectors || [], row.regions || [])
-      .slice(0, 3)
+    const score = row.executive_relevance_score ? ('Score ' + row.executive_relevance_score) : 'Signal';
+    const tags = [row.primary_pillar, row.secondary_pillar]
+      .filter(Boolean)
+      .slice(0, 2)
       .map(t => `<span class="li-tag">${esc(t)}</span>`)
       .join('');
-    const href = row.slug ? `/insights/${row.slug}` : '/insights';
 
     return `
-      <a class="li-card" href="${href}">
+      <a class="li-card" href="/signals">
         <div class="li-card-meta">
           <span class="li-card-date">${esc(date)}</span>
-          <span>Agent brief</span>
+          <span>${esc(score)}</span>
         </div>
-        <div class="li-card-title">${esc(row.title || 'Untitled insight')}</div>
-        <div class="li-card-summary">${esc(row.summary || '')}</div>
+        <div class="li-card-title">${esc(row.signal_title || 'Untitled signal')}</div>
+        <div class="li-card-summary">${esc(row.why_it_matters || '')}</div>
         <div class="li-card-tags">${tags}</div>
-        <div class="li-card-cta">Read insight</div>
+        <div class="li-card-cta">Read signal</div>
       </a>`;
   }
 
