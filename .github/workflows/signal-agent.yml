@@ -6,11 +6,13 @@ name: Executive Signal Agent
 
 on:
   schedule:
-    # 05:00 UTC = 06:00 UK time during BST (summer).
-    # NOTE: GitHub Actions cron is always UTC and does NOT observe DST.
-    # During GMT (winter) this fires at 05:00 UK. Adjust if a strict
-    # 06:00-local slot is required year-round (see docs build notes).
-    - cron: '0 5 * * *'
+    # GitHub Actions cron is always UTC and does NOT observe DST, so we fire at
+    # BOTH 05:00 and 06:00 UTC. The run-signal-agent.js time guard
+    # (RUN_AT_HOUR_LONDON=6, set only for scheduled runs below) lets exactly one
+    # of them proceed — the one that is 06:00 in Europe/London — and exits the
+    # other. Net result: a single 06:00 UK run year-round, through BST and GMT.
+    - cron: '0 5 * * *'   # 06:00 London during BST (summer)
+    - cron: '0 6 * * *'   # 06:00 London during GMT (winter)
   workflow_dispatch:
     inputs:
       config:
@@ -55,6 +57,8 @@ jobs:
           CONFIG_FILE: ${{ github.event.inputs.config || 'signal-sources.json' }}
           MAX_ITEMS: ${{ github.event.inputs.max_items || '0' }}
           DRY_RUN: ${{ github.event.inputs.dry_run || '0' }}
+          # DST-safe guard: only enforced on scheduled runs. Manual dispatches always run.
+          RUN_AT_HOUR_LONDON: ${{ github.event_name == 'schedule' && '6' || '' }}
         run: node agent/run-signal-agent.js
 
       # No commit/push step: signals are written to Supabase as pending,

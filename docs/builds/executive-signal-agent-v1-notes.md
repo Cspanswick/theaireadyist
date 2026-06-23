@@ -131,13 +131,16 @@ Only **4–5** enter the approval queue (`approval_status = 'pending'`) and rece
 
 `.github/workflows/signal-agent.yml` runs daily and creates pending signals only (no commit/push, no publishing). It also supports `workflow_dispatch` with `config`, `max_items`, and `dry_run` inputs.
 
-**Important — cron is UTC, no DST:** the schedule is set to `0 5 * * *` (05:00 UTC = **06:00 UK during BST/summer**). During GMT/winter this fires at 05:00 UK. GitHub Actions cron does not observe DST. Options for a strict 06:00-local slot year-round:
+**DST-safe scheduling (implemented).** GitHub Actions cron is always UTC and does not observe DST. To hold a strict **06:00 Europe/London** slot year-round, the workflow fires at **both** `0 5 * * *` and `0 6 * * *` (UTC), and `run-signal-agent.js` applies a time guard:
 
-1. Accept the one-hour winter drift (simplest; recommended for v1).
-2. Run two crons (`0 5` and `0 6`) with a guard in the script that exits unless it's 06:00 in `Europe/London`.
-3. Move scheduling to **Vercel Cron** if the deployment supports it (the site already deploys serverless functions on Vercel) — Vercel Cron is also UTC, so the same DST caveat applies; a TZ guard in the function is the robust fix.
+- For scheduled runs the workflow sets `RUN_AT_HOUR_LONDON=6`. The script computes the current `Europe/London` hour and **exits 0 unless it equals 6**, so exactly one of the two daily runs proceeds (05:00 UTC during BST, 06:00 UTC during GMT) and the other is a no-op.
+- `workflow_dispatch` (manual) runs leave `RUN_AT_HOUR_LONDON` unset, so they always proceed regardless of time.
 
-Required secrets (GitHub → repo → Settings → Secrets): `ANTHROPIC_API_KEY`, `SUPABASE_SECRET_KEY`.
+Verified across BST and GMT: in summer the 05:00 UTC run proceeds (06:00 London) and 06:00 UTC skips; in winter the 06:00 UTC run proceeds (06:00 London) and 05:00 UTC skips.
+
+If scheduling later moves to **Vercel Cron** (the site already deploys serverless functions on Vercel), the same `RUN_AT_HOUR_LONDON` guard makes it DST-safe there too (Vercel Cron is also UTC).
+
+Required secrets (GitHub → repo → Settings → Secrets): `ANTHROPIC_API_KEY`, `SUPABASE_SECRET_KEY`. See `docs/builds/executive-signal-agent-v1-deployment.md` for the full deployment runbook.
 
 ---
 

@@ -458,7 +458,28 @@ async function storeRows(rows, secret) {
 // ════════════════════════════════════════════════════════
 // Main
 // ════════════════════════════════════════════════════════
+// DST-safe time guard. GitHub Actions / Vercel cron run in UTC and ignore DST,
+// so we schedule at both 05:00 and 06:00 UTC and let only the run that maps to
+// the target Europe/London hour proceed. Manual (workflow_dispatch) runs leave
+// RUN_AT_HOUR_LONDON unset and always proceed.
+function passesTimeGuard() {
+  const target = process.env.RUN_AT_HOUR_LONDON;
+  if (!target) return true;
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London', hour: '2-digit', hour12: false
+  }).formatToParts(new Date());
+  let londonHour = Number((parts.find(p => p.type === 'hour') || {}).value);
+  if (londonHour === 24) londonHour = 0; // normalise midnight edge
+  if (londonHour !== Number(target)) {
+    console.log(`Time guard: London hour is ${londonHour}, target ${target} — skipping this scheduled run.`);
+    return false;
+  }
+  console.log(`Time guard: London hour ${londonHour} matches target — proceeding.`);
+  return true;
+}
+
 async function run() {
+  if (!passesTimeGuard()) return;
   const nowIso = new Date().toISOString();
   const mock = process.env.MOCK_CLASSIFY === '1';
   const secret = process.env.SUPABASE_SECRET_KEY;

@@ -336,10 +336,10 @@
       "name": "Chief Executive",
       "group": "CXO / CFO",
       "feed_url": "https://chiefexecutive.net/feed/",
-      "enabled": false,
-      "verified": false,
+      "enabled": true,
+      "verified": true,
       "default_region": "US",
-      "notes": "Feed URL unverified."
+      "notes": "Feed verified (application/rss+xml) during v1 build (second wave). Strong CEO/board-level source for Executive Operating Models + Human Agency."
     },
     {
       "name": "CFO Dive",
@@ -348,7 +348,7 @@
       "enabled": false,
       "verified": false,
       "default_region": "US",
-      "notes": "Industry Dive feed pattern (same family as Channel Dive). Confirm before enabling."
+      "notes": "Industry Dive feed pattern, identical to the VERIFIED Channel Dive feed (/feeds/news/). Very strong candidate — timed out during second-wave verification (slow host), enable once a manual fetch confirms it returns RSS."
     },
     {
       "name": "CFO Magazine / CFO.com",
@@ -426,10 +426,10 @@
       "name": "HR Executive",
       "group": "CHRO",
       "feed_url": "https://hrexecutive.com/feed/",
-      "enabled": false,
-      "verified": false,
+      "enabled": true,
+      "verified": true,
       "default_region": "US",
-      "notes": "Feed URL unverified; relevant mainly to Human Agency pillar."
+      "notes": "Feed verified (application/rss+xml) during v1 build (second wave). Relevant mainly to Human Agency pillar."
     }
   ]
 }
