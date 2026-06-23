@@ -4,6 +4,20 @@ All notable changes to the editorial taxonomy, site structure, and agent configu
 
 ---
 
+## [Ops] — Execute DR-001: operational baseline tooling
+
+**Date:** 2026-06-23
+
+Evidence-gathering tooling for the observation period (existing data only; no new schema, taxonomy, or Constraint Intelligence):
+
+- `admin/observation/index.html` — internal observation dashboard answering "what is the platform learning?" (volume, pillar distribution, source contribution, editorial outcomes, emerging tags/recent). Reads the existing `/api/signals-pending?status=all` endpoint; reuses existing design tokens. Read-only.
+- `docs/observation/weekly-operational-report-template.md` — weekly operational report (Signal Volume, Source Quality, Pillar Distribution, Editorial Performance, Platform Health) with method/SQL per metric.
+- `docs/observation/emerging-pattern-register.md` — lightweight pattern register (patterns, not constraints) feeding the CI readiness review.
+
+Priority 1 (Phase A go-live) remains the single highest priority — blocked only on credentialed owner steps (migration + secrets).
+
+---
+
 ## [Governance/Ops] — Post-WP12 direction (DR-001 + Phase A + observation)
 
 **Date:** 2026-06-23
