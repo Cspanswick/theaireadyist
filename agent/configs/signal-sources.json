@@ -1,0 +1,435 @@
+{
+  "version": "1.0",
+  "description": "Source configuration for the TheAIReadyist Executive Signal Agent v1. The agent ingests headline-level metadata (title, URL, source, published date, short excerpt) from public RSS/Atom feeds only. It never fetches paywalled article bodies and never bypasses access controls. Disabled sources are configured for future enablement but were not feed-verified during the v1 build — confirm the feed URL returns valid RSS/Atom before flipping `enabled` to true.",
+  "defaults": {
+    "max_items_per_source": 25,
+    "lookback_hours": 30,
+    "user_agent": "AIReadyistSignalBot/1.0 (+https://theaireadyist.com)"
+  },
+  "sources": [
+    {
+      "name": "CIO.com",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://www.cio.com/feed/",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified (application/rss+xml) during v1 build."
+    },
+    {
+      "name": "Computer Weekly",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://www.computerweekly.com/rss/All-Computer-Weekly-content.xml",
+      "enabled": true,
+      "verified": true,
+      "default_region": "UK",
+      "notes": "Feed verified (application/xml) during v1 build. High volume — relies on max_items_per_source cap."
+    },
+    {
+      "name": "Forrester (Blogs)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.forrester.com/blogs/feed/",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Analyst blog feed verified (application/rss+xml) during v1 build. Forrester research reports are gated; only the public blog feed is ingested."
+    },
+    {
+      "name": "OpenAI (Blog/Research)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://openai.com/blog/rss.xml",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified during v1 build. Vendor source — apply press-release/launch quality filter strictly."
+    },
+    {
+      "name": "Google DeepMind (Blog)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://deepmind.google/blog/rss.xml",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified during v1 build. Vendor/research source — apply launch-announcement filter."
+    },
+    {
+      "name": "NVIDIA (Blog)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://blogs.nvidia.com/feed/",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified (application/rss+xml) during v1 build. Vendor source — most product launches should reject unless board-level economic/infrastructure implication."
+    },
+    {
+      "name": "Light Reading",
+      "group": "Telco / Service Provider",
+      "feed_url": "https://www.lightreading.com/rss.xml",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified during v1 build."
+    },
+    {
+      "name": "Channel Dive",
+      "group": "MSP / Channel",
+      "feed_url": "https://www.channeldive.com/feeds/news/",
+      "enabled": true,
+      "verified": true,
+      "default_region": "North America",
+      "notes": "Replaces Channel Futures, which was sunset in Oct 2025 and now redirects here (Informa TechTarget). Feed verified (application/rss+xml) during v1 build."
+    },
+
+    {
+      "name": "ITPro",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://www.itpro.com/feed",
+      "enabled": false,
+      "verified": false,
+      "default_region": "UK",
+      "notes": "Returned empty body during verification — confirm feed URL before enabling."
+    },
+    {
+      "name": "Computing",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://www.computing.co.uk/feed",
+      "enabled": false,
+      "verified": false,
+      "default_region": "UK",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "CIO UK",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://www.cio.com/uk/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "UK",
+      "notes": "CIO UK merged into CIO.com regional sections — confirm a UK-specific feed still exists or rely on CIO.com."
+    },
+    {
+      "name": "MIT Sloan Management Review",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://sloanreview.mit.edu/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Returned empty body during verification — likely valid but confirm before enabling. Some content is gated."
+    },
+    {
+      "name": "Harvard Business Review (Technology)",
+      "group": "Enterprise IT / CIO",
+      "feed_url": "https://hbr.org/rss/topic/technology",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified; HBR articles are partly gated (headlines/excerpts only)."
+    },
+    {
+      "name": "McKinsey (Insights)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.mckinsey.com/insights/rss",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified (text/xml, full RSS) during v1 build (second wave). Covers McKinsey Quarterly + Technology/Digital. High-relevance source (AI transformation, operating models, agentic AI, CIO budgets)."
+    },
+    {
+      "name": "CRN",
+      "group": "MSP / Channel",
+      "feed_url": "https://www.crn.com/rss/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Returned empty body during verification — confirm correct feed path before enabling."
+    },
+    {
+      "name": "ChannelE2E",
+      "group": "MSP / Channel",
+      "feed_url": "https://www.channele2e.com/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "ChannelPro Network",
+      "group": "MSP / Channel",
+      "feed_url": "https://www.channelpronetwork.com/rss.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Telecoms.com",
+      "group": "Telco / Service Provider",
+      "feed_url": "https://www.telecoms.com/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Returned empty body during verification — confirm before enabling."
+    },
+    {
+      "name": "Fierce Network",
+      "group": "Telco / Service Provider",
+      "feed_url": "https://www.fierce-network.com/rss/xml/full",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Fierce Telecom/Wireless rebranded to Fierce Network — confirm current feed path."
+    },
+    {
+      "name": "Telecom Ramblings",
+      "group": "Telco / Service Provider",
+      "feed_url": "https://follow.it/telecomramblings/rss",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified during v1 build. telecomramblings.com/feed/ redirects to this follow.it feed (application/rss+xml); using the canonical target directly."
+    },
+    {
+      "name": "Gartner (Newsroom)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.gartner.com/en/newsroom/rss",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Public press releases only; research is gated. Feed URL unverified."
+    },
+    {
+      "name": "IDC",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.idc.com/rss/news.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified; mostly gated research."
+    },
+    {
+      "name": "ISG (Insights)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://isg-one.com/feed",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Everest Group (Blog)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.everestgrp.com/feed",
+      "enabled": true,
+      "verified": true,
+      "default_region": "Global",
+      "notes": "Feed verified (application/rss+xml) during v1 build (second wave)."
+    },
+    {
+      "name": "Deloitte Insights",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www2.deloitte.com/us/en/insights/rss.html",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Also serves CHRO group content. Feed URL unverified."
+    },
+    {
+      "name": "PwC (Insights)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.pwc.com/gx/en/rss.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Bain (Insights)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.bain.com/insights/rss/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "EY (Insights)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.ey.com/en_gl/rss",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Korn Ferry (Insights)",
+      "group": "Analyst / Advisory",
+      "feed_url": "https://www.kornferry.com/insights/rss",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified; relevant mainly to Human Agency pillar."
+    },
+    {
+      "name": "BCG (Publications)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://www.bcg.com/rss",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Accenture (Newsroom)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://newsroom.accenture.com/rss/news-releases.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Anthropic (News)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://www.anthropic.com/rss.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Anthropic does not publish a confirmed RSS feed — verify or ingest via news index before enabling. Vendor source."
+    },
+    {
+      "name": "Mistral AI (News)",
+      "group": "AI Labs / Research",
+      "feed_url": "https://mistral.ai/news/feed.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Europe",
+      "notes": "Feed URL unverified. Vendor source."
+    },
+    {
+      "name": "Stanford HAI / AI Index",
+      "group": "AI Labs / Research",
+      "feed_url": "https://hai.stanford.edu/news/rss.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Brief lists 'Stanford Institute for Human Capital' and 'AI Index' — interpreted as Stanford HAI / the AI Index report. Feed URL unverified."
+    },
+    {
+      "name": "Forbes (Innovation)",
+      "group": "CXO / CFO",
+      "feed_url": "https://www.forbes.com/innovation/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Fortune",
+      "group": "CXO / CFO",
+      "feed_url": "https://fortune.com/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Chief Executive",
+      "group": "CXO / CFO",
+      "feed_url": "https://chiefexecutive.net/feed/",
+      "enabled": true,
+      "verified": true,
+      "default_region": "US",
+      "notes": "Feed verified (application/rss+xml) during v1 build (second wave). Strong CEO/board-level source for Executive Operating Models + Human Agency."
+    },
+    {
+      "name": "CFO Dive",
+      "group": "CXO / CFO",
+      "feed_url": "https://www.cfodive.com/feeds/news/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Industry Dive feed pattern, identical to the VERIFIED Channel Dive feed (/feeds/news/). Very strong candidate — timed out during second-wave verification (slow host), enable once a manual fetch confirms it returns RSS."
+    },
+    {
+      "name": "CFO Magazine / CFO.com",
+      "group": "CXO / CFO",
+      "feed_url": "https://www.cfo.com/feed/",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "Strategic Finance (IMA)",
+      "group": "CXO / CFO",
+      "feed_url": "https://www.sfmagazine.com/rss",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "The Financial Times",
+      "group": "CXO / CFO",
+      "feed_url": "https://www.ft.com/rss/home",
+      "enabled": false,
+      "verified": false,
+      "default_region": "UK",
+      "notes": "PAYWALLED. RSS exposes headlines/excerpts only — never fetch full article body. Editorial decision required before enabling."
+    },
+    {
+      "name": "The Economist (Business)",
+      "group": "CXO / CFO",
+      "feed_url": "https://www.economist.com/business/rss.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "UK",
+      "notes": "PAYWALLED. RSS headlines/excerpts only. Editorial decision required before enabling."
+    },
+    {
+      "name": "The Wall Street Journal (CIO/CFO)",
+      "group": "CXO / CFO",
+      "feed_url": "https://feeds.a.dj.com/rss/RSSWSJD.xml",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "PAYWALLED. RSS headlines/excerpts only. Editorial decision required before enabling."
+    },
+    {
+      "name": "Bloomberg",
+      "group": "CXO / CFO",
+      "feed_url": "",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "No stable public RSS feed; heavily paywalled. Excluded from automated ingestion in v1 — monitor manually."
+    },
+    {
+      "name": "KPMG (Insights)",
+      "group": "CXO / CFO",
+      "feed_url": "https://kpmg.com/xx/en/home/insights/_jcr_content.feed",
+      "enabled": false,
+      "verified": false,
+      "default_region": "Global",
+      "notes": "Feed URL unverified."
+    },
+    {
+      "name": "SHRM",
+      "group": "CHRO",
+      "feed_url": "https://www.shrm.org/rss/pages/rss.aspx",
+      "enabled": false,
+      "verified": false,
+      "default_region": "US",
+      "notes": "Feed URL unverified; relevant mainly to Human Agency pillar."
+    },
+    {
+      "name": "HR Executive",
+      "group": "CHRO",
+      "feed_url": "https://hrexecutive.com/feed/",
+      "enabled": true,
+      "verified": true,
+      "default_region": "US",
+      "notes": "Feed verified (application/rss+xml) during v1 build (second wave). Relevant mainly to Human Agency pillar."
+    }
+  ]
+}
