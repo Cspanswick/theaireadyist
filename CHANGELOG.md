@@ -4,6 +4,25 @@ All notable changes to the editorial taxonomy, site structure, and agent configu
 
 ---
 
+## [Design] — `feature/executive-signal-agent-v2` (Work Package 11)
+
+### Added — Decision Performance Alignment design package (no code changes)
+
+**Date:** 2026-06-23
+
+A design/specification package aligning Executive Signals with the Decision Performance category. **Design only** — no code changed, no migration applied, the v1 engine and the DPI are untouched. Located in `docs/builds/executive-signal-agent-v2/`:
+
+- D1 — Decision Performance Signal Framework (pillar → DPI-dimension mapping, grounded in `docs/methodology`).
+- D2 — Signal Taxonomy Extension: new fields `dpi_dimension`, `dpi_dimension_secondary`, `executive_persona[]`, `decision_domain`, `constraint_type`, `decision_performance_impact`; draft (un-applied) `migration_build6.sql`.
+- D3 — Enhanced Signal Generation Prompt: adds Constraint Exposed, Decision Performance Impact, Executive Action (Tier-2 only; cost profile preserved).
+- D4 — Decision Performance Signal Card: two-zone card with a Decision Performance readout band (+ wireframes).
+- D5 — Homepage Integration Strategy: rename "Latest Executive Signals" → "Decision Performance Signals"; dimension-led observatory module (+ desktop/mobile wireframes).
+- D6 — Constraint Intelligence Layer: future architecture only (read-derived constraint analytics; DPI bridge).
+
+Non-negotiables honoured: pillars not renamed, six-pillar model intact, no new assessment, DPI unaltered, no platform redesign.
+
+---
+
 ## [Unreleased] — `feature/executive-signal-agent-v1`
 
 ### Added — Executive Signal Agent v1
