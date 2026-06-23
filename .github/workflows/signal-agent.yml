@@ -1,0 +1,61 @@
+name: Executive Signal Agent
+
+# Runs the pillar-based Executive Signal Agent daily.
+# It only CREATES pending signals in Supabase for human approval.
+# It never publishes anything. Approval happens at /admin/signals.
+
+on:
+  schedule:
+    # 05:00 UTC = 06:00 UK time during BST (summer).
+    # NOTE: GitHub Actions cron is always UTC and does NOT observe DST.
+    # During GMT (winter) this fires at 05:00 UK. Adjust if a strict
+    # 06:00-local slot is required year-round (see docs build notes).
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      config:
+        description: 'Source config file in agent/configs/'
+        required: false
+        default: 'signal-sources.json'
+      max_items:
+        description: 'Cap on items evaluated this run (cost control; 0 = no cap)'
+        required: false
+        default: '0'
+      dry_run:
+        description: 'Set to 1 to run the pipeline without writing to Supabase'
+        required: false
+        default: '0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: signal-agent
+  cancel-in-progress: false
+
+jobs:
+  run-signal-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Anthropic SDK
+        run: npm install @anthropic-ai/sdk
+
+      - name: Run Executive Signal Agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CONFIG_FILE: ${{ github.event.inputs.config || 'signal-sources.json' }}
+          MAX_ITEMS: ${{ github.event.inputs.max_items || '0' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || '0' }}
+        run: node agent/run-signal-agent.js
+
+      # No commit/push step: signals are written to Supabase as pending,
+      # not to the repo. Nothing is published by this workflow.
