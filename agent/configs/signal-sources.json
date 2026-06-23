@@ -182,11 +182,11 @@
     {
       "name": "Telecom Ramblings",
       "group": "Telco / Service Provider",
-      "feed_url": "https://www.telecomramblings.com/feed/",
-      "enabled": false,
-      "verified": false,
+      "feed_url": "https://follow.it/telecomramblings/rss",
+      "enabled": true,
+      "verified": true,
       "default_region": "Global",
-      "notes": "Feed URL unverified."
+      "notes": "Feed verified during v1 build. telecomramblings.com/feed/ redirects to this follow.it feed (application/rss+xml); using the canonical target directly."
     },
     {
       "name": "Gartner (Newsroom)",
