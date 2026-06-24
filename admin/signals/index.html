@@ -105,6 +105,8 @@
     .btn-approve:hover { background: rgba(0,201,167,0.12); }
     .btn-publish { color: var(--bg); background: var(--teal); border-color: var(--teal); }
     .btn-publish:hover { filter: brightness(1.1); }
+    .btn-candidate { color: var(--amber); border-color: var(--border-warn); }
+    .btn-candidate:hover { background: rgba(232,168,56,0.12); }
     .btn-reject { color: var(--red); border-color: rgba(224,92,92,0.4); }
     .btn-reject:hover { background: rgba(224,92,92,0.1); }
     .gate-note { font-family: var(--mono); font-size: 10.5px; color: var(--text-mut); letter-spacing: 0.04em; margin-left: auto; }
@@ -279,6 +281,7 @@
       +     '<button type="button" class="btn btn-save" onclick="window._act(this,\'save\')">Save edits</button>'
       +     '<button type="button" class="btn btn-approve" onclick="window._act(this,\'approve\')">✓ Approve</button>'
       +     '<button type="button" class="btn btn-publish" onclick="window._act(this,\'publish\')">▲ Publish</button>'
+      +     '<button type="button" class="btn btn-candidate" onclick="window._act(this,\'publish_candidate\')">▲+ Publish + Research Candidate</button>'
       +     '<button type="button" class="btn btn-reject" onclick="window._act(this,\'reject\')">✕ Reject</button>'
       +     '<span class="gate-note">Publish = visible on /signals.html · approval is mandatory</span>'
       +   '</div>'
@@ -305,7 +308,15 @@
   window._act = async function (btn, action) {
     var card = btn.closest('.sig-card');
     var id = card.getAttribute('data-id');
-    if (action === 'publish' && !confirm('Publish this signal to the public site (/signals.html)?')) return;
+    var makeCandidate = (action === 'publish_candidate');
+    if (makeCandidate) action = 'publish';
+    var candPayload = null;
+    if (makeCandidate) {
+      var e0 = collectEdits(card);
+      var srcA = card.querySelector('.sig-orig a');
+      candPayload = { signal_id: id, signal_url: srcA ? srcA.href : '', signal_title: e0.signal_title || '', pillar: e0.primary_pillar || null, candidate_topic: e0.signal_title || 'Untitled signal' };
+    }
+    if (action === 'publish' && !confirm(makeCandidate ? 'Publish this signal AND add it to the research backlog?' : 'Publish this signal to the public site (/signals.html)?')) return;
     if (action === 'reject' && !confirm('Reject this signal? It is archived, not deleted.')) return;
     var key = getAdminKey();
     if (!key) return;
@@ -338,6 +349,13 @@
             card.setAttribute('data-status', newStatus);
           }
           setStatus(id + ' → ' + newStatus + '.', 'success');
+          if (makeCandidate && candPayload) {
+            try {
+              var cr = await fetch('/api/research-candidates', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: JSON.stringify(candPayload) });
+              var cd = await cr.json().catch(function(){ return {}; });
+              setStatus(cr.ok ? (id + ' published + added as ' + ((cd.candidate && cd.candidate.id) || 'candidate') + '.') : (id + ' published, but candidate add failed.'), cr.ok ? 'success' : 'error');
+            } catch (e) { setStatus(id + ' published; candidate add errored.', 'error'); }
+          }
         }
       } else if (res.status === 401) {
         localStorage.removeItem('adminApiKey');
