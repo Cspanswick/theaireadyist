@@ -453,5 +453,27 @@
   </footer>
 
   <script src="/admin/research-agent/app.js"></script>
+
+<script>
+/* WP15: pre-fill from a Research Candidate when arriving via /admin/research-candidates */
+(function(){
+  try{
+    var p = new URLSearchParams(location.search);
+    var topic = p.get('topic'); if(!topic) return;
+    function apply(){
+      var el = document.getElementById('topic');
+      if(el){ el.value = topic; }
+      var cand = (p.get('candidate')||'').replace(/[<>]/g,'');
+      var sig  = (p.get('signal')||'').replace(/[<>]/g,'');
+      var rat  = (p.get('rationale')||'').replace(/[<>]/g,'');
+      var note = document.createElement('div');
+      note.style.cssText = 'margin:12px 0;padding:10px 14px;border:1px solid rgba(0,201,167,.4);background:rgba(0,201,167,.08);color:#F0F4F8;font:13px/1.5 -apple-system,sans-serif;';
+      note.innerHTML = 'Pre-filled from research candidate <b>'+cand+'</b>. You still launch manually.'+(sig?'<br>Source signal: “'+sig+'”':'')+(rat?'<br>Rationale: '+rat:'');
+      if(el && el.parentNode){ el.parentNode.insertBefore(note, el); }
+    }
+    if(document.readyState!=='loading'){ setTimeout(apply,400); } else { window.addEventListener('load', function(){ setTimeout(apply,400); }); }
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
