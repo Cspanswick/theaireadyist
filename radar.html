@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/styles/tokens.css">
 <link rel="stylesheet" href="/styles/typography.css">
 <link rel="stylesheet" href="/styles/layout.css">
+<link rel="stylesheet" href="/styles/dataviz.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -518,17 +519,23 @@ function getLabel(v) {
   return 'Board-Ready';
 }
 
+const VIZ = (() => { const c = getComputedStyle(document.documentElement); const g = k => c.getPropertyValue(k).trim();
+  return { grid: g('--color-data-grid')||'rgba(245,242,236,0.10)', gridHi:'rgba(0,184,162,0.25)',
+    accent: g('--color-accent')||'#00B8A2', warning: g('--color-warning')||'#E8A838',
+    risk: g('--color-risk')||'#D96A5B', success: g('--color-success')||'#4CAF8E',
+    data3: g('--color-data-3')||'#6FA8DC', bg: g('--color-bg')||'#0D1F3C' }; })();
+
 function getColor(v) {
-  if (v < 30) return '#e05c5c';
-  if (v < 55) return '#d4845a';
-  if (v < 75) return 'var(--teal)';
-  if (v < 90) return '#9acd9a';
-  return '#7aaa8a';
+  if (v < 30) return VIZ.risk;
+  if (v < 55) return VIZ.warning;
+  if (v < 75) return VIZ.accent;
+  if (v < 90) return VIZ.success;
+  return VIZ.success;
 }
 
 // ── Slider update ──
 function updateSliderTrack(key, val) {
-  const colorMap = { euai:'#6a9fc0', dora:'#d4845a', nis2:'#7aaa8a' };
+  const colorMap = { euai:'var(--color-data-3)', dora:'var(--color-warning)', nis2:'var(--color-success)' };
   const slider = document.getElementById('slider-' + key);
   slider.style.background = `linear-gradient(to right, ${colorMap[key]} ${val}%, rgba(255,255,255,0.1) ${val}%)`;
 }
@@ -617,7 +624,7 @@ function draw() {
   const vals = isControl
     ? controlDomains.map(d => calculateControlScore(d) / 100)
     : [scores.euai / 100, scores.dora / 100, scores.nis2 / 100];
-  const dotColors = isControl ? null : ['#6a9fc0', '#d4845a', '#7aaa8a'];
+  const dotColors = isControl ? null : [VIZ.data3, VIZ.warning, VIZ.success];
   const n = labels.length;
   const angles = labels.map((_, i) => (Math.PI * 2 * i / n) - Math.PI / 2);
 
@@ -630,7 +637,7 @@ function draw() {
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
     ctx.closePath();
-    ctx.strokeStyle = ring === 100 ? 'var(--teal-dim)' : 'var(--rule)';
+    ctx.strokeStyle = ring === 100 ? VIZ.gridHi : VIZ.grid;
     ctx.lineWidth = ring === 100 ? 1 : 0.5;
     ctx.stroke();
     // Ring labels
@@ -647,7 +654,7 @@ function draw() {
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
-    ctx.strokeStyle = 'var(--rule)';
+    ctx.strokeStyle = VIZ.grid;
     ctx.lineWidth = 0.5;
     ctx.stroke();
   });
@@ -670,8 +677,8 @@ function draw() {
 
   // Data polygon
   const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-  const fillC = avg < 0.30 ? 'rgba(224,92,92,0.12)' : avg < 0.55 ? 'rgba(212,132,90,0.12)' : avg < 0.75 ? 'var(--teal-dim)' : 'rgba(122,170,138,0.12)';
-  const strokeC = avg < 0.30 ? 'rgba(224,92,92,0.7)' : avg < 0.55 ? 'rgba(212,132,90,0.7)' : avg < 0.75 ? 'rgba(0,184,162,0.7)' : 'rgba(122,170,138,0.7)';
+  const fillC = avg < 0.30 ? VIZ.risk+'1f' : avg < 0.55 ? VIZ.warning+'1f' : avg < 0.75 ? VIZ.accent+'1f' : VIZ.success+'1f';
+  const strokeC = avg < 0.30 ? VIZ.risk+'b3' : avg < 0.55 ? VIZ.warning+'b3' : avg < 0.75 ? VIZ.accent+'b3' : VIZ.success+'b3';
 
   ctx.beginPath();
   vals.forEach((v, i) => {
@@ -702,7 +709,7 @@ function draw() {
     // Dot
     ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2);
     ctx.fillStyle = dc; ctx.fill();
-    ctx.strokeStyle = 'var(--navy)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = VIZ.bg; ctx.lineWidth = 1.5; ctx.stroke();
   });
 
   // Axis labels

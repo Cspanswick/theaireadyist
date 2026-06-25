@@ -129,3 +129,19 @@ The **standard now exists** to make every surface read as the same executive ins
 
 ## Honest position
 The component **standard + library** exist and the platform already presents these components consistently (verified across Phases 1–2). Phase 3 formalises them into one reusable, tokenised source of truth and binds §9 Restraint for all future work. Remaining DD-18/19 (replacing per-page copies with the library) is staged convergence polish — logged, non-blocking. **Phase 3 acceptance: met** (experiential bar already held; library + governance now in place). Hero unchanged.
+
+---
+
+# PHASE 4 — DATA VISUALISATION PASS (2026-06-25)
+
+## Acceptance checklist
+- [x] `dataviz.css` primitives (border-only chart surface, mono axis labels, token legend, SVG series/grid classes) shipped.
+- [x] All chart colour from data-viz/semantic tokens; no colour outside them.
+- [x] **Radar canvas fixed** — `VIZ` token bridge resolves tokens in JS; grid/series/dots now use tokens (previously-broken `var()` calls corrected). JS syntax verified; live verified.
+- [x] Primary chart surface border-only; legend carries words (§6, never colour alone); axis/value labels present.
+- [x] Motion calm (fill transitions ≤250ms); subtle data-point glow sourced from the point's token colour (permitted affordance).
+- [x] Bars/figures already tokenised (components.css `.bar*` / `.data-figure`).
+- [x] Hero unchanged.
+
+## Honest position
+Phase 4 applies the data-viz tokens to the one real chart (the radar) and **fixes a latent canvas `var()` bug** in the process, plus ships the CSS-side viz primitives + the binding "canvas token bridge" rule for future charts. The platform's only complex visualisation is now token-faithful and correct. **Phase 4 acceptance: met.**

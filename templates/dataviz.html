@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Visualisation — theAIReadyist Observatory Design System</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/typography.css" />
+  <link rel="stylesheet" href="/styles/layout.css" />
+  <link rel="stylesheet" href="/styles/brand.css" />
+  <link rel="stylesheet" href="/styles/components.css" />
+  <link rel="stylesheet" href="/styles/dataviz.css" />
+  <style>.sg{padding:var(--space-6) 0;border-top:1px solid var(--color-border-subtle);}</style>
+</head>
+<body class="tmpl">
+  <main class="layout section">
+    <header class="masthead mb-5">
+      <span class="masthead__brand wordmark">the<span class="wordmark__ai">AI</span>Readyist</span>
+      <span class="masthead__product">Observatory Design System</span>
+      <span class="masthead__context">Phase 4 · Data Visualisation</span>
+    </header>
+    <h1 class="t-display">Data Visualisation</h1>
+    <p class="t-body-lg" style="max-width:var(--layout-reading)">Every chart draws from the data-viz tokens only. Border-only surface, faint gridlines, mono axis labels, and a legend that carries words — never colour alone.</p>
+
+    <section class="sg">
+      <p class="t-label">Legend (token series + semantic states)</p>
+      <div class="viz-legend">
+        <span class="viz-legend__item"><span class="viz-legend__dot viz-legend__dot--1"></span>EU AI Act</span>
+        <span class="viz-legend__item"><span class="viz-legend__dot viz-legend__dot--2"></span>DORA</span>
+        <span class="viz-legend__item"><span class="viz-legend__dot viz-legend__dot--3"></span>NIS2</span>
+        <span class="viz-legend__item"><span class="viz-legend__dot viz-legend__dot--ready"></span>Ready</span>
+        <span class="viz-legend__item"><span class="viz-legend__dot viz-legend__dot--warn"></span>Partial</span>
+        <span class="viz-legend__item"><span class="viz-legend__dot viz-legend__dot--risk"></span>Critical gap</span>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Chart surface (border-only) + exposure bars</p>
+      <div class="viz" style="max-width:520px">
+        <p class="viz-axis-label mb-3">Exposure by framework</p>
+        <div style="display:grid;gap:var(--space-4)">
+          <div><p class="t-meta mb-3">EU AI Act · <span class="data-figure data-figure--accent" style="font-size:var(--type-data)">75</span></p><div class="bar"><div class="bar__track"><div class="bar__fill bar__fill--teal" style="width:75%"></div></div></div></div>
+          <div><p class="t-meta mb-3">DORA · <span class="data-figure data-figure--warning" style="font-size:var(--type-data)">50</span></p><div class="bar"><div class="bar__track"><div class="bar__fill bar__fill--amber" style="width:50%"></div></div></div></div>
+          <div><p class="t-meta mb-3">NIS2 · <span class="data-figure data-figure--risk" style="font-size:var(--type-data)">28</span></p><div class="bar"><div class="bar__track"><div class="bar__fill bar__fill--risk" style="width:28%"></div></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Canvas token bridge (the radar)</p>
+      <p class="t-body" style="max-width:var(--layout-reading)">The AI Governance Exposure Radar is a <code>&lt;canvas&gt;</code> — which cannot read CSS <code>var()</code>. Phase 4 resolves the tokens once in JS (<code>getComputedStyle</code>) into a <code>VIZ</code> object, fixing the previously-broken grid/series/dot colours. See <code>radar.html</code> and the Phase 4 standard.</p>
+    </section>
+  </main>
+</body>
+</html>
