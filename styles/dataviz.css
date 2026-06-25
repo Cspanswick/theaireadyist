@@ -1,0 +1,36 @@
+/* ============================================================
+   TheAIReadyist — Observatory Design System
+   dataviz.css · Phase 4 · Data-visualisation primitives
+   Depends on tokens.css, typography.css, components.css.
+   Charts use the Phase 1 data-viz tokens (--color-data-1/2/3, grid).
+   CANVAS NOTE: a 2D canvas context CANNOT read CSS var() — resolve tokens
+   in JS via getComputedStyle (see phase4-dataviz.md "Canvas token bridge").
+   This file styles the CSS/SVG-side chrome around charts.
+   ============================================================ */
+
+/* ─── CHART CONTAINER — primary viz surface is BORDER-ONLY (§8.4) ─── */
+.viz            { background: transparent; border: 1px solid var(--color-border); border-radius: 4px; padding: var(--space-5); }
+.viz--bare      { border: none; padding: 0; }                 /* when the page frames it elsewhere */
+.viz__canvas    { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+
+/* ─── AXIS / RING LABELS — mono metadata, never decorative ─── */
+.viz-axis-label { font-family: var(--font-mono); font-size: var(--type-meta); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
+
+/* ─── LEGEND — colour ALWAYS paired with a text label (§6, never colour alone) ─── */
+.viz-legend     { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-4); }
+.viz-legend__item { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: var(--type-meta); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+.viz-legend__dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.viz-legend__dot--1    { background: var(--color-data-1); }   /* teal — primary series */
+.viz-legend__dot--2    { background: var(--color-data-2); }   /* amber — secondary */
+.viz-legend__dot--3    { background: var(--color-data-3); }   /* steel blue — tertiary */
+.viz-legend__dot--ready{ background: var(--color-success); }
+.viz-legend__dot--warn { background: var(--color-warning); }
+.viz-legend__dot--risk { background: var(--color-risk); }
+
+/* ─── SVG SERIES (for SVG charts) — stroke/fill via tokens ─── */
+.viz-series-1 { stroke: var(--color-data-1); fill: var(--color-data-1); }
+.viz-series-2 { stroke: var(--color-data-2); fill: var(--color-data-2); }
+.viz-series-3 { stroke: var(--color-data-3); fill: var(--color-data-3); }
+.viz-grid-line{ stroke: var(--color-data-grid); stroke-width: 0.5; }
+
+/* Reuse: score/progress bars live in components.css (.bar*); state colours from tokens. */

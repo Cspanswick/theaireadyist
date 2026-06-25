@@ -203,3 +203,23 @@ Phase 3 ships the component **library** (`components.css`). Per §9 Restraint + 
 | **Location** | assessment pages (DPI, EU AI Act, DORA, NIS2, radar) |
 | **Recommendation** | Keep `.slider` (accent-color + focus) for Phase 3; revisit custom track/thumb in Phase 6. |
 | **Implementation risk** | **Low** — deferred by design. |
+
+---
+
+# PHASE 4 — DATA VISUALISATION DEBT (added 2026-06-25)
+
+## DD-21 · Radar canvas used CSS var() (silently broken) + ad-hoc series hex — FIXED
+| | |
+|---|---|
+| **Description** | `radar.html` draws on `<canvas>`, where `ctx.strokeStyle = 'var(--teal-dim)'` / `'var(--rule)'` / `'var(--navy)'` and `getColor`'s `'var(--teal)'` **do not resolve** — those grid rings, spokes, one fill branch and dot borders rendered as fallback (default/black), and framework series used ad-hoc hex (`#6a9fc0` etc.). |
+| **Location** | `radar.html` canvas draw + `getColor` + slider colorMap |
+| **Recommendation** | **DONE (Phase 4):** added a global `VIZ` token bridge (`getComputedStyle`, resolved once); grid→`--color-data-grid` (outer ring subtle teal), framework series→`--color-data-3/2`+success, score-band series→risk/warning/accent/success, dot border→`--color-bg`, slider tracks→`var(--color-data-3/…)` (CSS). Linked `dataviz.css`. |
+| **Implementation risk** | **Low–Medium** — fixes latent rendering; verified live (chart now renders crisp token grid + series). |
+
+## DD-22 · Canvas token bridge is the standing rule for future charts
+| | |
+|---|---|
+| **Description** | Any future `<canvas>` chart must resolve tokens in JS (cannot use `var()`); SVG charts may use `.viz-series-*`/`.viz-grid-line` directly. |
+| **Location** | platform-wide (forward rule) |
+| **Recommendation** | Follow `phase4-dataviz.md` "Canvas token bridge". No debt outstanding — recorded so the pattern isn't reinvented. |
+| **Implementation risk** | **Low** — governance note. |
