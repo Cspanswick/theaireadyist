@@ -173,3 +173,33 @@ Per page, in one reviewed PR each, verified against the hero:
 4. Re-run the Brand Regression Review (typography/layout pass) for that surface.
 
 Start with the highest-traffic non-hero surfaces (signals, dpi, dora). The hero is never altered.
+
+---
+
+# PHASE 3 — COMPONENTS DEBT (added 2026-06-25)
+
+Phase 3 ships the component **library** (`components.css`). Per §9 Restraint + "record before rewrite," existing per-page component CSS is logged here, not force-rewritten; convergence is staged.
+
+## DD-18 · Duplicated per-page component CSS (no shared component layer)
+| | |
+|---|---|
+| **Description** | Each page re-defines its own `.chip` / `.card` / `.tag` / score-bar / badge / CTA rules inline (e.g. `signals` chips/cards, homepage `.hero-cta`/`.score-bar-*`, assessment Likert/sliders). Same components, many copies — the component-level analogue of DD-02. |
+| **Location** | `index.html`, `signals.html`, `dpi.html`, `dora.html`, `nis2.html`, `radar.html`, `eu-ai-act*.html`, `admin/*` |
+| **Recommendation** | `components.css` is the single source of truth (this phase). Pages adopt `.btn`/`.chip`/`.badge`/`.tag`/`.card__*`/`.bar`/`.slider`/`.data-figure` and drop local copies during staged convergence. |
+| **Implementation risk** | **Medium** — broad but mechanical; one reviewed page at a time, verified vs hero (as Phase 2). |
+
+## DD-19 · Inconsistent CTA / button treatments
+| | |
+|---|---|
+| **Description** | The arrow-link CTA varies by page (`.hero-cta` 10px/0.18em; `.panel-cta` 8.5px/0.14em; product pages use a bordered CTA). One canonical pattern should drive all three. |
+| **Location** | `index.html` (`.hero-cta`, `.panel-cta`), product/landing pages |
+| **Recommendation** | Adopt `.btn--link` / `.btn--primary` (+ `.btn--arrow`) from `components.css`; normalise size to `--type-label`. |
+| **Implementation risk** | **Low–Medium** — small visible normalisation; verify against the hero CTA. |
+
+## DD-20 · Slider styling minimal (native accent-color only)
+| | |
+|---|---|
+| **Description** | Range inputs rely on `accent-color`; no custom editorial track/thumb. Acceptable + accessible now; richer styling belongs to Phase 6 (Interaction Patterns). |
+| **Location** | assessment pages (DPI, EU AI Act, DORA, NIS2, radar) |
+| **Recommendation** | Keep `.slider` (accent-color + focus) for Phase 3; revisit custom track/thumb in Phase 6. |
+| **Implementation risk** | **Low** — deferred by design. |
