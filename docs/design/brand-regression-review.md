@@ -69,46 +69,48 @@ That convergence is deliberately **staged, not done in one sweep**, for two reas
 
 Per §6.3, every divergent surface is **logged and scheduled for correction**; none is silently changed. Phase 1 sign-off on the *experiential* bar (§7.1) is reached when the convergence sequence in the Design Debt Register is complete — recommended order: favicon → logo → palette/tokens per page → cards → (hero-region labels only with sign-off).
 
+---
+
+# PHASE 2 — TYPOGRAPHY, LAYOUT & EXPERIENTIAL PASS (2026-06-25)
+
+Re-run per spec §11. This pass evaluates the **Phase 2 standard** (type roles, layout, templates) and the platform's current conformance. As in Phase 1, the standard is established now; per-page typographic convergence is staged and logged.
+
+## Acceptance checklist (§12.2)
+
+**Type system**
+- [x] Three type families defined as tokens, matched to the live hero (Playfair / DM Sans / DM Mono).
+- [x] Full type scale defined; every role has a named token + `.t-*` class.
+- [ ] No ad-hoc font sizes anywhere — *not yet; ~30 distinct values logged DD-13, staged.*
+- [x] Faces strict in role classes (serif = display/heading/quote; sans = body/UI; mono = label/meta/data).
+- [x] `.t-hero`/`.t-display` carry zero-or-one teal phrase (`.t-accent`); no decorative teal in the standard.
+
+**Layout, density & rhythm**
+- [x] 680px reading measure defined (`--layout-reading` / `.reading`); editorial template enforces it.
+- [ ] Reading measure applied to all long-form pages — *staged, DD-14.*
+- [x] Full spacing scale `--space-1..8` defined; utilities reference it only.
+- [ ] Spacing scale applied everywhere — *arbitrary px remain, staged DD-15.*
+- [x] Page rhythm (arrival → action) defined and enforced in all four template scaffolds.
+- [x] Four templates built and reusable; protected Homepage is the fifth/benchmark.
+- [ ] Every existing page mapped to exactly one template — *staged, DD-16.*
+- [x] Template governance (§8.0) recorded; new templates require written justification.
+
+**Accessibility (§6)**
+- [x] Focus states use `--color-accent` (`:focus-visible` in `layout.css`).
+- [x] Badges/legends pair colour with text — no meaning by colour alone (templates.css).
+- [x] Responsive rules defined for sm/md/lg; reading measure + masthead preserved; order does not scramble.
+- [ ] Contrast/keyboard verified on every live page — *to verify per surface on convergence.*
+
+**Governance gates**
+- [x] Homepage hero unchanged; remains the typographic + spatial benchmark.
+- [x] Motion principles (Phase 1 §4) carried forward; no hero motion change.
+- [x] Component Restraint (§9) recorded and in force for Phase 3.
+- [x] Every exception documented in the register (DD-10, DD-11, DD-12).
+
+## Experiential success (§12.1) — honest position
+The **standard now exists** to make every surface read as the same executive institution: one type scale anchored to the hero, one reading rhythm, four templates expressing the arrival→action flow. But the **experiential bar is not yet met across live pages**, because the ~30 ad-hoc font sizes (DD-13), inconsistent reading measures (DD-14) and unmapped templates (DD-16) still vary page-to-page. Per §12.1, **Phase 2 is therefore not signed off** until the staged convergence brings the live pages onto the standard and this review re-passes per surface. Nothing has been silently rewritten; every divergence is logged and scheduled.
+
+**Phase 2 files shipped (new/extended, non-breaking — zero change to any currently-rendered page):** `styles/tokens.css` (extended), `styles/typography.css`, `styles/layout.css`, `styles/templates.css`, `templates/template-{editorial,product,assessment,dashboard}.html`, `docs/design/phase2-typography-layout.md`, this review, the register.
+
+**Deploy dependency:** lands only after the Phase 1 PRs merge (pending Clive's terminal).
+
 **Foundation files shipped this phase (new, non-breaking — zero change to any rendered page):** `styles/tokens.css`, `styles/brand.css`, `docs/design/design-debt.md`, `docs/design/brand-regression-review.md`.
-
----
-
-## Re-review after Convergence Pass 1 — 2026-06-25
-
-- **Palette:** all off-hero surfaces now ✅ on the canonical hero palette (was ⚠️).
-- **Logo:** signals / dpi / eu-ai-act now ✅ (was ⚠️); `index.html` nav logo still ⚠️ (deferred, Hero Protection).
-- **Favicon:** ✅ teal `AI` on navy, site-wide.
-- **Deferred / still ⚠️:** cards border-only (DD-04), full `var()` token adoption (DD-02), retired homepage labels (DD-05), remaining hardcoded hex (DD-07).
-- **Hero:** unchanged (only a non-visual `<head>` favicon link added).
-
----
-
-## Convergence Pass 2 re-review — 2026-06-25
-
-- **Single source of truth (DD-02):** ✅ on all 16 non-homepage pages — palette hexes now sourced from `tokens.css` via aliased `:root` vars; pages link the token sheet. (`index.html` pending the homepage pass.)
-- **Hardcoded hex (DD-07):** ✅ 94 canonical literals → `var(--color-*)`; only non-canonical one-offs remain (logged).
-- **Palette residual (DD-01):** ✅ old-navy `rgba(13,27,42)` nav backgrounds corrected to hero navy.
-- **Cards (DD-04):** ✅ 4 primary content cards now border-only/transparent; utility panels correctly retain raised fills (§1.3).
-- **Integrity:** ✅ brace counts unchanged on all 16; no `var(var())`; `index.html` byte-identical (hero untouched).
-- **Still ⚠️ (next wave):** homepage logo/fills/Live-Insights band (DD-03/04/08, Hero-adjacent), retired homepage labels (DD-05, sign-off), residual non-canonical hex.
-- **Hero:** unchanged — homepage excluded from this automated pass by design.
-
----
-
-## Convergence Pass 3 (homepage) re-review — 2026-06-25
-
-- **Hero:** ✅ provably unchanged — full diff contains no `.hero` rule; hero block byte-identical.
-- **Nav logo (DD-03):** ✅ homepage now renders teal `AI` split, consistent with every other page.
-- **Live Insights palette (DD-08):** ✅ band converged to hero colours; band navy now matches the page (seam removed).
-- **Live Insights cards (DD-04):** ✅ border-only (transparent + subtle border, teal-wash hover). ⚠️ *visible change — confirm live.*
-- **Platform palette:** ✅ with the homepage done, **all surfaces now sit on the canonical hero palette.**
-- **Still ⚠️:** DD-05 retired homepage labels (awaiting sign-off) — the sole remaining Phase 1 convergence item.
-
----
-
-## Convergence Pass 4 (DD-05) re-review — 2026-06-25
-
-- **DD-05 homepage labels:** ✅ readiness panel + feed tags now use the six canonical pillars (text-only; hero structure intact, signed off).
-- **Phase 1 convergence:** ✅ **COMPLETE** — all logged debt (DD-01..08) resolved; platform fully on the hero palette and wordmark; cards border-only; homepage taxonomy current.
-- **Experiential bar (§7.1):** ready for sign-off pending live verification post-deploy.
-- **Hero:** structure/visual unchanged throughout; only retired label *text* corrected, with explicit sign-off.

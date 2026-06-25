@@ -1,0 +1,44 @@
+/* ============================================================
+   TheAIReadyist — Observatory Design System
+   typography.css · Phase 2 · Type roles
+   Depends on tokens.css. Every text element maps to ONE role.
+   Faces are strict: serif = display/headings/quotes · sans = body/UI ·
+   mono = labels/meta/data. Never mix faces within a role (spec §2.3).
+   ============================================================ */
+
+/* ─── SERIF — display, headings, quotes ─── */
+.t-hero {
+  font-family: var(--font-serif); font-weight: var(--weight-bold);
+  font-size: var(--type-hero); line-height: 1.08; letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+.t-display {
+  font-family: var(--font-serif); font-weight: var(--weight-semibold);
+  font-size: var(--type-display); line-height: 1.10; letter-spacing: -0.015em;
+  color: var(--color-text-primary);
+}
+.t-h1 { font-family: var(--font-serif); font-weight: var(--weight-semibold); font-size: var(--type-h1); line-height: 1.15; color: var(--color-text-primary); }
+.t-h2 { font-family: var(--font-serif); font-weight: var(--weight-semibold); font-size: var(--type-h2); line-height: 1.20; color: var(--color-text-primary); }
+.t-h3 { font-family: var(--font-serif); font-weight: var(--weight-semibold); font-size: var(--type-h3); line-height: 1.25; color: var(--color-text-primary); }
+.t-quote {
+  font-family: var(--font-serif); font-style: italic; font-weight: var(--weight-regular);
+  font-size: var(--type-quote); line-height: 1.4; color: var(--color-text-primary);
+}
+
+/* ─── SANS — body & UI ─── */
+.t-body-lg { font-family: var(--font-sans); font-weight: var(--weight-light); font-size: var(--type-body-lg); line-height: 1.6;  color: var(--color-text-body); }
+.t-body    { font-family: var(--font-sans); font-weight: var(--weight-regular); font-size: var(--type-body); line-height: 1.65; color: var(--color-text-body); }
+.t-body-sm { font-family: var(--font-sans); font-weight: var(--weight-regular); font-size: var(--type-body-sm); line-height: 1.55; color: var(--color-text-body); }
+
+/* ─── MONO — labels, metadata, data ─── */
+.t-label { font-family: var(--font-mono); font-weight: var(--weight-medium); font-size: var(--type-label); line-height: 1.4; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); }
+.t-meta  { font-family: var(--font-mono); font-weight: var(--weight-regular); font-size: var(--type-meta);  line-height: 1.4; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-muted); }
+.t-data-lg { font-family: var(--font-mono); font-weight: var(--weight-semibold); font-size: var(--type-data-lg); line-height: 1.0; color: var(--color-text-primary); }
+.t-data    { font-family: var(--font-mono); font-weight: var(--weight-medium); font-size: var(--type-data); line-height: 1.2; color: var(--color-text-primary); }
+
+/* ─── ACCENT IN HEADINGS (spec §2.4) ─── */
+/* Apply to AT MOST ONE phrase in a hero/display heading. Earns its place by meaning. */
+.t-accent { color: var(--color-accent); }
+
+/* Guardrails (spec §2.3): body copy is never bolded for emphasis; use a heading
+   role or a callout instead. Headings never carry decorative teal (§2.4). */

@@ -87,52 +87,89 @@ Risk key: **Low** = isolated, reversible · **Medium** = visible change across p
 
 Each correction ships via its own reviewed PR; the homepage hero itself is never altered.
 
----
-
-## Convergence Pass 1 — 2026-06-25 (status update)
-
-- **DD-06 favicon — DONE.** `favicon.svg` + 16/32/180 PNGs created; `<link>` added to every page `<head>` (non-visual).
-- **DD-03 logo — DONE (off-hero).** `signals.html` ("The AI Readyist" → wordmark), `dpi.html`, `eu-ai-act.html` now render `the` + teal `AI` + `Readyist`. **index.html logo deferred** (Hero Protection).
-- **DD-01 palette — DONE (all off-hero).** dpi · dora · nis2 · radar · signals · eu-ai-act* · all admin/* converged to hero values (#0D1F3C / #00B8A2 / #F5F2EC + alpha variants). Verified: zero residual #0D1B2A / #00C9A7 / #F0F4F8 outside `index.html`.
-- **DD-08 (NEW) — Live Insights band uses old navy inside index.html** (`--li-navy: #0D1B2A`, ≈ line 1495). **Deferred** — inside the homepage, Hero-Protection-adjacent; correct only with sign-off. Risk: Low (1 line).
-- **Still deferred:** DD-02 (full `var()`-based tokens adoption — pages now *match* the palette but still hold local `:root` values), DD-04 (border-only cards), DD-05 (retired homepage labels — Hero Protection), DD-07 (remaining hardcoded hex), `index.html` logo.
-- **Exception:** `index.html` received a non-visual `<head>` favicon link only; hero + body otherwise unchanged.
+> *Note:* the Phase 1 convergence-pass status and DD-08 (Live Insights band navy) are recorded in the `phase1-deploy/` copy of this register; they fold into this canonical register when the Phase 1 deploy is assembled.
 
 ---
 
-## Convergence Pass 2 — 2026-06-25 (status update)
+# PHASE 2 — TYPOGRAPHY & LAYOUT DEBT (added 2026-06-25)
 
-Scope: the 16 non-homepage pages (index.html deliberately excluded — homepage gets its own reviewed pass). Verified: brace counts identical to pre-pass on all 16; no `var(var())`; `index.html` byte-identical (untouched).
+**Phase 2 establishes the type/layout standard.** Per Phase 1 governance, legacy typographic/layout issues are recorded here, not silently rewritten; the per-page convergence is staged.
 
-- **DD-02 single source of truth — DONE (16 pages).** Every non-homepage page now `<link>`s `/styles/tokens.css` (before its inline `<style>`), and its `:root` core colours are **aliased to tokens** (e.g. `--navy: var(--color-bg)`, `--teal: var(--color-accent)`, `--off-white: var(--color-text-primary)`). The canonical hexes now live only in `tokens.css`; local var names are preserved so no downstream `var(--navy)` reference had to change. **Zero visual change.** *Full rename of local names → token names is a later, optional tidy (not required for SSOT).* 
-- **DD-07 hardcoded hex — DONE (94 swaps).** 94 canonical hex literals across the 16 pages replaced with the matching `var(--color-*)` (value-identical). Non-canonical one-offs (`#0F2233` surface, `#122739` raised, `#e05c5c`) intentionally left — they vanish with DD-04 / are logged for a later sweep.
-- **DD-01 residual — DONE (4).** Missed old-navy in rgb form `rgba(13,27,42,…)` (nav bars on `signals`, `dpi` ×2, `eu-ai-act`) corrected to hero navy `rgba(13,31,60,…)`. Zero `rgba(13,27,42)` remain outside `index.html`.
-- **DD-04 border-only cards — DONE (4 primary content cards).** `signals .card`, `admin/signals .sig-card`, `admin/research-candidates .rc`, `admin/approvals .draft-card` → `background: transparent` (borders retained). Utility surfaces correctly **kept** their raised fills per §1.3: form inputs/selects, `.kpi`, `.panel`, `.bar-track`, `.rc-notes`, toggle-hover.
-- **Still deferred (next wave, logged):** **homepage pass** — `index.html` DD-03 (nav logo teal), DD-04 (the two `var(--bg2)` content fills), DD-08 (Live Insights `--li-` band: old navy `#0D1B2A` + old-teal `rgba(0,201,167)`), all Hero-Protection-adjacent; **DD-05** retired homepage labels (needs explicit sign-off); residual non-canonical hexes (`#0F2233`/`#122739`/`#e05c5c`); optional full local-var→token rename.
+## DD-09 · `--space-4` superseded (Phase 1 interim 16px → Phase 2 scale 24px)
+| | |
+|---|---|
+| **Description** | Phase 1 shipped an interim `--space-4: 16px` (used by `.panel--utility` padding). The Phase 2 spacing scale (§3) defines `--space-4: 24px`. The Phase 2 value is authoritative; `.panel--utility` padding becomes 24px (slightly more generous, on-brand). |
+| **Location** | `styles/tokens.css`, `styles/brand.css` (`.panel--utility`) |
+| **Recommendation** | None beyond this note — adopt the full scale `--space-1..8`. Verify `.panel--utility` still reads correctly at 24px on convergence. |
+| **Implementation risk** | **Low** — a 8px padding increase on utility panels only. |
+
+## DD-13 · Ad-hoc font sizes not mapped to type roles
+| | |
+|---|---|
+| **Description** | Pages declare font sizes inline rather than via type roles. Audit (2026-06-25): **80** `font-size` declarations in `index.html`, **86** in `nis2.html`, **67** in `dora.html`, **55** in `radar.html`, with **~30 distinct pixel values** platform-wide (8.5px, 9px, 9.5px, 10px, 11px, 12px, 13px, 14px, 15px, 16px, 17px, 18px, 19px, 20px, 22px, 24px, 28px…). Spec §2.3 requires every text element map to one named role; no ad-hoc sizes. |
+| **Location** | `index.html`, `signals.html`, `dpi.html`, `dora.html`, `nis2.html`, `radar.html`, `eu-ai-act*.html`, `admin/*/index.html` |
+| **Recommendation** | Adopt the `.t-*` role classes (`typography.css`). Map each element to its nearest role; collapse the ~30 ad-hoc values onto the 13-role scale during per-page convergence. Hero excepted (it *is* the reference). |
+| **Implementation risk** | **Medium–High** — broad and visible; the largest Phase 2 convergence item. Stage page-by-page, verify each against the hero. |
+
+## DD-14 · Inconsistent / absent reading measure (full-width prose)
+| | |
+|---|---|
+| **Description** | Long-form prose is not consistently constrained to the 680px reading measure. Several pages (`dora.html`, `nis2.html`, `signals.html`, `eu-ai-act-enforcement.html`) carry ad-hoc max-widths; none reference a shared `--layout-reading` token. Spec §3 requires long-form ≤680px. |
+| **Location** | editorial/long-form surfaces across the platform |
+| **Recommendation** | Apply `.reading` / `--layout-reading` (680px) to editorial content; replace ad-hoc max-widths with the token. |
+| **Implementation risk** | **Medium** — improves readability; verify no layout reflow regressions on wide tables/charts (those stay at `--layout-max`). |
+
+## DD-15 · Spacing values outside the scale
+| | |
+|---|---|
+| **Description** | Margins/padding use arbitrary px (e.g. 14px, 32px, 72px) rather than the `--space-1..8` scale. Spec §3 forbids arbitrary spacing. |
+| **Location** | inline styles across `*.html` |
+| **Recommendation** | Resolve each to the nearest scale step during convergence; if a value seems genuinely required off-scale, log it rather than inlining. |
+| **Implementation risk** | **Medium** — mechanical but broad; bundle with DD-13 per page. |
+
+## DD-16 · Pages not yet mapped to a template
+| | |
+|---|---|
+| **Description** | Existing pages predate the four Phase 2 templates and are not yet declared as exactly one (`tmpl-editorial` / `tmpl-product` / `tmpl-assessment` / `tmpl-dashboard`). Spec §8.0 requires every page map to one template. |
+| **Location** | all product/editorial/assessment/dashboard pages |
+| **Recommendation** | Map each: Briefings/Signals long-form → editorial; DPI/DORA/NIS2/EU-AI-Act/Radar landings → product; DPI/EU-AI-Act question flows → assessment; Governance Exposure → dashboard. Adopt the template class + page rhythm on convergence. |
+| **Implementation risk** | **Medium** — structural; do alongside DD-13/DD-15 so type, spacing and template land together per page. |
 
 ---
 
-## Convergence Pass 3 — HOMEPAGE — 2026-06-25 (status update)
+## Phase 2 implementation exceptions (hero wins, spec §2.1 ground-truth note)
 
-Scope: `index.html` only. Hero-Protection-critical; executed by line-specific edits (no global swaps). **Verified: the full before/after diff contains zero `.hero` rules — the hero block is byte-identical; `.hero-sub rgba(240,244,248,0.72)` preserved; braces 380/380.**
+## DD-10 · `--type-hero` anchored to the hero, not the spec placeholder
+| | |
+|---|---|
+| **Description** | Spec §2.1 listed `--type-hero: clamp(2.75rem,5vw,4rem)`, serif **600**, lh 1.05. The live hero h1 is Playfair **700**, `clamp(36px,4.2vw,52px)`, lh **1.08**, −0.02em. Per the §2.1 ground-truth note + Hero Protection, the token matches the hero: `clamp(2.25rem,4.2vw,3.25rem)` / 700 / lh 1.08. |
+| **Location** | `styles/tokens.css`, `styles/typography.css` (`.t-hero`) |
+| **Recommendation** | None — correct by design. Recorded for transparency. |
+| **Implementation risk** | **Low**. |
 
-- **DD-03 homepage nav logo — DONE.** `theAIReadyist` → `the` + teal `AI` (`<span class="nav-ai">`) + `Readyist`, with `.nav-logo .nav-ai { color: var(--teal); }`. The nav logo is in the sticky site-nav, not the hero.
-- **DD-08 Live Insights band — DONE.** The band's self-contained `--li-` palette converged to hero: `--li-navy #0D1B2A → var(--color-bg)`, `--li-teal #00C9A7 → var(--color-accent)`, `--li-text #F0F4F8 → var(--color-text-primary)`, `--li-amber → var(--color-warning)`, text-sec/mut rgba `240,244,248 → 245,242,236`, borders `rgba(0,201,167) → rgba(0,184,162)`, and the `li-pulse` keyframe teal. Band navy now matches the rest of the page (removes a subtle seam). `--li-surface/-raised` (#0F2233/#122739) left — non-canonical navy surfaces, logged.
-- **DD-04 Live Insights cards — DONE.** `.feed-lead` / `.feed-item` fills (`var(--bg2)`, hover `#192d4e`) → **border-only**: `background: transparent` + `border: 1px solid var(--li-border-sub)`, hover = subtle teal wash `rgba(0,184,162,0.05)`. Border carries the separation structurally (hierarchy without fill, §1.3 + Philosophy §7).
-- **tokens.css** linked in `index.html` `<head>` (non-visual) so the band's `var(--color-*)` resolve.
-- **VISUAL-REVIEW FLAG:** the band card styling (filled → border-only) is the one *visible* homepage change in this pass. It is on-spec and verified structurally, but should be eyeballed live after deploy; trivially revertible if the filled look is preferred.
-- **DD-05 — NOT APPLIED.** Awaiting Clive's explicit sign-off (Hero-Protection-adjacent). See report.
-- **Minor (logged):** mobile override `.feed-lead { border-right:none; border-bottom:… }` is now slightly redundant given the full border; cosmetic, deferred.
+## DD-11 · Label/meta + standfirst reconciled to the hero
+| | |
+|---|---|
+| **Description** | Spec placeholders: `--type-label` 12px/0.08em, `--type-meta` 11px/0.06em, `--type-body-lg` 18px/400. The hero eyebrow is DM Mono **10px / 0.18em** uppercase and the standfirst is DM Sans **300 / 19px / lh 1.6**. Tokens reconciled toward the hero: label/meta ~10–11px / 0.16em; body-lg 1.1875rem (19px) / lh 1.6 with light weight available. |
+| **Location** | `styles/tokens.css`, `styles/typography.css` |
+| **Recommendation** | None — hero wins per Hero Protection. Recorded for transparency. |
+| **Implementation risk** | **Low**. |
 
-### Phase 1 convergence — remaining after Pass 3
-- **DD-05** retired homepage labels — needs sign-off (only outstanding homepage item).
-- Non-canonical one-off hexes (`#0F2233`, `#122739`, `#192d4e` removed on homepage; `#e05c5c` in admin) — minor sweep.
-- Optional: full local-var → token *rename* (cosmetic; SSOT already achieved via aliasing).
+## DD-12 · Spec says "six templates" but enumerates five
+| | |
+|---|---|
+| **Description** | Spec §8 states "six template types" but details five: Editorial, Product/Tool Landing, Assessment, Dashboard/Radar, and the protected Homepage (§8.5 is responsive behaviour, not a template). The sixth is undefined. |
+| **Location** | Phase 2 spec §8 |
+| **Recommendation** | Per §8.0 (new templates are exceptional and need written justification), **no sixth template was invented**. Flagged for Clive's clarification — likely a miscount, or an intended Admin/Utility template that should be specified before it is built. |
+| **Implementation risk** | **Low** — open question, no code impact until resolved. |
 
 ---
 
-## Convergence Pass 4 — DD-05 — 2026-06-25 (status update)
+## Phase 2 convergence sequence (recommended, post Phase-1 merge)
+Per page, in one reviewed PR each, verified against the hero:
+1. **Declare the template** (DD-16) — add the `tmpl-*` class + page rhythm.
+2. **Adopt type roles** (DD-13) — map elements to `.t-*`; remove ad-hoc sizes.
+3. **Apply reading measure + spacing scale** (DD-14, DD-15) — `.reading` / `.layout`, `--space-*`.
+4. Re-run the Brand Regression Review (typography/layout pass) for that surface.
 
-- **DD-05 retired homepage labels — DONE (signed off by Clive → six pillars).** Hero readiness-panel `score-dim-name`s relabelled to the canonical pillars: AI Cost Governance→**AI Economics**, Governance & Trust→**Agentic Governance**, Human & Culture Readiness→**Human Agency**, Operating Model→**Executive Operating Models**, Production Readiness→**Decision Intelligence**, Regulatory Compliance→**Sovereign AI**. Matching `DIMENSION_SCORES` JS keys renamed in sync. Stray feed tags "PoC Purgatory"→Executive Operating Models, "AI Cost Intelligence"→AI Economics.
-- **LABEL TEXT ONLY.** Verified: full diff = 14 text edits; no scores/colours/bar-widths/structure/CSS changed; all 6 score bars intact; no string corruption; braces 380/380. Hero panel structure intact.
-- **Phase 1 convergence is now COMPLETE.** All DD-01..08 resolved across the platform; every surface on the canonical hero palette; logos, favicon, cards, and homepage labels conformant. Remaining: a minor non-canonical-hex sweep (`#0F2233`/`#122739`/`#e05c5c`) and the optional local-var→token rename — both cosmetic, neither blocks sign-off.
+Start with the highest-traffic non-hero surfaces (signals, dpi, dora). The hero is never altered.
