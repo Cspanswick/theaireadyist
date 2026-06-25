@@ -245,3 +245,15 @@ Phase 3 ships the component **library** (`components.css`). Per §9 Restraint + 
 | **Location** | assessment pages (sliders), queues (loading/empty), interactive controls |
 | **Recommendation** | Link `interactions.css`; adopt `.slider`, `.skeleton`/`.is-loading`, `.state-empty/.state-error`, focus conventions. |
 | **Implementation risk** | **Low–Medium** — additive; verify slider + focus per page. |
+
+---
+
+# HOTFIX — Convergence Pass 2 self-reference regression (2026-06-25)
+
+## DD-25 · Circular custom properties broke 6 tool/reference pages — FIXED
+| | |
+|---|---|
+| **Description** | Convergence Pass 2's hex→token replacement was applied to declarations that were **already token-named**: `--color-bg: #0D1F3C` became `--color-bg: var(--color-bg)` (self-referential), same for `--color-text-primary: #F5F2EC`. Self-referential custom properties resolve to **empty**, so `--navy`/`--off-white` (which alias them) collapsed → transparent (white) background + ghosted primary text. Visible once a fresh (non-cached) copy loaded. |
+| **Location** | `dora.html`, `nis2.html`, `radar.html`, `eu-ai-act-tiers.html`, `eu-ai-act-enforcement.html`, `eu-ai-act-enforcement-risk.html` (the shared-template family + reference pages whose `:root` used token names). DPI / main EU AI Act / Signals / admin were unaffected (local var names only). |
+| **Recommendation** | **DONE:** removed the self-referential declaration lines so `--color-bg`/`--color-text-primary` resolve from `tokens.css` (linked + applying — verified live via `--color-accent`). Braces preserved; tokens-link asserted on each. |
+| **Implementation risk** | **Low** — deterministic removal; restores intended cascade. Process note: future alias passes must **skip properties whose name equals the token name** to avoid self-reference. |
