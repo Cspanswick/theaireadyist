@@ -67,3 +67,26 @@ Same lightweight formalisation (link Phase 2 layer, declare template, tokenise e
 
 ## Phase 2 convergence — coverage after this batch
 **All public pages converged:** homepage (Phase 1), dpi, eu-ai-act, dora, nis2, radar, eu-ai-act-tiers/-reference/-enforcement/-enforcement-risk, signals. **Remaining:** 6 `admin/*` internal pages (lowest priority — not customer-facing). **Open decision:** DD-12 sixth template for index/listing surfaces (signals).
+
+---
+
+## DD-12 RESOLVED + sixth template ratified + admin convergence · 2026-06-25
+
+**Sixth template — Index/Listing (`tmpl-index`, §8.7), ratified by Clive.** Added to `templates.css` with §8.0 written justification (none of Editorial/Product/Assessment/Dashboard describes a filterable multi-item listing). Scaffold `templates/template-index.html` added; `phase2-typography-layout.md` §5 + `design-debt.md` DD-12 updated to RESOLVED.
+
+- **`signals.html`** now declares `class="tmpl tmpl-index"` (its existing `.filters`/`.grid`/`.chip` CSS already implements the pattern; this formalises conformance).
+
+**Admin pages (6) — lightweight formalisation** (links + exact-value size tokens + best-fit template class; internal tools, not customer-facing):
+| Page | Template | sizes |
+|---|---|---|
+| `admin/signals` | Index | 3 |
+| `admin/research-candidates` | Index | 2 |
+| `admin/approvals` | Index | 3 |
+| `admin/observation` | Dashboard | 1 |
+| `admin/research-agent` | Product | 0 |
+| `admin/blog-research` | Product | 2 |
+
+Each diff = only stylesheet links + `font-size` aliases + `<body>` class; braces byte-preserved; zero visual change.
+
+## Phase 2 convergence — COMPLETE
+Every page (public + admin) mapped to one of the **six** ratified templates and on the type-role tokens. Remaining DD-13/14/15 items (off-scale UI micro-type, reading-measure tokens) are optional polish — logged, non-blocking, platform already reads as one institution. **Phase 2 acceptance: met.**

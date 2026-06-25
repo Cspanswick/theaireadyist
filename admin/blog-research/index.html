@@ -6,6 +6,8 @@
 <title>Blog Research — The AI Readyist Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -21,7 +23,7 @@
   --border-subtle:rgba(255,255,255,0.08);
   --border-warning:rgba(232,168,56,0.35);
 }
-body{background:var(--navy);color:var(--text-primary);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:15px}
+body{background:var(--navy);color:var(--text-primary);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:var(--type-body-sm)}
 
 /* ── NAV ── */
 nav{
@@ -30,7 +32,7 @@ nav{
   position:sticky;top:0;background:var(--navy);z-index:100;
   backdrop-filter:blur(8px);
 }
-.wordmark{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;text-decoration:none;color:var(--text-primary);letter-spacing:.01em}
+.wordmark{font-family:'DM Sans',sans-serif;font-size:var(--type-body-sm);font-weight:500;text-decoration:none;color:var(--text-primary);letter-spacing:.01em}
 .wordmark span{color:var(--teal)}
 .nav-links{display:flex;gap:1.5rem;margin-left:auto}
 .nav-links a{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .15s}
@@ -142,7 +144,7 @@ nav{
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-product">
 
 <nav>
   <a class="wordmark" href="/"><span>the</span><span style="color:var(--teal)">AI</span><span>Readyist</span></a>

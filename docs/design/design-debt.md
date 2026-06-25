@@ -160,8 +160,8 @@ Each correction ships via its own reviewed PR; the homepage hero itself is never
 |---|---|
 | **Description** | Spec §8 states "six template types" but details five: Editorial, Product/Tool Landing, Assessment, Dashboard/Radar, and the protected Homepage (§8.5 is responsive behaviour, not a template). The sixth is undefined. |
 | **Location** | Phase 2 spec §8 |
-| **Recommendation** | Per §8.0 (new templates are exceptional and need written justification), **no sixth template was invented**. Flagged for Clive's clarification — likely a miscount, or an intended Admin/Utility template that should be specified before it is built. |
-| **Implementation risk** | **Low** — open question, no code impact until resolved. |
+| **Recommendation** | ~~Per §8.0, no sixth template was invented; flagged for Clive's clarification.~~ **RESOLVED 2026-06-25 (ratified by Clive):** the sixth template is **Index/Listing** (`tmpl-index`, §8.7) — a filterable, classified grid of content cards. §8.0 written justification recorded in `templates.css` (none of the other four describes a multi-item listing). `signals.html` mapped to it; scaffold `template-index.html` added. |
+| **Implementation risk** | **Low** — resolved; additive template + one page mapping. |
 
 ---
 

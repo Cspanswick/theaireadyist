@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -16,7 +18,7 @@
       --border:rgba(0,184,162,.20);--border-hi:rgba(0,184,162,.55);--border-sub:rgba(255,255,255,.08);
       --head:'Playfair Display',Georgia,serif;--body:'DM Sans',-apple-system,sans-serif;--mono:'DM Mono','Courier New',monospace;
     }
-    html{font-size:16px}
+    html{font-size:var(--type-body)}
     body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.55;min-height:100vh}
     .header{border-bottom:1px solid var(--border);padding:40px 44px 26px}
     .header-inner{max-width:1040px;margin:0 auto}
@@ -44,7 +46,7 @@
     .rc-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--text-mut);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
     .rc-id{color:var(--teal)}
     .rc-pillar{color:var(--text-sec)}
-    .rc-topic{font-family:var(--head);font-size:19px;font-weight:700;line-height:1.25;margin-bottom:8px}
+    .rc-topic{font-family:var(--head);font-size:var(--type-body-lg);font-weight:700;line-height:1.25;margin-bottom:8px}
     .rc-src{font-size:12.5px;color:var(--text-mut);margin-bottom:12px}
     .rc-src a{color:var(--text-sec)} .rc-src a:hover{color:var(--teal)}
     .rc-notes{width:100%;background:var(--raised);color:var(--text);border:1px solid var(--border-sub);padding:9px 11px;font-family:var(--body);font-size:13.5px;resize:vertical;margin-bottom:12px}
@@ -60,7 +62,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-index">
   <header class="header">
     <div class="header-inner">
       <span class="eyebrow">Research · Internal</span>

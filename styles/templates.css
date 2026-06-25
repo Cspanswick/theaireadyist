@@ -3,7 +3,8 @@
    templates.css · Phase 2 · The reusable page templates
    Depends on tokens.css, typography.css, layout.css, brand.css.
    Six template types total (spec §8): Homepage (protected, exists) +
-   the four below. (Spec says "six"; it enumerates five — logged DD-12.)
+   Editorial, Product, Assessment, Dashboard, and Index/Listing (§8.7,
+   ratified — resolves the DD-12 "six vs five" gap).
    Every product page MUST be exactly one template (spec §8.0).
    ============================================================ */
 
@@ -84,3 +85,22 @@
   .tmpl-dashboard__stats  { grid-template-columns: 1fr; }
   .tmpl-editorial .pullquote { margin-left: 0; margin-right: 0; }
 }
+
+/* ─── 8.7 INDEX / LISTING (sixth template, ratified — resolves DD-12) ─────────
+   A filterable, classified grid of content cards (Signals; future: research
+   archive, briefings index). §8.0 justification: none of Editorial (single
+   reading surface), Product (single tool landing), Assessment (interactive
+   form) or Dashboard (single aggregate viz) describes a multi-item filterable
+   listing. Cards reuse the border-only .card pattern (§1.3). */
+.tmpl-index__head    { /* use masthead + .t-label eyebrow + .t-display/.t-hero headline */ }
+.tmpl-index__filters { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-5) 0 var(--space-4); }
+.tmpl-index__chip    { /* border-only filter pill */
+  font-family: var(--font-mono); font-size: var(--type-meta); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-text-muted); background: none; border: 1px solid var(--color-border-subtle);
+  padding: 7px 13px; cursor: pointer; transition: color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+}
+.tmpl-index__chip:hover        { color: var(--color-text-primary); border-color: var(--color-border); }
+.tmpl-index__chip[aria-pressed="true"],
+.tmpl-index__chip.active       { color: var(--color-accent); border-color: var(--color-border-active); }
+.tmpl-index__grid    { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-4); }
+@media (max-width: 900px) { .tmpl-index__grid { grid-template-columns: 1fr; } }
