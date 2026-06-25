@@ -6,6 +6,8 @@
 <title>EU AI Act — Tier Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
 <style>
 :root {
   --navy: var(--color-bg); --teal: var(--color-accent); --off-white: var(--color-text-primary);
@@ -105,7 +107,7 @@ h1 {
 
 .tier-title {
   font-family: 'Playfair Display', serif;
-  font-size: 19px;
+  font-size: var(--type-body-lg);
   font-weight: 600;
   color: var(--off-white);
   margin-bottom: 4px;
@@ -172,7 +174,7 @@ h1 {
 }
 
 .banned  .penalty-amount { color: #e05c5c; font-size: 24px; }
-.high    .penalty-amount { color: #d4845a; font-size: 22px; }
+.high    .penalty-amount { color: #d4845a; font-size: var(--type-h2); }
 .limited .penalty-amount { color: #6a9fc0; font-size: 20px; }
 .minimal .penalty-amount { color: #7aaa8a; font-size: 17px; }
 
@@ -249,7 +251,7 @@ h1 {
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-editorial">
 
 <nav>
   <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
