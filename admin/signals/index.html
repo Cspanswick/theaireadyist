@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -33,7 +35,7 @@
     }
     h1 { font-family: var(--head); font-size: clamp(30px, 4vw, 44px); font-weight: 700; line-height: 1.12; margin-bottom: 12px; }
     h1 em { color: var(--teal); font-style: italic; }
-    .header-desc { font-size: 15px; color: var(--text-sec); max-width: 660px; }
+    .header-desc { font-size: var(--type-body-sm); color: var(--text-sec); max-width: 660px; }
     .header-nav { margin-top: 18px; display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
     .nav-link {
       font-family: var(--mono); font-size: 12px; color: var(--text); text-decoration: none;
@@ -65,7 +67,7 @@
     .status-line.info { color: var(--amber); }
     .counter { font-family: var(--mono); font-size: 12px; color: var(--text-mut); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 18px; }
 
-    .empty { border: 1px dashed var(--border); padding: 56px 32px; text-align: center; color: var(--text-mut); font-size: 16px; }
+    .empty { border: 1px dashed var(--border); padding: 56px 32px; text-align: center; color: var(--text-mut); font-size: var(--type-body); }
     .empty-icon { font-family: var(--head); font-size: 44px; color: var(--border-hi); display: block; margin-bottom: 12px; }
 
     /* Signal card */
@@ -94,7 +96,7 @@
       padding: 9px 11px; font-family: var(--body); font-size: 14.5px; line-height: 1.5; width: 100%; resize: vertical;
     }
     .ed input:focus, .ed textarea:focus, .ed select:focus { outline: none; border-color: var(--border-hi); }
-    .ed .title-input { font-family: var(--head); font-size: 18px; }
+    .ed .title-input { font-family: var(--head); font-size: var(--type-h3); }
     .row2 { display: grid; grid-template-columns: 1fr 1fr 110px; gap: 12px; }
     @media (max-width: 680px) { .row2 { grid-template-columns: 1fr; } }
 
@@ -117,7 +119,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-index">
   <header class="header">
     <div class="header-inner">
       <span class="eyebrow">Executive Signal Agent · v1</span>

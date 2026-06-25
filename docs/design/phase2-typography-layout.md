@@ -50,9 +50,10 @@ Every page is exactly one template; new templates are exceptional and require wr
 2. **Product / Tool Landing** (`tmpl-product`) — DPI, EU AI Act, DORA, NIS2, Radar. Border-only dimension cards; persona row; CTA after the case.
 3. **Assessment** (`tmpl-assessment`) — DPI questions, EU AI Act domains. Sticky results panel (raised utility surface); state badges carry their word (§6).
 4. **Dashboard / Radar** (`tmpl-dashboard`) — Governance Exposure, aggregate views. Border-only chart surface; raised summary/control panels; legend pairs colour with text.
-5. **Homepage** — *protected; already exists; do not rebuild.* It is the ground-truth for all four above.
+5. **Index / Listing** (`tmpl-index`, §8.7) — Signals; future research archive, briefings index. A filterable, classified grid of border-only content cards: masthead + eyebrow + headline → filter bar (`tmpl-index__chip`, `aria-pressed`) → responsive card grid (`tmpl-index__grid`, 1-col below `--bp-md`).
+6. **Homepage** — *protected; already exists; do not rebuild.* It is the ground-truth for all five above.
 
-> **Six-vs-five note (DD-12):** the spec states "six template types" but enumerates five (the four above + the protected Homepage; §8.5 is responsive behaviour, not a template). The sixth is undefined. Per §8.0, **no template was invented** to reach six; the discrepancy is logged for clarification.
+> **DD-12 RESOLVED (2026-06-25, ratified by Clive):** the spec's "six templates" is now complete — the missing sixth is **Index/Listing** (§8.7), added to cover multi-item filterable listings (e.g. Signals) that none of Editorial/Product/Assessment/Dashboard describes. §8.0 written justification recorded in `templates.css`. `signals.html` is mapped to it.
 
 ## 6. Accessibility (§6) & 7. Responsive (§8.5)
 Focus states use `--color-accent` (`:focus-visible`); DOM order matches visual rhythm; meaning never via colour alone (badges/legends always carry text). Breakpoints `--bp-sm/md/lg`: hero scales via `clamp()`; multi-column card rows and right rails collapse to single column below `--bp-md`; masthead + wordmark never drop (≥90px); 680px reading preserved; reflow never scrambles order.
