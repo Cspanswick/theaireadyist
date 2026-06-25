@@ -201,8 +201,8 @@ Phase 3 ships the component **library** (`components.css`). Per §9 Restraint + 
 |---|---|
 | **Description** | Range inputs rely on `accent-color`; no custom editorial track/thumb. Acceptable + accessible now; richer styling belongs to Phase 6 (Interaction Patterns). |
 | **Location** | assessment pages (DPI, EU AI Act, DORA, NIS2, radar) |
-| **Recommendation** | Keep `.slider` (accent-color + focus) for Phase 3; revisit custom track/thumb in Phase 6. |
-| **Implementation risk** | **Low** — deferred by design. |
+| **Recommendation** | ~~Keep accent-color for Phase 3; revisit in Phase 6.~~ **RESOLVED (Phase 6):** `interactions.css` ships a tokenised custom slider — thin `--color-border-subtle` track, teal `--color-accent` thumb bordered in `--color-bg`, teal focus glow, cross-browser (`-webkit-`/`-moz-`), keyboard-accessible; reduced-motion safe. |
+| **Implementation risk** | **Low** — resolved; additive enhancement, falls back to accent-color. |
 
 ---
 
@@ -223,3 +223,25 @@ Phase 3 ships the component **library** (`components.css`). Per §9 Restraint + 
 | **Location** | platform-wide (forward rule) |
 | **Recommendation** | Follow `phase4-dataviz.md` "Canvas token bridge". No debt outstanding — recorded so the pattern isn't reinvented. |
 | **Implementation risk** | **Low** — governance note. |
+
+---
+
+# PHASE 5 — EDITORIAL LANGUAGE DEBT (added 2026-06-25)
+
+## DD-23 · Retired terms / off-voice copy in live pages (staged)
+| | |
+|---|---|
+| **Description** | Beyond the homepage (DD-05, fixed), stray retired terms and vendor-ish phrasing may remain in body copy/CTAs across pages. Phase 5 sets the lexicon + voice; live copy converges per page. |
+| **Location** | platform-wide body/CTA copy |
+| **Recommendation** | Run customer-facing copy against `phase5-editorial-language.md` (voice + lexicon + microcopy); replace retired terms per the do-not-use map; verb-led CTAs. One reviewed page at a time. |
+| **Implementation risk** | **Low** — copy edits, reversible; hero copy is the benchmark (unchanged). |
+
+# PHASE 6 — INTERACTION PATTERNS DEBT (added 2026-06-25)
+
+## DD-24 · Per-page interaction/state CSS (converge to interactions.css)
+| | |
+|---|---|
+| **Description** | Hover/focus/disabled/loading handled ad-hoc per page; native sliders. Phase 6 ships `interactions.css` (states + custom slider + skeleton). Pages adopt it during staged convergence. |
+| **Location** | assessment pages (sliders), queues (loading/empty), interactive controls |
+| **Recommendation** | Link `interactions.css`; adopt `.slider`, `.skeleton`/`.is-loading`, `.state-empty/.state-error`, focus conventions. |
+| **Implementation risk** | **Low–Medium** — additive; verify slider + focus per page. |

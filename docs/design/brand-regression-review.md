@@ -145,3 +145,20 @@ The component **standard + library** exist and the platform already presents the
 
 ## Honest position
 Phase 4 applies the data-viz tokens to the one real chart (the radar) and **fixes a latent canvas `var()` bug** in the process, plus ships the CSS-side viz primitives + the binding "canvas token bridge" rule for future charts. The platform's only complex visualisation is now token-faithful and correct. **Phase 4 acceptance: met.**
+
+---
+
+# PHASE 5 — EDITORIAL LANGUAGE PASS (2026-06-25)
+- [x] Voice standard + canonical lexicon (category/engine/mission/discipline, six pillars, six DPI dimensions, product names) authored.
+- [x] Retired-term do-not-use map recorded; homepage already corrected (DD-05); remaining copy convergence staged (DD-23).
+- [x] Microcopy standards set (CTAs verb-led, labels, empty/error/loading, numbers/dates, sentence vs title case).
+- [x] Wordmark casing protected; hero copy unchanged (benchmark).
+- **Acceptance: standard met;** per-page copy convergence staged, non-blocking.
+
+# PHASE 6 — INTERACTION PATTERNS PASS (2026-06-25)
+- [x] State conventions (rest/hover/focus/active/disabled/loading/empty/error) defined from tokens; transitions ≤250ms, calm easing.
+- [x] Focus-visible (teal) on every control; keyboard parity; colour never alone (aria/text).
+- [x] **Custom slider shipped — DD-20 RESOLVED** (tokenised track/thumb, focus glow, cross-browser, reduced-motion safe).
+- [x] Skeleton/loading + empty/error helpers; `prefers-reduced-motion` honoured.
+- [x] Hero interaction unchanged; `interactions.css` additive (per-page adoption staged, DD-24).
+- **Acceptance: met.** Phases 1–6 complete.
