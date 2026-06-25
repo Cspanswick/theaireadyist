@@ -5,27 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EU AI Act — Enforcement & Risk Reference · The AI Readyist</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     /* Base */
-    --color-bg:              #0D1B2A;
-    --navy:                  #0D1B2A;
+    --color-bg:              var(--color-bg);
+    --navy:                  var(--color-bg);
     --deep-black:            #0a1220;
-    --off-white:             #F0F4F8;
-    --teal:                  #00C9A7;
-    --slate:                 #6B7A8D;
-    --amber:                 #E8A838;
+    --off-white:             var(--color-text-primary);
+    --teal:                  var(--color-accent);
+    --slate:                 var(--color-text-muted);
+    --amber:                 var(--color-warning);
 
     /* Text */
-    --color-text-primary:    #F0F4F8;
-    --color-text-secondary:  rgba(240,244,248,0.65);
-    --color-text-muted:      rgba(240,244,248,0.40);
+    --color-text-primary:    var(--color-text-primary);
+    --color-text-secondary:  rgba(245,242,236,0.65);
+    --color-text-muted:      rgba(245,242,236,0.40);
 
     /* Borders */
-    --color-border-card:     rgba(0,201,167,0.20);
-    --color-border-active:   rgba(0,201,167,0.60);
+    --color-border-card:     rgba(0,184,162,0.20);
+    --color-border-active:   rgba(0,184,162,0.60);
     --color-border-subtle:   rgba(255,255,255,0.08);
     --color-border-warning:  rgba(232,168,56,0.35);
 
@@ -34,18 +35,18 @@
     --bg2:          transparent;
     --bg3:          transparent;
     --gold:         var(--teal);
-    --gold-dim:     rgba(0,201,167,0.12);
-    --gold-border:  rgba(0,201,167,0.25);
+    --gold-dim:     rgba(0,184,162,0.12);
+    --gold-border:  rgba(0,184,162,0.25);
     --text:         var(--off-white);
     --muted:        var(--slate);
-    --muted2:       rgba(240,244,248,0.65);
-    --teal-dim:     rgba(0,201,167,0.12);
-    --teal-border:  rgba(0,201,167,0.25);
+    --muted2:       rgba(245,242,236,0.65);
+    --teal-dim:     rgba(0,184,162,0.12);
+    --teal-border:  rgba(0,184,162,0.25);
     --amber-dim:    rgba(232,168,56,0.12);
     --rule:         rgba(107,122,141,0.20);
-    --rule-teal:    rgba(0,201,167,0.40);
-    --slate-70:     rgba(240,244,248,0.65);
-    --slate-60:     rgba(240,244,248,0.55);
+    --rule-teal:    rgba(0,184,162,0.40);
+    --slate-70:     rgba(245,242,236,0.65);
+    --slate-60:     rgba(245,242,236,0.55);
     --red:          #e05c5c;
     --red-dim:      rgba(224,92,92,0.10);
     --orange:       var(--amber);
@@ -108,7 +109,7 @@
 
   .header-sub {
     font-size: 17px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     max-width: 500px;
     line-height: 1.5;
   }
@@ -187,7 +188,7 @@
 
   .who-desc {
     font-size: 16px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     line-height: 1.6;
     margin-bottom: 14px;
   }
@@ -200,7 +201,7 @@
   }
   .who-list li {
     font-size: 15px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     padding-left: 12px;
     position: relative;
     line-height: 1.45;
@@ -260,7 +261,7 @@
 
   .rb-desc {
     font-size: 15px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     line-height: 1.45;
   }
 
@@ -306,7 +307,7 @@
 
   .trig-body {
     font-size: 15px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     line-height: 1.6;
     margin-bottom: 14px;
   }
@@ -380,7 +381,7 @@
 
   .tl-detail {
     font-size: 15px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     line-height: 1.5;
   }
 
@@ -416,7 +417,7 @@
   .penalty-table td {
     padding: 14px 16px;
     font-size: 17px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     vertical-align: top;
   }
   .penalty-table td:first-child { padding-left: 0; }
@@ -447,7 +448,7 @@
   .turnover-cell {
     font-family: 'DM Mono', monospace;
     font-size: 14px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
   }
 
   /* ── Warning ── */
@@ -488,7 +489,7 @@
 
   .warn-text {
     font-size: 16px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     line-height: 1.6;
   }
   .warn-text strong { color: var(--text); }
@@ -527,7 +528,7 @@
 
   .verdict-col p {
     font-size: 17px;
-    color: rgba(240,244,248,0.65);
+    color: rgba(245,242,236,0.65);
     line-height: 1.7;
     margin-bottom: 10px;
   }
@@ -612,6 +613,10 @@
     .timeline { grid-template-columns: 1fr; }
   }
 </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
 

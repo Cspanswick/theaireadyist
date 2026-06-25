@@ -6,13 +6,14 @@
   <title>Observation Dashboard — theAIReadyist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --bg:#0D1B2A;--surface:#0F2233;--raised:#122739;
-      --teal:#00C9A7;--amber:#E8A838;--red:#e05c5c;
-      --text:#F0F4F8;--text-sec:rgba(240,244,248,.65);--text-mut:rgba(240,244,248,.40);
-      --border:rgba(0,201,167,.20);--border-hi:rgba(0,201,167,.55);--border-sub:rgba(255,255,255,.08);
+      --bg:var(--color-bg);--surface:#0F2233;--raised:#122739;
+      --teal:var(--color-accent);--amber:var(--color-warning);--red:#e05c5c;
+      --text:var(--color-text-primary);--text-sec:rgba(245,242,236,.65);--text-mut:rgba(245,242,236,.40);
+      --border:rgba(0,184,162,.20);--border-hi:rgba(0,184,162,.55);--border-sub:rgba(255,255,255,.08);
       --head:'Playfair Display',Georgia,serif;--body:'DM Sans',-apple-system,sans-serif;--mono:'DM Mono','Courier New',monospace;
     }
     html{font-size:16px}
@@ -67,6 +68,10 @@
     .note{font-family:var(--mono);font-size:11px;color:var(--text-mut);margin-top:10px;line-height:1.5}
     .empty{border:1px dashed var(--border);padding:48px 28px;text-align:center;color:var(--text-mut)}
   </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
   <header class="header">

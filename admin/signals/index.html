@@ -7,13 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0D1B2A; --surface: #0F2233; --raised: #122739;
-      --teal: #00C9A7; --amber: #E8A838;
-      --text: #F0F4F8; --text-sec: rgba(240,244,248,0.65); --text-mut: rgba(240,244,248,0.40);
-      --border: rgba(0,201,167,0.20); --border-hi: rgba(0,201,167,0.55);
+      --bg: var(--color-bg); --surface: #0F2233; --raised: #122739;
+      --teal: var(--color-accent); --amber: var(--color-warning);
+      --text: var(--color-text-primary); --text-sec: rgba(245,242,236,0.65); --text-mut: rgba(245,242,236,0.40);
+      --border: rgba(0,184,162,0.20); --border-hi: rgba(0,184,162,0.55);
       --border-sub: rgba(255,255,255,0.08); --border-warn: rgba(232,168,56,0.35);
       --red: #e05c5c;
       --head: 'Playfair Display', Georgia, serif;
@@ -56,7 +57,7 @@
       padding: 8px 16px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em;
       text-transform: uppercase; cursor: pointer;
     }
-    .btn-refresh:hover { background: rgba(0,201,167,0.1); }
+    .btn-refresh:hover { background: rgba(0,184,162,0.1); }
 
     .status-line { font-family: var(--mono); font-size: 13px; min-height: 22px; margin-bottom: 20px; letter-spacing: 0.03em; }
     .status-line.success { color: var(--teal); }
@@ -68,7 +69,7 @@
     .empty-icon { font-family: var(--head); font-size: 44px; color: var(--border-hi); display: block; margin-bottom: 12px; }
 
     /* Signal card */
-    .sig-card { background: var(--surface); border: 1px solid var(--border); border-left: 2px solid var(--amber); margin-bottom: 26px; }
+    .sig-card { background: transparent; border: 1px solid var(--border); border-left: 2px solid var(--amber); margin-bottom: 26px; }
     .sig-card[data-status="approved"] { border-left-color: var(--teal); }
     .sig-card[data-status="published"] { border-left-color: var(--teal); opacity: 0.85; }
     .sig-card[data-status="rejected"] { border-left-color: var(--red); opacity: 0.7; }
@@ -102,7 +103,7 @@
     .btn-save { color: var(--text); border-color: var(--border-sub); }
     .btn-save:hover { border-color: var(--text-sec); }
     .btn-approve { color: var(--teal); border-color: var(--border-hi); }
-    .btn-approve:hover { background: rgba(0,201,167,0.12); }
+    .btn-approve:hover { background: rgba(0,184,162,0.12); }
     .btn-publish { color: var(--bg); background: var(--teal); border-color: var(--teal); }
     .btn-publish:hover { filter: brightness(1.1); }
     .btn-candidate { color: var(--amber); border-color: var(--border-warn); }
@@ -111,6 +112,10 @@
     .btn-reject:hover { background: rgba(224,92,92,0.1); }
     .gate-note { font-family: var(--mono); font-size: 10.5px; color: var(--text-mut); letter-spacing: 0.04em; margin-left: auto; }
   </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
   <header class="header">

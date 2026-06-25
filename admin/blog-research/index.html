@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog Research — The AI Readyist Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0D1B2A;
-  --teal:#00C9A7;
-  --amber:#E8A838;
+  --navy:var(--color-bg);
+  --teal:var(--color-accent);
+  --amber:var(--color-warning);
   --red:#e05c5c;
-  --text-primary:#F0F4F8;
-  --text-secondary:rgba(240,244,248,0.65);
-  --text-muted:rgba(240,244,248,0.40);
-  --border-card:rgba(0,201,167,0.20);
-  --border-active:rgba(0,201,167,0.60);
+  --text-primary:var(--color-text-primary);
+  --text-secondary:rgba(245,242,236,0.65);
+  --text-muted:rgba(245,242,236,0.40);
+  --border-card:rgba(0,184,162,0.20);
+  --border-active:rgba(0,184,162,0.60);
   --border-subtle:rgba(255,255,255,0.08);
   --border-warning:rgba(232,168,56,0.35);
 }
@@ -55,8 +56,8 @@ nav{
   border:1px solid var(--border-card);padding:1rem 1.1rem;cursor:pointer;
   transition:border-color .15s,background .15s;position:relative;
 }
-.pillar-card:hover{border-color:rgba(0,201,167,0.4);background:rgba(0,201,167,0.04)}
-.pillar-card.selected{border-color:var(--teal);background:rgba(0,201,167,0.08)}
+.pillar-card:hover{border-color:rgba(0,184,162,0.4);background:rgba(0,184,162,0.04)}
+.pillar-card.selected{border-color:var(--teal);background:rgba(0,184,162,0.08)}
 .pillar-card.selected::before{
   content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal)
 }
@@ -85,8 +86,8 @@ nav{
   border:1px solid var(--border-card);background:transparent;color:var(--text-secondary);
   padding:.45rem .9rem;cursor:pointer;transition:all .15s;text-transform:uppercase;
 }
-.toggle-btn:hover{border-color:rgba(0,201,167,0.4);color:var(--text-primary)}
-.toggle-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(0,201,167,0.08)}
+.toggle-btn:hover{border-color:rgba(0,184,162,0.4);color:var(--text-primary)}
+.toggle-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(0,184,162,0.08)}
 
 /* ── TOPIC CHIPS ── */
 .topic-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
@@ -99,7 +100,7 @@ nav{
 
 /* ── GENERATE BUTTON ── */
 .btn-generate{
-  display:inline-block;background:var(--teal);color:#0D1B2A;
+  display:inline-block;background:var(--teal);color:var(--color-bg);
   font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
   padding:.8rem 2rem;border:none;cursor:pointer;font-weight:500;
   transition:opacity .15s;
@@ -136,6 +137,10 @@ nav{
 .val-msg{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);margin-top:.5rem;display:none}
 .val-msg.visible{display:block}
 </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
 

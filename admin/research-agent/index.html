@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/research-agent/styles.css" />
+  <link rel="stylesheet" href="/styles/tokens.css">
   <style>
     /* ââ Approval tracking additions âââââââââââââââââââââ */
     .btn-approvals {
@@ -16,8 +17,8 @@
       gap: 6px;
       padding: 8px 16px;
       background: transparent;
-      border: 1.5px solid #00C9A7;
-      color: #00C9A7;
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-accent);
       font-family: 'DM Mono', monospace;
       font-size: 0.72rem;
       font-weight: 500;
@@ -30,8 +31,8 @@
       white-space: nowrap;
     }
     .btn-approvals:hover {
-      background: #00C9A7;
-      color: #0D1B2A;
+      background: var(--color-accent);
+      color: var(--color-bg);
     }
     .register-cell-approval {
       display: flex;
@@ -60,8 +61,8 @@
       transition: border-color 0.15s, background 0.15s;
     }
     .approval-check-wrap input[type="checkbox"]:checked {
-      background: #00C9A7;
-      border-color: #00C9A7;
+      background: var(--color-accent);
+      border-color: var(--color-accent);
     }
     .approval-check-wrap input[type="checkbox"]:checked::after {
       content: '';
@@ -70,7 +71,7 @@
       top: 1px;
       width: 5px;
       height: 9px;
-      border: 2px solid #0D1B2A;
+      border: 2px solid var(--color-bg);
       border-top: none;
       border-left: none;
       transform: rotate(45deg);
@@ -84,9 +85,13 @@
       transition: color 0.15s;
     }
     .approval-check-wrap:has(input:checked) .approval-check-label {
-      color: #00C9A7;
+      color: var(--color-accent);
     }
   </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
 
@@ -467,7 +472,7 @@
       var sig  = (p.get('signal')||'').replace(/[<>]/g,'');
       var rat  = (p.get('rationale')||'').replace(/[<>]/g,'');
       var note = document.createElement('div');
-      note.style.cssText = 'margin:12px 0;padding:10px 14px;border:1px solid rgba(0,201,167,.4);background:rgba(0,201,167,.08);color:#F0F4F8;font:13px/1.5 -apple-system,sans-serif;';
+      note.style.cssText = 'margin:12px 0;padding:10px 14px;border:1px solid rgba(0,184,162,.4);background:rgba(0,184,162,.08);color:#F5F2EC;font:13px/1.5 -apple-system,sans-serif;';
       note.innerHTML = 'Pre-filled from research candidate <b>'+cand+'</b>. You still launch manually.'+(sig?'<br>Source signal: “'+sig+'”':'')+(rat?'<br>Rationale: '+rat:'');
       if(el && el.parentNode){ el.parentNode.insertBefore(note, el); }
     }
