@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -54,7 +56,7 @@
 
   .nav-logo {
     font-family: 'Playfair Display', serif;
-    font-size: 15px;
+    font-size: var(--type-body-sm);
     font-weight: 700;
     color: var(--off-white);
     text-decoration: none;
@@ -112,7 +114,7 @@
 
   .hero-desc {
     font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
+    font-size: var(--type-body);
     font-weight: 300;
     color: var(--slate-70);
     max-width: 620px;
@@ -362,7 +364,7 @@
 
   .slider-val {
     font-family: 'DM Mono', monospace;
-    font-size: 22px;
+    font-size: var(--type-h2);
     font-weight: 500;
     min-width: 28px;
     text-align: right;
@@ -614,7 +616,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-assessment">
 
 <nav class="site-nav">
   <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>

@@ -5,7 +5,7 @@ Each page is mapped to one template and adopts the type roles / reading measure 
 ---
 
 ## Page 1 — dpi.html · Decision Performance Index  →  **Assessment template (§8.3)**
-**Status:** staged 2026-06-25 · awaiting deploy + live verification.
+**Status:** ✅ DEPLOYED + VERIFIED LIVE 2026-06-25 (PR #9). Live screenshot confirms the page reads as the same institution as the hero: Playfair display at hero scale with one teal accent phrase, mono eyebrow/meta, DM Sans lead at 680px, "MAPPED PILLAR" labels rendering, Likert UI intact.
 
 **Template mapping:** declared `class="tmpl tmpl-assessment"` (interactive self-assessment: dimensions → statements → Likert → verdict). The page predates the four templates; this is the §8.16 mapping.
 
@@ -29,3 +29,19 @@ Each page is mapped to one template and adopts the type roles / reading measure 
 **Spacing (DD-15):** not touched this pass (limit risk on a complex interactive page); section spacing review deferred.
 
 **Verification:** diff = 11 intended edits only; braces 213/213; single `<style>` intact; `index.html`/other pages untouched. **Live screenshot vs hero pending deploy.**
+
+---
+
+## Pages 2–5 — Tool pages (one batch PR) · staged 2026-06-25
+**Finding (verified live, DORA screenshot):** these pages **already meet the experiential bar** after Phase 1 — teal accent (note: their legacy `--gold` var is aliased to `var(--teal)`, so it renders teal), correct faces, border-only cards, raised utility panels. So this is **lightweight formalisation, not a restyle**: link the Phase 2 layer, declare the template, and tokenise exact-value content sizes (value-identical → zero visual change). Off-scale label/score/nav sizes and reading-measure polish **deferred** (logged) — no risky scale changes on already-consistent pages.
+
+| Page | Template (§8) | Stylesheets | Exact-value sizes tokenised |
+|---|---|---|---|
+| `eu-ai-act.html` | Assessment | linked | 3 |
+| `dora.html` | Assessment | linked | 19 |
+| `nis2.html` | Assessment | linked | 26 |
+| `radar.html` | Dashboard | linked | 16 |
+
+Exact-value map applied (16→`--type-body`, 15→`--type-body-sm`, 22→`--type-h2`, 18→`--type-h3`, 19→`--type-body-lg`). **Verification:** each page's diff = only stylesheet links + `font-size` token aliases + `<body>` template class; brace counts byte-preserved vs source (pre-existing one-off `{` imbalance left untouched); no other lines changed. **Zero visual change expected; live spot-check pending deploy.**
+
+**Deferred platform note (DD-13 UI / DD-02 naming):** legacy var names (`--gold`/`--orange` aliased to teal/amber) are cosmetic naming-debt, not visual divergence; off-scale label/score sizes (12px, 14px, 17px, 20px, score numerals) and reading-measure tokens remain for an optional later polish — pages already read as one institution.
