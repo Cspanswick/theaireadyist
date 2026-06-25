@@ -60,6 +60,52 @@
   --motion-slow:   250ms;  /* entrance fades — ceiling */
   --motion-ease:   cubic-bezier(0.4, 0.0, 0.2, 1);
 
-  /* ─── MINIMAL SPACING (full scale arrives in Phase 2) ─── */
-  --space-4:       16px;   /* used by .panel--utility padding */
+  /* ============================================================
+     PHASE 2 — TYPOGRAPHY & LAYOUT
+     Type scale anchored to the live hero (Hero Protection Rule).
+     ============================================================ */
+
+  /* ─── TYPE SCALE (desktop; responsive via clamp + §8.5) ─── */
+  /* role            value                              face / weight / line-height / tracking */
+  --type-hero:       clamp(2.25rem, 4.2vw, 3.25rem);  /* serif 700, lh 1.08, tracking -0.02em — MATCHED to hero h1 */
+  --type-display:    2.25rem;                          /* serif 600, lh 1.10, tracking -0.015em */
+  --type-h1:         1.75rem;                          /* serif 600, lh 1.15 */
+  --type-h2:         1.375rem;                         /* serif 600, lh 1.20 */
+  --type-h3:         1.125rem;                         /* serif 600, lh 1.25 */
+  --type-body-lg:    1.1875rem;                        /* sans 300/400, lh 1.6 — lead/standfirst (hero 19px) */
+  --type-body:       1rem;                             /* sans 400, lh 1.65 */
+  --type-body-sm:    0.9375rem;                        /* sans 400, lh 1.55 — dense UI */
+  --type-label:      0.6875rem;                        /* mono 500, lh 1.4, tracking 0.16em, UPPERCASE (hero eyebrow) */
+  --type-meta:       0.625rem;                         /* mono 400, lh 1.4, tracking 0.16em, UPPERCASE */
+  --type-data-lg:    2.5rem;                           /* mono 600 — big score figures */
+  --type-data:       1.25rem;                          /* mono 500 — inline data values */
+  --type-quote:      1.5rem;                           /* serif 400 italic, lh 1.4 — pull quotes */
+
+  /* ─── WEIGHTS (loaded faces: Playfair 400/600/700, DM Sans 300/400/500, DM Mono 400/500) ─── */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ─── LAYOUT GRID ─── */
+  --layout-max:      1200px;  /* max content width (matches hero-inner) */
+  --layout-reading:  680px;   /* long-form reading measure (articles, briefings) */
+  --layout-gutter:   24px;    /* base gutter */
+  --layout-col:      12;      /* 12-column grid */
+
+  /* ─── SPACING SCALE (vertical rhythm) — authoritative over Phase 1 interim ─── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  16px;
+  --space-4:  24px;    /* (Phase 1 interim was 16px — superseded; see design-debt DD-09) */
+  --space-5:  40px;
+  --space-6:  64px;    /* hero vertical padding rhythm */
+  --space-7:  96px;
+  --space-8:  160px;   /* major section separation */
+
+  /* ─── BREAKPOINTS ─── */
+  --bp-sm:    640px;
+  --bp-md:    900px;
+  --bp-lg:    1200px;
 }

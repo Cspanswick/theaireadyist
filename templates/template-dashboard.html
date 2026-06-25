@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard / Radar Template — theAIReadyist</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/typography.css" />
+  <link rel="stylesheet" href="/styles/layout.css" />
+  <link rel="stylesheet" href="/styles/brand.css" />
+  <link rel="stylesheet" href="/styles/templates.css" />
+</head>
+<body class="tmpl tmpl-dashboard">
+  <main class="layout section">
+    <header class="masthead mb-5">
+      <span class="masthead__brand wordmark">the<span class="wordmark__ai">AI</span>Readyist</span>
+      <span class="masthead__product">AI Governance Exposure</span>
+    </header>
+    <h1 class="t-display">Governance exposure radar</h1>
+    <p class="t-meta mt-2">DORA · NIS2 · EU AI Act</p>
+
+    <!-- summary stats — utility panels, big mono figures -->
+    <div class="tmpl-dashboard__stats">
+      <div class="tmpl-dashboard__stat"><p class="t-label">Overall</p><p class="t-data-lg mt-2">58</p></div>
+      <div class="tmpl-dashboard__stat"><p class="t-label">Weakest</p><p class="t-h3 mt-2">Data residency</p></div>
+      <div class="tmpl-dashboard__stat"><p class="t-label">Highest gap</p><p class="t-h3 mt-2">Agent oversight</p></div>
+    </div>
+
+    <div class="tmpl-dashboard__main">
+      <!-- primary chart surface — BORDER-ONLY -->
+      <div class="tmpl-dashboard__chart">
+        <p class="t-label mb-3">Exposure by framework</p>
+        <div style="height:280px;display:flex;align-items:center;justify-content:center;color:var(--color-text-muted)">[ radar chart — data-viz tokens, Phase 4 ]</div>
+      </div>
+      <!-- control rail — utility panel -->
+      <aside class="tmpl-dashboard__controls">
+        <p class="t-label mb-3">Framework scores</p>
+        <p class="t-body-sm">DORA</p>
+        <input type="range" min="0" max="10" value="6" aria-label="DORA readiness" style="width:100%;accent-color:var(--color-accent)" />
+      </aside>
+    </div>
+
+    <!-- priorities — border-only ranked cards -->
+    <div class="tmpl-dashboard__priorities">
+      <div class="card card--risk"><h3 class="t-h3">1 · Close the agent-oversight gap</h3></div>
+      <div class="card card--warning"><h3 class="t-h3">2 · Formalise data-residency controls</h3></div>
+    </div>
+
+    <!-- legend — colour ALWAYS with a text label (§6) -->
+    <div class="tmpl-dashboard__legend">
+      <span class="t-meta"><span class="legend-dot" style="background:var(--color-success)"></span>Ready</span>
+      <span class="t-meta"><span class="legend-dot" style="background:var(--color-warning)"></span>Partial</span>
+      <span class="t-meta"><span class="legend-dot" style="background:var(--color-risk)"></span>Critical gap</span>
+    </div>
+  </main>
+</body>
+</html>

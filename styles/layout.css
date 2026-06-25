@@ -1,0 +1,57 @@
+/* ============================================================
+   TheAIReadyist — Observatory Design System
+   layout.css · Phase 2 · Grid, spacing rhythm, responsive, a11y
+   Depends on tokens.css. Whitespace is a brand asset (spec §3-§4).
+   ============================================================ */
+
+/* ─── CONTAINERS ─── */
+.layout      { max-width: var(--layout-max); margin: 0 auto; padding-left: var(--space-5); padding-right: var(--space-5); }
+.reading     { max-width: var(--layout-reading); margin-left: auto; margin-right: auto; } /* §3: long-form ≤680px */
+
+/* ─── 12-COLUMN GRID ─── */
+.grid        { display: grid; grid-template-columns: repeat(var(--layout-col), 1fr); gap: var(--layout-gutter); }
+.grid--cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); }
+
+/* ─── VERTICAL RHYTHM (spec §3: §space-7/§space-8 between major sections) ─── */
+.section          { padding-top: var(--space-7); padding-bottom: var(--space-7); }
+.section--major   { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+.stack > * + *    { margin-top: var(--space-4); }       /* default flow rhythm */
+.stack-lg > * + * { margin-top: var(--space-6); }       /* generous flow */
+
+/* spacing utilities (scale only — never arbitrary px, spec §3) */
+.mt-3 { margin-top: var(--space-3); } .mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); } .mt-6 { margin-top: var(--space-6); } .mt-7 { margin-top: var(--space-7); }
+.mb-3 { margin-bottom: var(--space-3); } .mb-4 { margin-bottom: var(--space-4); } .mb-5 { margin-bottom: var(--space-5); }
+
+/* ─── DENSITY / RHYTHM (spec §4-§5) ─── */
+/* A page has ONE primary focus; long-form alternates heading/body/quote/whitespace.
+   Use .rhythm-break to guarantee separation between dense blocks (never >3 stacked). */
+.rhythm-break { margin-top: var(--space-7); margin-bottom: var(--space-7); }
+
+/* ─── ACCESSIBILITY (spec §6) ─── */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+/* Meaning never via colour alone (§6): pair semantic colour with a text label.
+   See .badge in templates.css — it always renders its word, not just its hue. */
+
+/* ─── RESPONSIVE (spec §8.5) ─── */
+@media (max-width: 900px) {           /* below --bp-md */
+  .layout { padding-left: var(--space-4); padding-right: var(--space-4); }
+  .grid, .grid--cards { grid-template-columns: 1fr; }       /* card rows → single column */
+  .section { padding-top: var(--space-6); padding-bottom: var(--space-6); }
+}
+@media (max-width: 640px) {           /* below --bp-sm */
+  .section { padding-top: var(--space-5); padding-bottom: var(--space-5); }
+}
+/* Reading measure simply fills available width below 680px (max-width handles it).
+   Page rhythm/order must NOT scramble on reflow (§8.5) — keep DOM order = visual order. */
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto; }
+}
