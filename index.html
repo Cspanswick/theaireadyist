@@ -6,6 +6,7 @@
 <meta name="description" content="The AI Readyist is the Decision Intelligence platform for enterprise leaders — improving decision quality, velocity and accountability in an AI-native world.">
 <title>The AI Readyist — Decision Intelligence for Enterprise Leaders</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -82,6 +83,7 @@
     letter-spacing: -0.01em;
     line-height: 1;
   }
+  .nav-logo .nav-ai { color: var(--teal); }
 
   .nav-edition {
     font-family: 'DM Mono', monospace;
@@ -750,17 +752,17 @@
 
   /* Lead article — left column, full height */
   .feed-lead {
-    background: var(--bg2);
+    background: transparent;
     padding: 36px 36px 36px 36px;
     text-decoration: none;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-right: 1px solid var(--rule);
+    border: 1px solid var(--li-border-sub);
     transition: background 0.15s;
     min-height: 280px;
   }
-  .feed-lead:hover { background: #192d4e; }
+  .feed-lead:hover { background: rgba(0,184,162,0.05); }
 
   .feed-lead .feed-headline {
     font-family: 'Playfair Display', serif;
@@ -789,15 +791,16 @@
   }
 
   .feed-item {
-    background: var(--bg2);
+    background: transparent;
     padding: 24px 26px;
     text-decoration: none;
     display: flex;
     flex-direction: column;
     flex: 1;
+    border: 1px solid var(--li-border-sub);
     transition: background 0.15s;
   }
-  .feed-item:hover { background: #192d4e; }
+  .feed-item:hover { background: rgba(0,184,162,0.05); }
 
   .feed-item .feed-headline {
     font-family: 'Playfair Display', serif;
@@ -1355,12 +1358,16 @@
 
 
 </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
 
 <nav>
   <div class="nav-left">
-    <a class="nav-logo" href="/">theAIReadyist</a>
+    <a class="nav-logo" href="/">the<span class="nav-ai">AI</span>Readyist</a>
     <span class="nav-edition">Intelligence Briefing &middot; Edition 42 &middot; June 2026</span>
   </div>
   <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
@@ -1403,42 +1410,42 @@
         <div class="score-dimensions">
           <div class="score-dim">
             <div class="score-dim-header">
-              <span class="score-dim-name">AI Cost Governance</span>
+              <span class="score-dim-name">AI Economics</span>
               <span class="score-dim-value">38</span>
             </div>
             <div class="score-bar-track"><div class="score-bar-fill amber" style="width:38%"></div></div>
           </div>
           <div class="score-dim">
             <div class="score-dim-header">
-              <span class="score-dim-name">Governance &amp; Trust</span>
+              <span class="score-dim-name">Agentic Governance</span>
               <span class="score-dim-value">52</span>
             </div>
             <div class="score-bar-track"><div class="score-bar-fill teal" style="width:52%"></div></div>
           </div>
           <div class="score-dim">
             <div class="score-dim-header">
-              <span class="score-dim-name">Human &amp; Culture Readiness</span>
+              <span class="score-dim-name">Human Agency</span>
               <span class="score-dim-value">61</span>
             </div>
             <div class="score-bar-track"><div class="score-bar-fill teal" style="width:61%"></div></div>
           </div>
           <div class="score-dim">
             <div class="score-dim-header">
-              <span class="score-dim-name">Operating Model</span>
+              <span class="score-dim-name">Executive Operating Models</span>
               <span class="score-dim-value">33</span>
             </div>
             <div class="score-bar-track"><div class="score-bar-fill amber" style="width:33%"></div></div>
           </div>
           <div class="score-dim">
             <div class="score-dim-header">
-              <span class="score-dim-name">Production Readiness</span>
+              <span class="score-dim-name">Decision Intelligence</span>
               <span class="score-dim-value">44</span>
             </div>
             <div class="score-bar-track"><div class="score-bar-fill amber" style="width:44%"></div></div>
           </div>
           <div class="score-dim">
             <div class="score-dim-header">
-              <span class="score-dim-name">Regulatory Compliance</span>
+              <span class="score-dim-name">Sovereign AI</span>
               <span class="score-dim-value">58</span>
             </div>
             <div class="score-bar-track"><div class="score-bar-fill teal" style="width:58%"></div></div>
@@ -1488,16 +1495,16 @@
 <style>
   /* ── Scoped to .li-section — uses your brand tokens ── */
   .li-section {
-    --li-navy:      #0D1B2A;
+    --li-navy:      var(--color-bg);
     --li-surface:   #0F2233;
     --li-raised:    #122739;
-    --li-teal:      #00C9A7;
-    --li-amber:     #E8A838;
-    --li-text:      #F0F4F8;
-    --li-text-sec:  rgba(240,244,248,0.65);
-    --li-text-mut:  rgba(240,244,248,0.40);
-    --li-border:    rgba(0,201,167,0.20);
-    --li-border-hi: rgba(0,201,167,0.55);
+    --li-teal:      var(--color-accent);
+    --li-amber:     var(--color-warning);
+    --li-text:      var(--color-text-primary);
+    --li-text-sec:  rgba(245,242,236,0.65);
+    --li-text-mut:  rgba(245,242,236,0.40);
+    --li-border:    rgba(0,184,162,0.20);
+    --li-border-hi: rgba(0,184,162,0.55);
     --li-border-sub: rgba(255,255,255,0.08);
 
     background: var(--li-navy);
@@ -1521,8 +1528,8 @@
     animation: li-pulse 2.4s ease-in-out infinite;
   }
   @keyframes li-pulse {
-    0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,201,167,0.45); }
-    50%     { opacity: 0.6; box-shadow: 0 0 0 6px rgba(0,201,167,0); }
+    0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,184,162,0.45); }
+    50%     { opacity: 0.6; box-shadow: 0 0 0 6px rgba(0,184,162,0); }
   }
 
   .li-eyebrow {
@@ -2024,7 +2031,7 @@
 
       <a class="feed-item" href="https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" target="_blank">
         <div class="feed-meta">
-          <span class="feed-tag">PoC Purgatory</span>
+          <span class="feed-tag">Executive Operating Models</span>
           <span class="feed-meta-sep">·</span>
           <span class="feed-date">Apr 2026</span>
           <span class="feed-meta-sep">·</span>
@@ -2050,7 +2057,7 @@
 
       <a class="feed-item" href="https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" target="_blank">
         <div class="feed-meta">
-          <span class="feed-tag">AI Cost Intelligence</span>
+          <span class="feed-tag">AI Economics</span>
           <span class="feed-meta-sep">·</span>
           <span class="feed-date">Mar 2026</span>
           <span class="feed-meta-sep">·</span>
@@ -2262,12 +2269,12 @@ renderLens('ceo');
 // Dimension scores — mirrors hero instrument. In Phase 3+ these come from
 // localStorage once the user has completed assessments.
 const DIMENSION_SCORES = {
-  'AI Cost Governance':    { score: 38, color: 'amber' },
-  'Governance & Trust':    { score: 52, color: 'teal'  },
-  'Human & Culture':       { score: 61, color: 'teal'  },
-  'Operating Model':       { score: 33, color: 'amber' },
-  'Production Readiness':  { score: 44, color: 'amber' },
-  'Regulatory Compliance': { score: 58, color: 'teal'  },
+  'AI Economics':    { score: 38, color: 'amber' },
+  'Agentic Governance':    { score: 52, color: 'teal'  },
+  'Human Agency':       { score: 61, color: 'teal'  },
+  'Executive Operating Models':       { score: 33, color: 'amber' },
+  'Decision Intelligence':  { score: 44, color: 'amber' },
+  'Sovereign AI': { score: 58, color: 'teal'  },
 };
 
 const COMPOSITE_SCORE = Math.round(

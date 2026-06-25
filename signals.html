@@ -7,20 +7,21 @@
 <meta name="description" content="Pillar-classified executive signals for AI-native leadership: operating models, decision intelligence, agentic governance, AI economics, human agency and sovereign AI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --navy: #0D1B2A; --deep: #0C1118; --surface: #0F2233; --raised: #122739;
-    --teal: #00C9A7; --teal-border: rgba(0,201,167,0.20); --teal-active: rgba(0,201,167,0.60);
-    --amber: #E8A838; --amber-border: rgba(232,168,56,0.35);
-    --off-white: #F0F4F8; --slate-70: rgba(240,244,248,0.65); --slate: rgba(240,244,248,0.40);
+    --navy: var(--color-bg); --deep: var(--color-bg-deep); --surface: #0F2233; --raised: #122739;
+    --teal: var(--color-accent); --teal-border: rgba(0,184,162,0.20); --teal-active: rgba(0,184,162,0.60);
+    --amber: var(--color-warning); --amber-border: rgba(232,168,56,0.35);
+    --off-white: var(--color-text-primary); --slate-70: rgba(245,242,236,0.65); --slate: rgba(245,242,236,0.40);
     --rule: rgba(255,255,255,0.08);
   }
   html { scroll-behavior: smooth; font-size: 17px; }
   body { background: var(--navy); color: var(--off-white); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.6; min-height: 100vh; }
   a { color: inherit; }
 
-  .site-nav { position: sticky; top: 0; z-index: 100; height: 56px; background: rgba(13,27,42,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
+  .site-nav { position: sticky; top: 0; z-index: 100; height: 56px; background: rgba(13, 31, 60,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
   .nav-logo { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--off-white); text-decoration: none; }
   .nav-logo em { color: var(--teal); font-style: italic; }
   .nav-links { display: flex; gap: 26px; }
@@ -36,11 +37,11 @@
   .filters { max-width: 1080px; margin: 0 auto; padding: 16px 48px 8px; display: flex; gap: 10px; flex-wrap: wrap; }
   .chip { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--slate-70); background: none; border: 1px solid var(--rule); padding: 7px 13px; cursor: pointer; }
   .chip:hover { border-color: var(--teal-border); color: var(--off-white); }
-  .chip.active { color: var(--teal); border-color: var(--teal-active); background: rgba(0,201,167,0.08); }
+  .chip.active { color: var(--teal); border-color: var(--teal-active); background: rgba(0,184,162,0.08); }
 
   .grid { max-width: 1080px; margin: 0 auto; padding: 24px 48px 96px; display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 22px; }
 
-  .card { background: var(--surface); border: 1px solid var(--teal-border); border-top: 2px solid var(--teal); padding: 26px 26px 24px; display: flex; flex-direction: column; }
+  .card { background: transparent; border: 1px solid var(--teal-border); border-top: 2px solid var(--teal); padding: 26px 26px 24px; display: flex; flex-direction: column; }
   .card-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--slate); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
   .card-pillar { color: var(--teal); }
   .card-score { color: var(--amber); border: 1px solid var(--amber-border); padding: 1px 7px; }
@@ -58,10 +59,14 @@
   .empty-icon { font-family: 'Playfair Display', serif; font-size: 48px; color: var(--teal-active); display: block; margin-bottom: 14px; }
   .foot-note { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--slate); text-align: center; padding: 0 48px 60px; letter-spacing: 0.04em; }
 </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
   <nav class="site-nav">
-    <a class="nav-logo" href="/">The AI <em>Readyist</em></a>
+    <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/signals.html">Signals</a>
