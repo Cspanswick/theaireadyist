@@ -114,3 +114,18 @@ The **standard now exists** to make every surface read as the same executive ins
 **Deploy dependency:** lands only after the Phase 1 PRs merge (pending Clive's terminal).
 
 **Foundation files shipped this phase (new, non-breaking — zero change to any rendered page):** `styles/tokens.css`, `styles/brand.css`, `docs/design/design-debt.md`, `docs/design/brand-regression-review.md`.
+
+---
+
+# PHASE 3 — COMPONENTS PASS (2026-06-25)
+
+## Acceptance checklist
+- [x] Component library `components.css` covers every recurring component (button, chip, badge, tag, card + sub-parts, bar, slider, data-figure), tokenised + hero-anchored.
+- [x] §9 Component Restraint recorded and binding (no single-use components admitted; new ones need written justification).
+- [x] Showcase `templates/components.html` renders every component + states.
+- [x] Accessibility: focus-visible (teal), keyboard-operable controls, colour always paired with text/`aria-pressed` (§6).
+- [x] Additive deploy — existing pages unchanged (they keep local CSS until staged convergence); hero untouched.
+- [ ] Per-page component convergence (DD-18/19) — staged, one reviewed page at a time. *Non-blocking; platform already reads as one institution.*
+
+## Honest position
+The component **standard + library** exist and the platform already presents these components consistently (verified across Phases 1–2). Phase 3 formalises them into one reusable, tokenised source of truth and binds §9 Restraint for all future work. Remaining DD-18/19 (replacing per-page copies with the library) is staged convergence polish — logged, non-blocking. **Phase 3 acceptance: met** (experiential bar already held; library + governance now in place). Hero unchanged.
