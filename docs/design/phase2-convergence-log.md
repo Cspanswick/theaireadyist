@@ -45,3 +45,25 @@ Each page is mapped to one template and adopts the type roles / reading measure 
 Exact-value map applied (16→`--type-body`, 15→`--type-body-sm`, 22→`--type-h2`, 18→`--type-h3`, 19→`--type-body-lg`). **Verification:** each page's diff = only stylesheet links + `font-size` token aliases + `<body>` template class; brace counts byte-preserved vs source (pre-existing one-off `{` imbalance left untouched); no other lines changed. **Zero visual change expected; live spot-check pending deploy.**
 
 **Deferred platform note (DD-13 UI / DD-02 naming):** legacy var names (`--gold`/`--orange` aliased to teal/amber) are cosmetic naming-debt, not visual divergence; off-scale label/score sizes (12px, 14px, 17px, 20px, score numerals) and reading-measure tokens remain for an optional later polish — pages already read as one institution.
+
+---
+
+## Pages 6–10 — Reference pages + signals (one batch PR) · staged 2026-06-25
+Same lightweight formalisation (link Phase 2 layer, declare template, tokenise exact-value sizes; zero visual change).
+
+| Page | Template (§8) | Exact-value sizes tokenised |
+|---|---|---|
+| `eu-ai-act-tiers.html` | Editorial | 11 |
+| `eu-ai-act-reference.html` | Editorial | 2 |
+| `eu-ai-act-enforcement.html` | Editorial | 7 |
+| `eu-ai-act-enforcement-risk.html` | Editorial | 16 |
+| `signals.html` | **none — template gap (DD-12)** | 3 |
+
+**`signals.html` template-coverage gap:** it's a filterable, pillar-classified **card index** — none of the four templates (Editorial / Product / Assessment / Dashboard) fits a content-index surface. Per §8.0 no template was invented; **no `tmpl-*` class applied**. This is the concrete instance of the **"six vs five" question (DD-12)** — a sixth "Index/Listing" template may be the right answer, but that needs Clive's sign-off before it's created. signals still got the Phase 2 stylesheet links + exact-value size tokens.
+
+**Verification:** every page's diff = only stylesheet links + `font-size` token aliases + (where applicable) `<body>` template class; brace counts byte-preserved; no other lines changed.
+
+---
+
+## Phase 2 convergence — coverage after this batch
+**All public pages converged:** homepage (Phase 1), dpi, eu-ai-act, dora, nis2, radar, eu-ai-act-tiers/-reference/-enforcement/-enforcement-risk, signals. **Remaining:** 6 `admin/*` internal pages (lowest priority — not customer-facing). **Open decision:** DD-12 sixth template for index/listing surfaces (signals).

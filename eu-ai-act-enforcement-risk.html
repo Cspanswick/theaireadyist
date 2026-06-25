@@ -6,6 +6,8 @@
 <title>EU AI Act — Enforcement & Risk Reference · The AI Readyist</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -70,7 +72,7 @@
     background: var(--navy);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 19px;
+    font-size: var(--type-body-lg);
     line-height: 1.65;
     min-height: 100vh;
   }
@@ -179,7 +181,7 @@
 
   .who-title {
     font-family: 'Playfair Display', serif;
-    font-size: 19px;
+    font-size: var(--type-body-lg);
     font-weight: 600;
     color: var(--text);
     margin-bottom: 8px;
@@ -187,7 +189,7 @@
   }
 
   .who-desc {
-    font-size: 16px;
+    font-size: var(--type-body);
     color: rgba(245,242,236,0.65);
     line-height: 1.6;
     margin-bottom: 14px;
@@ -200,7 +202,7 @@
     gap: 5px;
   }
   .who-list li {
-    font-size: 15px;
+    font-size: var(--type-body-sm);
     color: rgba(245,242,236,0.65);
     padding-left: 12px;
     position: relative;
@@ -260,7 +262,7 @@
   }
 
   .rb-desc {
-    font-size: 15px;
+    font-size: var(--type-body-sm);
     color: rgba(245,242,236,0.65);
     line-height: 1.45;
   }
@@ -298,7 +300,7 @@
 
   .trig-title {
     font-family: 'Playfair Display', serif;
-    font-size: 18px;
+    font-size: var(--type-h3);
     font-weight: 600;
     color: var(--text);
     margin-bottom: 8px;
@@ -306,7 +308,7 @@
   }
 
   .trig-body {
-    font-size: 15px;
+    font-size: var(--type-body-sm);
     color: rgba(245,242,236,0.65);
     line-height: 1.6;
     margin-bottom: 14px;
@@ -372,7 +374,7 @@
   .tl-node.future .tl-date { color: var(--muted); }
 
   .tl-event {
-    font-size: 16px;
+    font-size: var(--type-body);
     color: var(--text);
     font-weight: 500;
     line-height: 1.3;
@@ -380,7 +382,7 @@
   }
 
   .tl-detail {
-    font-size: 15px;
+    font-size: var(--type-body-sm);
     color: rgba(245,242,236,0.65);
     line-height: 1.5;
   }
@@ -434,7 +436,7 @@
 
   .tier-name-cell {
     font-family: 'Playfair Display', serif;
-    font-size: 18px;
+    font-size: var(--type-h3);
     color: var(--text);
     font-weight: 600;
   }
@@ -470,7 +472,7 @@
 
   .warn-glyph {
     font-family: 'DM Mono', monospace;
-    font-size: 18px;
+    font-size: var(--type-h3);
     flex-shrink: 0;
     margin-top: 1px;
   }
@@ -488,7 +490,7 @@
   .warn-box.red   .warn-label { color: var(--red); }
 
   .warn-text {
-    font-size: 16px;
+    font-size: var(--type-body);
     color: rgba(245,242,236,0.65);
     line-height: 1.6;
   }
@@ -618,7 +620,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-editorial">
 
 <nav>
   <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
@@ -797,7 +799,7 @@
         <td>Deploying a prohibited system</td>
         <td><span class="fine-cell" style="color:#e05c5c">€35M</span></td>
         <td><span class="turnover-cell">7% global turnover</span></td>
-        <td style="font-size:15px">Criminal referral possible. No remediation path.</td>
+        <td style="font-size:var(--type-body-sm)">Criminal referral possible. No remediation path.</td>
       </tr>
       <tr>
         <td>
@@ -807,7 +809,7 @@
         <td>Non-compliance with High Risk obligations</td>
         <td><span class="fine-cell" style="color:#d4845a">€15M</span></td>
         <td><span class="turnover-cell">3% global turnover</span></td>
-        <td style="font-size:15px">Market withdrawal orders. Procurement blocking. Public findings.</td>
+        <td style="font-size:var(--type-body-sm)">Market withdrawal orders. Procurement blocking. Public findings.</td>
       </tr>
       <tr>
         <td>
@@ -817,7 +819,7 @@
         <td>Failure to disclose AI identity</td>
         <td><span class="fine-cell" style="color:#6a9fc0">€7.5M</span></td>
         <td><span class="turnover-cell">1.5% global turnover</span></td>
-        <td style="font-size:15px">Primarily reputational. Compliance cost is low.</td>
+        <td style="font-size:var(--type-body-sm)">Primarily reputational. Compliance cost is low.</td>
       </tr>
       <tr>
         <td>
@@ -827,7 +829,7 @@
         <td>Misleading information to authorities</td>
         <td><span class="fine-cell" style="color:var(--slate-70)">€7.5M</span></td>
         <td><span class="turnover-cell">1.5% global turnover</span></td>
-        <td style="font-size:15px">Applies regardless of underlying tier. Document accurately.</td>
+        <td style="font-size:var(--type-body-sm)">Applies regardless of underlying tier. Document accurately.</td>
       </tr>
     </tbody>
   </table>

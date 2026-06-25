@@ -6,6 +6,8 @@
 <title>How the EU AI Act Will Actually Be Policed — theAIReadyist</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -70,7 +72,7 @@
     background: var(--navy);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 19px;
+    font-size: var(--type-body-lg);
     line-height: 1.7;
   }
 
@@ -169,7 +171,7 @@
 
   /* ── Body copy ── */
   p {
-    font-size: 19px;
+    font-size: var(--type-body-lg);
     color: rgba(245,242,236,0.65);
     line-height: 1.8;
     margin-bottom: 18px;
@@ -214,7 +216,7 @@
 
   .trigger-title {
     font-family: 'Playfair Display', serif;
-    font-size: 19px;
+    font-size: var(--type-body-lg);
     font-weight: 600;
     color: var(--text);
     margin-bottom: 8px;
@@ -222,7 +224,7 @@
   }
 
   .trigger-body {
-    font-size: 16px;
+    font-size: var(--type-body);
     color: rgba(245,242,236,0.65);
     line-height: 1.65;
   }
@@ -238,7 +240,7 @@
 
   .pull-quote p {
     font-family: 'Playfair Display', serif;
-    font-size: 22px;
+    font-size: var(--type-h2);
     font-style: italic;
     color: var(--text);
     line-height: 1.55;
@@ -366,7 +368,7 @@
   }
 
   .tl-desc {
-    font-size: 15px;
+    font-size: var(--type-body-sm);
     color: rgba(245,242,236,0.65);
     line-height: 1.55;
     margin: 0;
@@ -400,7 +402,7 @@
   }
 
   .verdict p {
-    font-size: 18px;
+    font-size: var(--type-h3);
     margin-bottom: 12px;
   }
 
@@ -498,7 +500,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-editorial">
 
 <nav>
   <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>

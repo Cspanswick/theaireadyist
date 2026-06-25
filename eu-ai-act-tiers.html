@@ -6,6 +6,8 @@
 <title>EU AI Act Navigator — theAIReadyist</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -70,7 +72,7 @@
     background: var(--navy);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 19px;
+    font-size: var(--type-body-lg);
     line-height: 1.6;
     min-height: 100vh;
   }
@@ -246,7 +248,7 @@
   .tier-card[data-tier="high"] .pill { background: var(--orange-dim); color: var(--orange); border-color: rgba(212,132,90,0.25); }
 
   .expand-icon {
-    font-size: 22px;
+    font-size: var(--type-h2);
     color: var(--muted);
     transition: transform 0.25s ease;
     margin-left: 16px;
@@ -372,7 +374,7 @@
   }
 
   .q-text {
-    font-size: 18px;
+    font-size: var(--type-h3);
     color: var(--text);
     margin-bottom: 12px;
     line-height: 1.5;
@@ -426,7 +428,7 @@
   }
 
   .result-headline {
-    font-size: 18px;
+    font-size: var(--type-h3);
     color: var(--text);
     margin-bottom: 12px;
     line-height: 1.6;
@@ -540,7 +542,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
-<body>
+<body class="tmpl tmpl-editorial">
 
 <nav>
   <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
@@ -604,7 +606,7 @@
               <div class="fine">€35M</div>
               <div class="fine-label">or 7% global turnover</div>
             </div>
-            <p style="margin-top:10px;font-size:15px">Whichever is higher. The highest penalty band in the Act. Criminal referral is possible in some jurisdictions.</p>
+            <p style="margin-top:10px;font-size:var(--type-body-sm)">Whichever is higher. The highest penalty band in the Act. Criminal referral is possible in some jurisdictions.</p>
           </div>
         </div>
       </div>
@@ -657,7 +659,7 @@
               <div class="fine">€15M</div>
               <div class="fine-label">or 3% global turnover</div>
             </div>
-            <p style="margin-top:10px;font-size:15px">Plus market withdrawal orders, suspension of systems, and reputational exposure. Procurement-blocking in public sector contracts likely.</p>
+            <p style="margin-top:10px;font-size:var(--type-body-sm)">Plus market withdrawal orders, suspension of systems, and reputational exposure. Procurement-blocking in public sector contracts likely.</p>
           </div>
         </div>
       </div>
@@ -704,7 +706,7 @@
               <div class="fine">€7.5M</div>
               <div class="fine-label">or 1.5% global turnover</div>
             </div>
-            <p style="margin-top:10px;font-size:15px">Penalties apply for failure to disclose AI identity. Compliance cost is low — the risk of non-compliance here is primarily reputational.</p>
+            <p style="margin-top:10px;font-size:var(--type-body-sm)">Penalties apply for failure to disclose AI identity. Compliance cost is low — the risk of non-compliance here is primarily reputational.</p>
           </div>
         </div>
       </div>
@@ -744,10 +746,10 @@
           <div class="body-col">
             <h4>Key risk</h4>
             <div class="consequence-box" style="border-left:2px solid var(--green)">
-              <div class="fine" style="font-size:19px;margin-bottom:6px">Misclassification</div>
+              <div class="fine" style="font-size:var(--type-body-lg);margin-bottom:6px">Misclassification</div>
               <div class="fine-label">is the real exposure</div>
             </div>
-            <p style="margin-top:10px;font-size:15px">A system that appears minimal risk may be high risk if its outputs feed into decisions about people. Document your reasoning — not just your conclusion.</p>
+            <p style="margin-top:10px;font-size:var(--type-body-sm)">A system that appears minimal risk may be high risk if its outputs feed into decisions about people. Document your reasoning — not just your conclusion.</p>
           </div>
         </div>
       </div>
@@ -925,11 +927,11 @@
         <div class="result-dot" style="background:${color};width:10px;height:10px;border-radius:50%"></div>
         <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:${color}">${tier}</div>
       </div>
-      <p style="font-size:18px;color:var(--text);margin-bottom:12px;line-height:1.6;max-width:640px">${headline}</p>
+      <p style="font-size:var(--type-h3);color:var(--text);margin-bottom:12px;line-height:1.6;max-width:640px">${headline}</p>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
         ${actions.map(a => `<div style="font-family:'DM Mono',monospace;font-size:14px;color:var(--muted2);padding-left:14px;position:relative;line-height:1.5"><span style="position:absolute;left:0;color:var(--gold);font-size:12px;top:1px">▸</span>${a}</div>`).join('')}
       </div>
-      <p style="font-size:15px;color:var(--muted2);margin-top:18px;line-height:1.5">${nextStep}</p>
+      <p style="font-size:var(--type-body-sm);color:var(--muted2);margin-top:18px;line-height:1.5">${nextStep}</p>
       <div class="cta-row">
         <a class="cta-primary" href="/eu-ai-act">Take the Full Readiness Assessment</a>
         <a class="cta-secondary" href="/dora">DORA Assessment</a>
