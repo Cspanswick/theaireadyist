@@ -1,0 +1,77 @@
+/* ============================================================
+   TheAIReadyist — Observatory Design System
+   brand.css · Phase 1 Foundation · Version 1.0
+   Canonical wordmark, masthead, card and motion classes.
+   Depends on tokens.css — load tokens.css FIRST.
+   ============================================================ */
+
+/* ─── §2 LOGO — the locked dual-colour wordmark ─── */
+/* Markup: <span class="wordmark">the<span class="wordmark__ai">AI</span>Readyist</span> */
+.wordmark {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);   /* the / Readyist = white */
+  text-transform: none;                /* casing is identity — never alter */
+  white-space: nowrap;
+}
+.wordmark__ai { color: var(--color-accent); }   /* AI = teal, and ONLY AI */
+
+/* Light-background variant (PDF, print, light decks) */
+.wordmark--light            { color: #0B1623; }              /* navy on light */
+.wordmark--light .wordmark__ai { color: var(--color-accent-dim); } /* darker teal for contrast */
+
+/* ─── §3 MASTHEAD — the platform signature (3 slots) ─── */
+/* Markup:
+   <header class="masthead">
+     <span class="masthead__brand wordmark">the<span class="wordmark__ai">AI</span>Readyist</span>
+     <span class="masthead__product">Decision Performance Index</span>
+     <span class="masthead__context">Flagship Diagnostic</span>   (optional)
+   </header>                                                                */
+.masthead          { display: flex; flex-direction: column; gap: 6px; }
+.masthead__brand   { font-size: 18px; }                 /* brand stays dominant */
+.masthead__product {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+.masthead__context {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ─── §1.3 CARD TREATMENT — border-only default ─── */
+.card {
+  background: transparent;                 /* NOT a dark fill */
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 24px;
+  transition: border-color var(--motion-fast) var(--motion-ease);
+}
+.card--active,
+.card--selected { border-color: var(--color-border-active); }
+.card--warning  { border-color: var(--color-border-warning); }
+.card--risk     { border-color: var(--color-border-risk); }
+
+/* Sanctioned exception: secondary utility panels MAY use a raised fill */
+.panel--utility {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 4px;
+  padding: var(--space-4);
+}
+
+/* ─── §4 MOTION — calm, editorial, ≤250ms, standard easing ─── */
+/* Hover/focus = colour or border-colour shift only; never movement/scale. */
+.u-transition       { transition: color var(--motion-fast) var(--motion-ease),
+                                   border-color var(--motion-fast) var(--motion-ease),
+                                   background-color var(--motion-fast) var(--motion-ease); }
+.u-fade-in          { animation: dsFadeIn var(--motion-slow) var(--motion-ease) both; }
+@keyframes dsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .u-transition, .u-fade-in, .card { transition: none; animation: none; }
+}
