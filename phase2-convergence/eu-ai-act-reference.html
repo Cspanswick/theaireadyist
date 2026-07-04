@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act — Tier Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
+<style>
+:root {
+  --navy: var(--color-bg); --teal: var(--color-accent); --off-white: var(--color-text-primary);
+  --slate: var(--color-text-muted); --amber: var(--color-warning);
+  --color-border-card: rgba(0,184,162,0.20);
+  --color-border-subtle: rgba(255,255,255,0.08);
+  --color-border-warning: rgba(232,168,56,0.35);
+  --bg: var(--navy); --gold: var(--teal);
+  --gold-border: rgba(0,184,162,0.25);
+  --text: var(--off-white);
+  --muted: var(--slate);
+  --muted2: rgba(245,242,236,0.65);
+  --red: #e05c5c; --orange: var(--amber); --orange-dim: rgba(232,168,56,0.12);
+  --blue: #6a9fc0; --green: #7aaa8a;
+  --red-dim: rgba(224,92,92,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { color: var(--off-white); background: var(--navy); }
+p, li { color: rgba(245,242,236,0.65); }
+
+body {
+  color: var(--off-white);
+  background: var(--navy);
+  font-family: 'DM Sans', sans-serif;
+  padding: 32px 28px 28px;
+  min-height: 100vh;
+}
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--teal-border);
+}
+
+.pub {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pub::before { content:''; width:16px; height:1px; background:var(--teal); display:inline-block; }
+
+.ref-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--off-white);
+  margin-top: 2px;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.card {
+  border-top: 3px solid transparent;
+  background: transparent;
+  padding: 18px 16px 20px;
+  position: relative;
+}
+
+.card.banned  { border-top-color: #e05c5c; }
+.card.high    { border-top-color: #d4845a; }
+.card.limited { border-top-color: #6a9fc0; }
+.card.minimal { border-top-color: #7aaa8a; }
+
+/* Tier badge */
+.tier-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.banned  .tier-num { color: #e05c5c; }
+.high    .tier-num { color: #d4845a; }
+.limited .tier-num { color: #6a9fc0; }
+.minimal .tier-num { color: #7aaa8a; }
+
+.tier-title {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--type-body-lg);
+  font-weight: 600;
+  color: var(--off-white);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.tier-desc {
+  font-size: 14px;
+  color: var(--slate);
+  line-height: 1.45;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Section heading inside card */
+.sec-head {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 7px;
+  margin-top: 13px;
+}
+.sec-head:first-of-type { margin-top: 0; }
+
+/* Items */
+.items { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+.items li {
+  font-size: 14px;
+  color: var(--slate-70);
+  line-height: 1.4;
+  padding-left: 10px;
+  position: relative;
+}
+
+.items li::before {
+  content: '→'; color: var(--teal);
+  position: absolute;
+  left: 0;
+  font-size: 10px;
+  top: 1px;
+  color: var(--teal);
+}
+
+.items.warn li::before { color: #e05c5c; content: '✕'; }
+.items.good li::before { color: #7aaa8a; content: '✓'; }
+
+/* Penalty block */
+.penalty {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.penalty-amount {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.banned  .penalty-amount { color: #e05c5c; font-size: 24px; }
+.high    .penalty-amount { color: #d4845a; font-size: var(--type-h2); }
+.limited .penalty-amount { color: #6a9fc0; font-size: 20px; }
+.minimal .penalty-amount { color: #7aaa8a; font-size: 17px; }
+
+.penalty-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  line-height: 1.4;
+}
+
+/* Divider */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+  margin: 13px 0;
+}
+
+/* Footer */
+.footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--slate);
+  letter-spacing: 0.04em;
+}
+
+.footer-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+.footer-link:hover { opacity: 1; }
+
+/* Obligation tag row */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 0;
+  border: 1px solid transparent;
+}
+
+.banned  .tag { background: rgba(224,92,92,0.1);  color: #e05c5c; border-color: rgba(224,92,92,0.2); }
+.high    .tag { background: rgba(212,132,90,0.1); color: #d4845a; border-color: rgba(212,132,90,0.2); }
+.limited .tag { background: rgba(106,159,192,0.1);color: #6a9fc0; border-color: rgba(106,159,192,0.2); }
+.minimal .tag { background: rgba(122,170,138,0.1);color: #7aaa8a; border-color: rgba(122,170,138,0.2); }
+
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body class="tmpl tmpl-editorial">
+
+<nav>
+  <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+  <a class="nav-back" href="/">← All tools</a>
+</nav>
+
+
+
+<div class="masthead">
+  <div>
+    <div class="pub">the<span style="color:var(--teal)">AI</span>Readyist</div>
+    <h1>EU AI Act — Risk Tier Reference</h1>
+  </div>
+  <div class="ref-label">Regulation (EU) 2024/1689 · In force Aug 2026</div>
+</div>
+
+<div class="grid">
+
+  <!-- BANNED -->
+  <div class="card banned">
+    <div class="tier-num">Tier 1</div>
+    <div class="tier-title">Unacceptable Risk</div>
+    <p class="tier-desc">Systems in this tier are prohibited by law. There is no compliance path — only decommissioning.</p>
+
+    <div class="sec-head">What's banned</div>
+    <ul class="items warn">
+      <li>Real-time biometric surveillance in public</li>
+      <li>Social scoring by governments or employers</li>
+      <li>Subliminal or manipulative AI techniques</li>
+      <li>Predictive policing via profiling</li>
+      <li>Emotion recognition in workplaces / schools</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <div class="sec-head">Obligations</div>
+    <div class="tag-row">
+      <span class="tag">Cease &amp; decommission</span>
+      <span class="tag">No remediation path</span>
+    </div>
+
+    <div class="penalty">
+      <div class="penalty-amount">€35M</div>
+      <div class="penalty-sub">or 7% global turnover<br>whichever is higher</div>
+    </div>
+  </div>
+
+  <!-- HIGH RISK -->
+  <div class="card high">
+    <div class="tier-num">Tier 2</div>
+    <div class="tier-title">High Risk</div>
+    <p class="tier-desc">Where most enterprise AI lives. Heaviest obligations — and where most compliance gaps sit.</p>
+
+    <div class="sec-head">Triggers include</div>
+    <ul class="items">
+      <li>HR / recruitment screening &amp; scoring</li>
+      <li>Credit, lending &amp; insurance decisions</li>
+      <li>Medical devices &amp; clinical support</li>
+      <li>Critical infrastructure (energy, water, transport)</li>
+      <li>Education assessment</li>
+      <li>Law enforcement tools</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <div class="sec-head">Mandatory obligations</div>
+    <div class="tag-row">
+      <span class="tag">Conformity assessment</span>
+      <span class="tag">Human oversight</span>
+      <span class="tag">Audit trail &amp; logging</span>
+      <span class="tag">EU database registration</span>
+      <span class="tag">Technical documentation</span>
+      <span class="tag">Bias &amp; data testing</span>
+      <span class="tag">Named accountability owner</span>
+    </div>
+
+    <div class="penalty">
+      <div class="penalty-amount">€15M</div>
+      <div class="penalty-sub">or 3% global turnover<br>+ market withdrawal orders</div>
+    </div>
+  </div>
+
+  <!-- LIMITED RISK -->
+  <div class="card limited">
+    <div class="tier-num">Tier 3</div>
+    <div class="tier-title">Limited Risk</div>
+    <p class="tier-desc">Transparency obligations only. Users must know they are interacting with AI.</p>
+
+    <div class="sec-head">Triggers include</div>
+    <ul class="items">
+      <li>Customer-facing chatbots &amp; virtual agents</li>
+      <li>AI-generated content (text, image, audio, video)</li>
+      <li>Synthetic media / deepfakes</li>
+      <li>Emotion recognition in customer interactions</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <div class="sec-head">Mandatory obligations</div>
+    <div class="tag-row">
+      <span class="tag">Disclose AI identity</span>
+      <span class="tag">Label generated content</span>
+      <span class="tag">Mark synthetic media</span>
+    </div>
+
+    <div class="sec-head" style="margin-top:10px">No requirement for</div>
+    <ul class="items good">
+      <li>Registration or technical documentation</li>
+      <li>Conformity assessment</li>
+    </ul>
+
+    <div class="penalty">
+      <div class="penalty-amount">€7.5M</div>
+      <div class="penalty-sub">or 1.5% global turnover<br>for failure to disclose</div>
+    </div>
+  </div>
+
+  <!-- MINIMAL RISK -->
+  <div class="card minimal">
+    <div class="tier-num">Tier 4</div>
+    <div class="tier-title">Minimal Risk</div>
+    <p class="tier-desc">No mandatory obligations. The majority of AI in use today falls here — but misclassification is the real exposure.</p>
+
+    <div class="sec-head">Examples</div>
+    <ul class="items">
+      <li>Spam &amp; content filters</li>
+      <li>Recommendation engines (non-consequential)</li>
+      <li>AI in video games</li>
+      <li>Internal productivity tools</li>
+      <li>Predictive maintenance (non-critical)</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <div class="sec-head">Mandatory obligations</div>
+    <ul class="items good">
+      <li>None — voluntary codes of conduct encouraged</li>
+    </ul>
+
+    <div class="sec-head" style="margin-top:10px">Key risk</div>
+    <ul class="items warn">
+      <li>Misclassification — document your reasoning, not just your conclusion</li>
+      <li>Scope creep — a system's tier can change as its outputs expand</li>
+    </ul>
+
+    <div class="penalty">
+      <div class="penalty-amount" style="font-size:17px;color:#7aaa8a">No fine</div>
+      <div class="penalty-sub">unless misclassified<br>as minimal risk incorrectly</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span class="footer-note">For orientation only — not legal advice. Classification requires assessment against Annex III, Regulation (EU) 2024/1689.</span>
+  <a class="footer-link" href="https://theaireadyist.com/eu-ai-act" target="_blank">Full Readiness Assessment → theaireadyist.com/eu-ai-act</a>
+</div>
+
+
+<div style="max-width:1100px;margin:0 auto;padding:24px 40px 40px;display:flex;gap:12px;flex-wrap:wrap;border-top:1px solid var(--rule)">
+  <a style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;padding:11px 24px;background:var(--teal);color:var(--navy);text-decoration:none;font-weight:500" href="/eu-ai-act">Take the Readiness Assessment</a>
+  <a style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;padding:11px 24px;background:transparent;color:var(--teal);border: 1px solid var(--color-border-card);text-decoration:none" href="/eu-ai-act-tiers">Tier Navigator & Classifier</a>
+  <a style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;padding:11px 24px;background:transparent;color:var(--teal);border: 1px solid var(--color-border-card);text-decoration:none" href="/radar">View Governance Radar</a>
+</div>
+</body>
+</html>

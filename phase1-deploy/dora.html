@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DORA AI Exposure Assessment — theAIReadyist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    /* Base */
+    --color-bg:              var(--color-bg);
+    --navy:                  var(--color-bg);
+    --deep-black:            #0a1220;
+    --off-white:             var(--color-text-primary);
+    --teal:                  var(--color-accent);
+    --slate:                 var(--color-text-muted);
+    --amber:                 var(--color-warning);
+
+    /* Text */
+    --color-text-primary:    var(--color-text-primary);
+    --color-text-secondary:  rgba(245,242,236,0.65);
+    --color-text-muted:      rgba(245,242,236,0.40);
+
+    /* Borders */
+    --color-border-card:     rgba(0,184,162,0.20);
+    --color-border-active:   rgba(0,184,162,0.60);
+    --color-border-subtle:   rgba(255,255,255,0.08);
+    --color-border-warning:  rgba(232,168,56,0.35);
+
+    /* Derived tokens — legacy aliases */
+    --bg:           var(--navy);
+    --bg2:          transparent;
+    --bg3:          transparent;
+    --gold:         var(--teal);
+    --gold-dim:     rgba(0,184,162,0.12);
+    --gold-border:  rgba(0,184,162,0.25);
+    --text:         var(--off-white);
+    --muted:        var(--slate);
+    --muted2:       rgba(245,242,236,0.65);
+    --teal-dim:     rgba(0,184,162,0.12);
+    --teal-border:  rgba(0,184,162,0.25);
+    --amber-dim:    rgba(232,168,56,0.12);
+    --rule:         rgba(107,122,141,0.20);
+    --rule-teal:    rgba(0,184,162,0.40);
+    --slate-70:     rgba(245,242,236,0.65);
+    --slate-60:     rgba(245,242,236,0.55);
+    --red:          #e05c5c;
+    --red-dim:      rgba(224,92,92,0.10);
+    --orange:       var(--amber);
+    --orange-dim:   var(--amber-dim);
+    --blue:         #6a9fc0;
+    --blue-dim:     rgba(106,159,192,0.10);
+    --green:        #7aaa8a;
+    --green-dim:    rgba(122,170,138,0.10);
+    --eu-ai:        #6a9fc0;
+    --dora:         var(--amber);
+    --nis2:         #7aaa8a;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color:var(--text); font-family:'DM Sans',sans-serif; font-size:19px; line-height:1.65; }
+
+  /* Nav */
+  nav { padding: 0 48px; height: 56px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--rule); position:sticky; top:0; background:rgba(13,31,60,0.96); backdrop-filter:blur(8px); z-index:100; }
+  .nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:600; color:var(--text); text-decoration:none; }
+  .nav-back { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted2); text-decoration:none; transition:color 0.15s; }
+  .nav-back:hover { color:var(--gold); }
+
+  /* Header */
+  .header { max-width:820px; margin:0 auto; padding:56px 48px 32px; text-align:center; }
+  .header-eyebrow { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:12px; }
+  .header-eyebrow::before,.header-eyebrow::after { content:''; width:24px; height:1px; background:var(--gold-border); }
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(24px,4vw,40px); font-weight:600; line-height:1.15; color:var(--text); margin-bottom:14px; }
+  h1 em { font-style:italic; color:var(--gold); }
+  .header-sub { font-size:18px; color:var(--muted2); max-width:600px; margin:0 auto 14px; line-height:1.7; }
+
+  /* Disclaimer bar */
+  .disclaimer-bar { max-width:820px; margin:0 auto 8px; padding:0 48px; }
+  .disclaimer-inner { background: transparent; border:1px solid var(--rule); border-left:3px solid var(--muted); padding:12px 18px; display:flex; gap:12px; align-items:flex-start; }
+  .disc-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); flex-shrink:0; padding-top:1px; }
+  .disc-text { font-size:15px; color:var(--muted); line-height:1.55; font-style:italic; }
+
+  /* AI lens bar */
+  .ai-lens-bar { max-width:820px; margin:0 auto 8px; padding:0 48px; }
+  .ai-lens-inner { background:var(--gold-dim); border: 1px solid var(--color-border-card); border-left:3px solid var(--gold); padding:12px 18px; display:flex; gap:12px; align-items:flex-start; }
+  .ai-lens-icon { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); white-space:nowrap; padding-top:1px; flex-shrink:0; }
+  .ai-lens-text { font-size:16px; color:var(--muted2); line-height:1.55; }
+  .ai-lens-text strong { color:var(--text); }
+
+  /* Score panel */
+  .score-panel { max-width:820px; margin:20px auto 0; padding:0 48px; }
+  .score-card { background: transparent; border: 1px solid var(--color-border-card); padding:22px 28px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; position:relative; overflow:hidden; }
+  .score-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .score-col { padding:0 20px; border-left:1px solid var(--rule); }
+  .score-col:first-child { border-left:none; padding-left:0; }
+  .score-col-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .score-value { font-family:'Playfair Display',serif; font-size:34px; font-weight:600; color:var(--gold); line-height:1; margin-bottom:4px; }
+  .score-sub { font-size:15px; color:var(--muted2); line-height:1.4; }
+  .exposure-tags { display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
+  .exp-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:3px 8px; border-radius: 0; border:1px solid transparent; }
+
+  /* Domains */
+  .domains { max-width:820px; margin:28px auto 0; padding:0 48px; display:flex; flex-direction:column; gap:2px; }
+  .domain-card { background: transparent; overflow:hidden; }
+  .domain-header { padding:18px 24px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:16px; cursor:pointer; transition:background 0.15s; }
+  .domain-header:hover { background: transparent; }
+  .domain-num { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; color:var(--gold); margin-bottom:3px; }
+  .domain-title { font-family:'Playfair Display',serif; font-size:19px; font-weight:600; color:var(--text); margin-bottom:3px; }
+  .domain-meta { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
+  .domain-right { display:flex; align-items:center; gap:12px; }
+  .domain-score-badge { font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--gold); background:var(--gold-dim); border: 1px solid var(--color-border-card); padding:5px 13px; border-radius: 0; min-width:56px; text-align:center; transition:all 0.2s; }
+  .domain-score-badge.empty { color:var(--muted); background:transparent; border-color:var(--rule); font-family:'DM Mono',monospace; font-size:15px; }
+  .domain-score-badge.flagged { background:rgba(212,132,90,0.15); border-color:rgba(212,132,90,0.3); color:var(--orange); }
+  .chevron { font-size:18px; color:var(--muted); transition:transform 0.2s; user-select:none; }
+  .domain-card.open .chevron { transform:rotate(180deg); color:var(--gold); }
+
+  /* Obligation map */
+  .obligation-map { display:flex; gap:0; border-bottom:1px solid var(--rule); background: transparent; }
+  .obl-item { padding:10px 16px; flex:1; border-right:1px solid var(--rule); }
+  .obl-item:last-child { border-right:none; }
+  .obl-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+  .obl-value { font-size:14px; color:var(--muted2); line-height:1.4; }
+
+  .domain-body { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+  .domain-body-inner { padding:0 24px 28px; border-top:1px solid var(--rule); }
+
+  .domain-ai-focus { display:flex; gap:10px; align-items:flex-start; background:var(--gold-dim); border-left:2px solid var(--gold); padding:12px 14px; margin:16px 0 20px; }
+  .daf-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); flex-shrink:0; margin-top:1px; }
+  .daf-text { font-size:16px; color:var(--muted2); line-height:1.6; }
+
+  /* TPR explainer block */
+  .tpr-explainer { background:rgba(212,132,90,0.06); border:1px solid rgba(212,132,90,0.15); padding:16px 18px; margin:0 0 20px; }
+  .tpr-explainer-title { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
+  .tpr-explainer p { font-size:16px; color:var(--muted2); line-height:1.6; margin-bottom:10px; }
+  .tpr-explainer p:last-child { margin-bottom:0; }
+  .tpr-examples { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+  .tpr-ex-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:3px 8px; background:rgba(212,132,90,0.08); color:var(--orange); border:1px solid rgba(212,132,90,0.18); border-radius: 0; }
+
+  /* Questions */
+  .question-block { padding:20px 0; border-bottom:1px solid var(--rule); }
+  .question-block:last-child { border-bottom:none; }
+  .q-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .q-text { font-size:18px; color:var(--text); margin-bottom:6px; line-height:1.55; }
+  .q-ai-note { font-size:15px; color:var(--gold); font-style:italic; margin-bottom:14px; line-height:1.45; opacity:0.85; }
+
+  .slider-wrap { display:flex; align-items:center; gap:16px; }
+  .slider { flex:1; -webkit-appearance:none; appearance:none; height:3px; background:linear-gradient(to right,var(--gold) 50%,rgba(255,255,255,0.1) 50%); border-radius: 0; outline:none; cursor:pointer; }
+  .slider::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--gold); border:2px solid var(--bg); cursor:pointer;  }
+  .slider-val { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--gold); min-width:28px; text-align:center; }
+
+  .anchor-row { display:flex; justify-content:space-between; margin-top:8px; }
+  .anchor { font-size:14px; color:var(--muted); line-height:1.4; max-width:46%; }
+  .anchor.right { text-align:right; }
+
+  .gap-tag { display:inline-block; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius: 0; margin-top:8px; border:1px solid transparent; }
+  .gap-critical { background:rgba(224,92,92,0.1); color:var(--red); border-color:rgba(224,92,92,0.2); }
+  .gap-partial   { background:rgba(212,132,90,0.1); color:var(--orange); border-color:rgba(212,132,90,0.2); }
+  .gap-strong    { background:var(--teal-dim); color:var(--gold); border-color:var(--teal-border); }
+  .gap-ready     { background:rgba(122,170,138,0.1); color:var(--green); border-color:rgba(122,170,138,0.2); }
+
+  /* Evidence section */
+  .evidence-section { margin-top:12px; }
+  .evidence-toggle { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted2); background:none; border:none; cursor:pointer; padding:6px 0; display:flex; align-items:center; gap:6px; transition:color 0.15s; }
+  .evidence-toggle:hover { color:var(--gold); }
+  .evidence-toggle .ev-arrow { font-size:13px; transition:transform 0.2s; }
+  .evidence-toggle.open .ev-arrow { transform:rotate(90deg); }
+  .evidence-list { display:none; margin-top:8px; padding:12px 14px; background: transparent; border-left:2px solid var(--rule); }
+  .evidence-list.show { display:block; }
+  .evidence-list li { font-size:15px; color:var(--muted2); line-height:1.5; padding:3px 0 3px 14px; position:relative; list-style:none; }
+  .evidence-list li::before { content:'·'; position:absolute; left:0; color:var(--muted); }
+
+  /* TPR flag */
+  .tpr-flag { margin-top:20px; padding:14px 18px; background:rgba(212,132,90,0.08); border:1px solid rgba(212,132,90,0.2); border-left:3px solid var(--orange); display:none; }
+  .tpr-flag.show { display:block; }
+  .tpr-flag-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--orange); margin-bottom:6px; }
+  .tpr-flag-text { font-size:16px; color:var(--muted2); line-height:1.6; }
+  .tpr-flag-text strong { color:var(--text); }
+
+  /* Verdict */
+  .verdict-section { max-width:820px; margin:28px auto 0; padding:0 48px 80px; }
+  .verdict-box { background: transparent; border: 1px solid var(--color-border-card); padding:30px; position:relative; overflow:hidden; }
+  .verdict-box::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .verdict-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+  #verdictContent p { font-size:18px; color:var(--muted2); line-height:1.75; margin-bottom:12px; }
+  #verdictContent p:last-child { margin-bottom:0; }
+  #verdictContent strong { color:var(--text); }
+  .verdict-placeholder { font-family:'Playfair Display',serif; font-size:20px; font-style:italic; color:var(--muted); text-align:center; padding:12px 0; }
+
+  .tpr-spotlight { margin-top:20px; padding:16px 20px; background:rgba(212,132,90,0.08); border:1px solid rgba(212,132,90,0.2); border-left:3px solid var(--orange); display:none; }
+  .tpr-spotlight.show { display:block; }
+  .tpr-spotlight-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
+  .tpr-spotlight p { font-size:17px; color:var(--muted2); line-height:1.65; margin-bottom:8px; }
+  .tpr-spotlight p:last-child { margin-bottom:0; }
+  .tpr-spotlight strong { color:var(--text); }
+
+  .cta-row { display:flex; gap:12px; margin-top:24px; padding-top:20px; border-top:1px solid var(--rule); flex-wrap:wrap; align-items:center; }
+  .btn-primary { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 24px; background:var(--gold); color:var(--bg); border:none; cursor:pointer; text-decoration:none; display:inline-block; transition:opacity 0.15s; border-radius: 0; font-weight:500; }
+  .btn-primary:hover { opacity:0.88; }
+  .btn-secondary { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 24px; background:transparent; color:var(--gold); border: 1px solid var(--color-border-card); cursor:pointer; text-decoration:none; display:inline-block; transition:background 0.15s; border-radius: 0; }
+  .btn-secondary:hover { background:var(--gold-dim); }
+  .btn-copy { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 20px; background:transparent; color:var(--muted2); border:1px solid rgba(255,255,255,0.1); cursor:pointer; border-radius: 0; transition:all 0.15s; }
+  .btn-copy:hover { color:var(--text); border-color:rgba(255,255,255,0.2); }
+  .btn-copy.copied { color:var(--green); border-color:rgba(122,170,138,0.3); }
+
+  footer { padding:24px 48px; border-top:1px solid var(--rule); }
+  .footer-main { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:10px; }
+  .footer-logo { font-family:'Playfair Display',serif; font-size:17px; color:var(--muted); }
+  .footer-note { font-size:14px; color:var(--muted); line-height:1.6; max-width:600px; font-style:italic; }
+
+  /* Usage bar */
+  .usage-bar { max-width:820px; margin:8px auto 0; padding:0 48px; }
+  .usage-inner { background: transparent; border:1px solid var(--rule); border-left:3px solid var(--muted); padding:10px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .usage-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); flex-shrink:0; }
+  .usage-text { font-size:15px; color:var(--muted2); line-height:1.55; }
+
+  /* Progress bar */
+  .progress-bar { max-width:820px; margin:20px auto 0; padding:0 48px; }
+  .progress-track { height:3px; background:var(--rule); border-radius: 0; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--gold); width:0%; transition:width 0.3s ease; border-radius: 0; }
+  .progress-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-top:6px; text-align:right; }
+
+  /* Unanswered state */
+  .gap-unanswered { background:rgba(106,109,120,0.1); color:var(--muted); border-color:rgba(106,109,120,0.15); }
+  .slider:not(.touched)::-webkit-slider-thumb { background:var(--muted);  }
+  .slider-val:not(.touched) { color:var(--muted); }
+
+  /* Q header with ref */
+  .q-header { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px; }
+  .q-ref { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--blue); opacity:0.8; }
+  .q-owner { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+
+  /* Board summary */
+  .board-summary { margin-top:20px; padding:20px; background: transparent; border:1px solid var(--rule); display:none; }
+  .board-summary.show { display:block; }
+  .board-summary-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+  .board-summary p { font-size:17px; color:var(--muted2); line-height:1.65; margin-bottom:8px; }
+  .board-summary p:last-child { margin-bottom:0; }
+  .board-summary strong { color:var(--text); }
+
+  /* Remediation plan */
+  .remediation-plan { margin-top:20px; display:none; }
+  .remediation-plan.show { display:block; }
+  .remediation-plan-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+  .rem-item { padding:14px 0; border-bottom:1px solid var(--rule); display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:start; }
+  .rem-item:last-child { border-bottom:none; }
+  .rem-score { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--orange); min-width:40px; text-align:center; line-height:1; padding-top:2px; }
+  .rem-domain { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+  .rem-action { font-size:16px; color:var(--muted2); line-height:1.55; }
+  .rem-action strong { color:var(--text); }
+
+  /* C-level section */
+  .clevel-section { margin-top:24px; padding-top:20px; border-top:1px solid var(--rule); display:none; }
+  .clevel-section.show { display:block; }
+  .clevel-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+  .clevel-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .clevel-list li { font-size:17px; color:var(--muted2); line-height:1.5; padding-left:16px; position:relative; }
+  .clevel-list li::before { content:'Q'; position:absolute; left:0; font-family:'DM Mono',monospace; font-size:10px; color:var(--gold); top:2px; }
+
+  @media (max-width:680px) {  @media (max-width:680px) {
+    nav { padding:16px 20px; }
+    .header,.disclaimer-bar,.ai-lens-bar,.usage-bar,.progress-bar,.score-panel,.domains,.verdict-section { padding-left:20px; padding-right:20px; }
+    .score-card { grid-template-columns:1fr; gap:16px; }
+    .score-col { border-left:none; padding-left:0; border-top:1px solid var(--rule); padding-top:14px; }
+    .score-col:first-child { border-top:none; padding-top:0; }
+    .obligation-map { flex-direction:column; }
+    .obl-item { border-right:none; border-bottom:1px solid var(--rule); }
+    footer { padding:20px; }
+  }
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+  <a class="nav-back" href="/">← All tools</a>
+</nav>
+
+<div class="header">
+  <div class="header-eyebrow">DORA · Financial Entities · Regulation (EU) 2022/2554</div>
+  <h1>DORA <em>AI Exposure</em> Assessment</h1>
+  <p class="header-sub">DORA was designed for ICT risk and digital operational resilience. AI is now becoming part of that ICT estate. This assessment helps identify where AI systems, AI-enabled services, foundation-model providers, and agentic workflows may be creating DORA-relevant exposure that existing compliance programmes have not yet mapped.</p>
+</div>
+
+<div class="disclaimer-bar">
+  <div class="disclaimer-inner">
+    <div class="disc-label">Note</div>
+    <div class="disc-text">This is not a legal compliance assessment. It is an executive diagnostic designed to surface AI-specific blind spots inside DORA-aligned ICT risk, incident, resilience testing, third-party, and governance programmes. Outputs should be validated with Legal, Risk, Compliance, Operational Resilience, and Audit teams.</div>
+  </div>
+</div>
+
+<div class="ai-lens-bar">
+  <div class="ai-lens-inner">
+    <div class="ai-lens-icon">Exposure Lens</div>
+    <div class="ai-lens-text"><strong>Your DORA programme may be mature for traditional ICT, but incomplete for AI-enabled ICT, AI vendors, agentic workflows, foundation-model dependencies, and AI-driven operational decisions.</strong> Rate 0–10 across five pillars. Takes 10 minutes.</div>
+  </div>
+</div>
+
+<div class="usage-bar">
+    <div class="usage-inner">
+      <div class="usage-label">How to use</div>
+      <div class="usage-text">Score each question first. Open evidence panels where the score is weak or where you need to prepare board, audit, or remediation evidence. Best used as a workshop tool: score the current state, open weak evidence panels, export the gap register, then assign owners for the remediation plan.</div>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 10 questions answered</div>
+  </div>
+
+<div class="score-panel">
+  <div class="score-card">
+    <div class="score-col">
+      <div class="score-col-label">AI-DORA Exposure Score</div>
+      <div class="score-value" id="totalScore">—</div>
+      <div class="score-sub" id="scoreLabel">Answer all questions to generate final score</div>
+    </div>
+    <div class="score-col">
+      <div class="score-col-label">Exposure Level</div>
+      <div id="exposureLabel" style="font-family:'DM Mono',monospace;font-size:14px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-top:6px;margin-bottom:10px">—</div>
+      <div class="exposure-tags">
+        <span class="exp-tag" style="background:rgba(224,92,92,0.1);color:#e05c5c;border-color:rgba(224,92,92,0.2)">Critical</span>
+        <span class="exp-tag" style="background:rgba(212,132,90,0.1);color:#d4845a;border-color:rgba(212,132,90,0.2)">Material</span>
+        <span class="exp-tag" style="background:var(--teal-dim);color:var(--teal);border-color:var(--teal-border)">Managed</span>
+        <span class="exp-tag" style="background:rgba(122,170,138,0.1);color:#7aaa8a;border-color:rgba(122,170,138,0.2)">Low / Evidence Ready</span>
+      </div>
+    </div>
+    <div class="score-col">
+      <div class="score-col-label">Priority Domain</div>
+      <div id="priorityDomain" style="font-size:17px;color:var(--muted2);margin-top:4px;line-height:1.5">Awaiting assessment</div>
+    </div>
+  </div>
+</div>
+
+<div class="domains" id="domainsContainer"></div>
+
+<div class="verdict-section">
+  <div class="verdict-box">
+    <div class="verdict-label">AI-DORA Exposure Verdict</div>
+    <div id="verdictContent">
+      <p class="verdict-placeholder">Complete all ten questions to generate your exposure verdict.</p>
+    </div>
+    <div class="tpr-spotlight" id="tprSpotlight">
+      <div class="tpr-spotlight-label">⚠ Third-Party AI Dependency Risk — Flagged</div>
+      <p id="tprSpotlightText"></p>
+    </div>
+    <div class="board-summary" id="boardSummary">
+      <div class="board-summary-label">Board Summary</div>
+      <p id="bsExposure"></p>
+      <p id="bsRisk"></p>
+      <p id="bsImplication"></p>
+      <p id="bsAction"></p>
+    </div>
+
+    <div class="remediation-plan" id="remediationPlan">
+      <div class="remediation-plan-label">Priority Remediation Plan — Pillars scoring below 6</div>
+      <div id="remediationItems"></div>
+    </div>
+
+    <div class="clevel-section" id="clevelSection">
+      <div class="clevel-label">Questions your Board / CIO / CRO / COO should be able to answer</div>
+      <ul class="clevel-list">
+        <li>Which AI systems or AI-enabled services support our ICT services, operational processes, or critical or important functions?</li>
+        <li>Which AI vendors, foundation-model providers, and AI-enabled SaaS tools are in our Register of Information?</li>
+        <li>Where are AI failure modes represented in our ICT incident taxonomy?</li>
+        <li>Can we classify and report an AI-caused or AI-assisted major ICT incident within the DORA reporting window?</li>
+        <li>Which AI dependencies are included in resilience testing and TLPT scope?</li>
+        <li>Who owns each AI-enabled critical or important function?</li>
+        <li>What evidence would we show an auditor or supervisor tomorrow?</li>
+      </ul>
+    </div>
+
+    <div class="cta-row" id="verdictCTA" style="display:none">
+      <a class="btn-primary" href="mailto:?subject=DORA AI Exposure Review&body=I would like to discuss AI-DORA exposure using the assessment from theaireadyist.com">Discuss AI-DORA Exposure</a>
+      <a class="btn-secondary" href="/eu-ai-act">EU AI Act Assessment</a>
+      <a class="btn-secondary" href="/nis2">NIS2 Assessment</a>
+      <a class="btn-secondary" href="/radar">View Governance Radar</a>
+      <button class="btn-copy" id="copyBtn" onclick="copyExecutiveSummary()">Copy Executive Summary</button>
+      <button class="btn-copy" id="exportGapBtn" onclick="exportGapRegister()">Export Gap Register</button>
+      <button class="btn-copy" id="exportEvidenceBtn" onclick="exportEvidenceChecklist()">Export Evidence Checklist</button>
+    </div>
+    <p style="font-size:14px;color:var(--muted);margin-top:14px;line-height:1.5;font-style:italic">Use this assessment to identify where AI-related ICT dependencies may require deeper review across Legal, Risk, Compliance, Procurement, Technology, and Operational Resilience.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-main">
+    <div class="footer-logo">the<span style="color:var(--teal)">AI</span>Readyist</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.08em">DORA: Regulation (EU) 2022/2554 · theaireadyist.com</div>
+  </div>
+  <div class="footer-note">This tool is for executive orientation and AI exposure discovery only. It is not legal advice, regulatory advice, or a substitute for a formal DORA compliance assessment. Outputs should be validated with Legal, Risk, Compliance, Operational Resilience, and Audit teams.</div>
+</footer>
+
+<script>
+const domains = [
+  {
+    id: 'ict-risk',
+    num: 'Pillar 01',
+    title: 'ICT Risk Management Framework',
+    weight: 25,
+    obligation: { area: 'ICT risk management', owners: 'CIO · CISO · CRO', evidence: 'Framework, AI inventory, risk assessments, board reporting' },
+    aiFocus: 'Most ICT risk frameworks were designed before AI entered production. Where AI systems, AI-enabled services, foundation-model providers, or agentic workflows support ICT services, critical or important functions, or operational processes, they should be assessed within the DORA ICT risk and operational resilience framework — but most are not yet explicitly in scope.',
+    questions: [
+      {
+        id: 'q1', num: '01',
+        doraRef: 'Art. 6 / Art. 5',
+        owner: 'CIO / CISO / CRO',
+        text: 'Does your ICT risk management framework explicitly include AI systems, AI-enabled services, foundation-model dependencies, and agentic workflows where they support ICT services, operational processes, or critical or important functions?',
+        aiNote: 'A framework last updated before your AI deployments almost certainly does not cover them. The gap is not a missing policy — it is a missing inventory.',
+        low: '0 — AI systems not in scope. Framework predates AI deployment.',
+        high: '10 — AI systems, AI-enabled services, and agentic workflows explicitly included, risk-assessed, and reported.',
+        evidence: [
+          'ICT risk management framework showing AI systems in scope',
+          'AI system and AI-enabled service inventory',
+          'Mapping of AI systems to ICT assets and critical or important functions',
+          'Risk assessment records for AI-enabled ICT services',
+          'Board or risk committee approval record'
+        ]
+      },
+      {
+        id: 'q2', num: '02',
+        doraRef: 'Art. 5',
+        owner: 'Board / ExCo / CRO',
+        text: 'Does the management body receive documented reporting on AI-related ICT risk, including failure modes such as hallucination, model drift, adversarial input, prompt injection, loss of human oversight, or unintended agentic action?',
+        aiNote: 'DORA requires board-level ICT risk ownership. AI failure modes are materially different from legacy ICT failures and require explicit board visibility — not just CISO awareness.',
+        low: '0 — No board reporting on AI-specific ICT risk or AI failure modes.',
+        high: '10 — Board receives regular, documented AI ICT risk reporting. AI risk appetite and escalation path defined.',
+        evidence: [
+          'Board risk mandate or terms of reference covering AI-enabled ICT risk',
+          'AI risk appetite statement',
+          'Board reporting pack including AI-specific operational risk indicators',
+          'Minutes showing AI risk review or escalation',
+          'Escalation process for AI-related operational risk events'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'incident',
+    num: 'Pillar 02',
+    title: 'ICT Incident Management & Reporting',
+    weight: 25,
+    obligation: { area: 'Incident classification and reporting', owners: 'CIO · CISO · COO · Operational Resilience', evidence: 'Incident taxonomy, reporting playbooks, simulations, logs' },
+    aiFocus: 'DORA requires financial entities to detect, classify, and report major ICT-related incidents within defined regulatory timeframes. If an AI system causes, contributes to, delays detection of, or obscures attribution of an incident, your incident framework needs to handle that explicitly. Most incident taxonomies were written before AI was in production and have no criteria for AI-related failure modes.',
+    questions: [
+      {
+        id: 'q3', num: '03',
+        doraRef: 'Arts. 17–19',
+        owner: 'CIO / CISO / COO',
+        text: 'Does your ICT incident classification methodology include AI-related incident scenarios — including model failure, corrupted AI output, unintended agentic action, AI-assisted decision failure, or AI behaviour that contributed to operational disruption?',
+        aiNote: 'Can you detect, classify, attribute, and prepare the initial notification within the DORA reporting window, including the four-hour notification requirement after major-incident classification? That requires AI failure modes to be in your taxonomy before the incident occurs.',
+        low: '0 — Incident taxonomy has no AI-related criteria. Framework predates AI deployment.',
+        high: '10 — AI incident criteria documented, tested in tabletop or simulation. Staff trained. Playbooks approved.',
+        evidence: [
+          'Incident taxonomy including AI-related failure modes',
+          'Classification decision tree for AI-caused or AI-assisted incidents',
+          'Major incident reporting playbook',
+          'Tabletop or simulation record covering an AI-related incident scenario',
+          'Post-incident review template including AI attribution'
+        ]
+      },
+      {
+        id: 'q4', num: '04',
+        doraRef: 'Arts. 17–19 / Art. 28',
+        owner: 'CIO / CISO / COO',
+        text: 'If an AI-enabled service operated by a third party caused or contributed to a major operational disruption, could you detect, classify, attribute, and prepare the initial notification within the DORA reporting window?',
+        aiNote: 'When the failure is inside a vendor\'s model or platform, your awareness window begins when they tell you — not when the failure occurs. Contractual notification SLAs and escalation routes need to be defined before the incident.',
+        low: '0 — No process for third-party AI incidents. Attribution and notification timeline would be unclear.',
+        high: '10 — Third-party AI incident process documented. Contractual SLAs in place. Attribution methodology tested.',
+        evidence: [
+          'Vendor incident notification clauses covering AI services',
+          'Third-party AI incident escalation workflow',
+          'AI vendor contact and escalation register',
+          'Attribution process for vendor-hosted AI components',
+          'Tested major incident reporting simulation involving a third-party AI service'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'testing',
+    num: 'Pillar 03',
+    title: 'Digital Operational Resilience Testing',
+    weight: 20,
+    obligation: { area: 'Resilience testing and TLPT scope', owners: 'CISO · CIO · Operational Resilience', evidence: 'Test plans, TLPT scope, findings, remediation evidence' },
+    aiFocus: 'DORA requires annual resilience testing and, for significant entities, Threat-Led Penetration Testing (TLPT) every three years. AI systems have fundamentally different attack surfaces — prompt injection, adversarial inputs, model poisoning, unexpected behaviour under stress — that standard testing frameworks do not yet fully cover.',
+    questions: [
+      {
+        id: 'q5', num: '05',
+        doraRef: 'Arts. 24–25',
+        owner: 'CISO / CIO / Operational Resilience',
+        text: 'Are AI systems and AI-enabled ICT services included in your digital operational resilience testing programme, with scenarios covering prompt injection, adversarial inputs, model drift, data poisoning, unexpected behaviour under stress, and degraded human oversight?',
+        aiNote: 'Testing a legacy system is not the same as testing an LLM-based process or agentic workflow. If your test programme was designed before AI was in production, AI systems are likely out of scope by default.',
+        low: '0 — AI systems excluded from testing. No AI-specific test scenarios.',
+        high: '10 — AI systems included. AI-specific scenarios applied. Findings tracked. Remediation evidenced.',
+        evidence: [
+          'Digital operational resilience test plan including AI systems',
+          'AI-specific test scenarios: prompt injection, adversarial input, model drift, unexpected behaviour under stress',
+          'Test results and remediation log',
+          'Evidence of retesting after remediation',
+          'Board or risk committee reporting of test outcomes'
+        ]
+      },
+      {
+        id: 'q6', num: '06',
+        doraRef: 'Art. 26',
+        owner: 'CISO / CIO / Operational Resilience',
+        text: 'Where AI systems support critical or important functions, have those dependencies been considered in TLPT scoping — or explicitly excluded with documented rationale?',
+        aiNote: 'If AI now underpins a critical function, that dependency must be addressed in TLPT scope or excluded with clear rationale. Many organisations have conducted TLPT without revisiting scope after AI was deployed into critical processes.',
+        low: '0 — TLPT scope has not been reviewed since AI was deployed into critical functions.',
+        high: '10 — AI dependencies in critical functions explicitly considered in TLPT scope. Rationale documented. Findings acted on.',
+        evidence: [
+          'TLPT scoping document with AI dependency review',
+          'Critical function dependency map showing AI components',
+          'Threat scenarios involving AI systems or AI-enabled processes',
+          'TLPT findings and remediation plan',
+          'Documented rationale for AI systems in or out of TLPT scope'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'tpr',
+    num: 'Pillar 04',
+    title: 'ICT Third-Party Risk — AI Vendors',
+    weight: 20,
+    tprDomain: true,
+    obligation: { area: 'ICT third-party risk management and Register of Information', owners: 'COO · CIO · CPO · Legal · CRO', evidence: 'Register, contracts, exit plans, concentration analysis' },
+    aiFocus: 'Many financial institutions have vendor inventories for cloud, outsourcing, SaaS, and managed services. Far fewer have a complete view of AI-enabled ICT dependencies: foundation-model providers, embedded AI inside SaaS platforms, AI copilots, agentic workflow tools, AI observability tools, and AI services used indirectly through third-party platforms. Under DORA, the question is not whether the tool is called "AI" — it is whether it supports, influences, or creates dependency within an ICT service, operational process, or critical or important function.',
+    questions: [
+      {
+        id: 'q7', num: '07',
+        doraRef: 'Art. 28',
+        owner: 'COO / CIO / CPO / Legal / CRO',
+        text: 'Does your Register of Information include AI vendors, AI-enabled SaaS providers, cloud AI services, foundation-model providers, and other ICT third parties whose services support or influence critical or important functions?',
+        aiNote: 'A single foundation-model provider may underpin multiple AI tools across different business units — that is concentration risk under DORA Article 28. Shadow AI compounds this: tools procured outside IT governance create dependencies that are invisible to the compliance programme.',
+        low: '0 — AI vendors not in Register. No systematic inventory of AI third-party dependencies.',
+        high: '10 — All AI vendors, AI-enabled SaaS, and foundation-model providers in Register. Concentration risk assessed.',
+        evidence: [
+          'Register of Information extract showing AI vendors and AI-enabled ICT providers',
+          'AI vendor and foundation-model provider inventory',
+          'Mapping of AI vendors to critical or important functions',
+          'Concentration risk assessment covering AI provider dependencies',
+          'Procurement and contract ownership records'
+        ]
+      },
+      {
+        id: 'q8', num: '08',
+        doraRef: 'Art. 30',
+        owner: 'Legal / Procurement / CISO',
+        text: 'Have contracts with AI vendors, AI-enabled SaaS providers, and foundation-model providers been reviewed against DORA-relevant ICT third-party requirements — including audit and access rights, incident notification commitments, sub-outsourcing transparency, exit support, service continuity, and resilience obligations?',
+        aiNote: 'Standard cloud, SaaS, and foundation-model contracts may not, by default, provide the audit rights, sub-outsourcing transparency, incident notification commitments, exit support, data-location clarity, and resilience obligations required for material or critical ICT third-party arrangements under DORA. This requires Legal, Procurement, Risk, and Technology review — not just a compliance statement.',
+        low: '0 — AI vendor contracts not reviewed for DORA requirements. No exit plans, no audit rights clauses.',
+        high: '10 — All material AI vendor contracts reviewed, updated, legally signed off. Exit plans documented and tested.',
+        evidence: [
+          'Contract review checklist mapped to DORA-relevant ICT third-party requirements',
+          'Audit and access rights clauses in AI vendor agreements',
+          'Incident notification and escalation obligations',
+          'Exit plan and transition support clauses',
+          'Sub-outsourcing and data-location transparency records'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'governance',
+    num: 'Pillar 05',
+    title: 'Governance, Accountability & AI Ownership',
+    weight: 10,
+    obligation: { area: 'Management body accountability and governance', owners: 'Board · ExCo · CRO · CIO', evidence: 'Charters, RACI, ownership register, board packs' },
+    aiFocus: 'DORA Article 5 requires clear management body accountability for ICT governance. When an AI system is the point of failure in a DORA-reportable incident, the question of who is accountable — and whether that accountability was documented before the incident — is the difference between a contained remediation finding and a more serious governance or accountability issue.',
+    questions: [
+      {
+        id: 'q9', num: '09',
+        doraRef: 'Art. 5',
+        owner: 'Board / ExCo / CIO',
+        text: 'Is there a named accountable owner for each AI system or AI-enabled service that supports a critical or important function — and is that ownership recognised within your DORA-aligned governance framework?',
+        aiNote: '"The AI team owns it" is not a defensible answer when a regulator asks who was accountable for an AI-enabled service that failed. DORA Article 5 requires named, documented accountability at management body level.',
+        low: '0 — No named AI system owner within DORA governance. Accountability is shared or assumed.',
+        high: '10 — Named individual per AI system and AI-enabled service supporting critical functions. Documented in governance charter. Reviewed annually.',
+        evidence: [
+          'AI system and AI-enabled service ownership register',
+          'RACI matrix covering AI-enabled critical functions',
+          'DORA governance charter showing AI ownership',
+          'Named accountable executive or service owner per AI-enabled critical function',
+          'Annual review and sign-off record'
+        ]
+      },
+      {
+        id: 'q10', num: '10',
+        doraRef: 'Art. 13',
+        owner: 'CISO / Threat Intelligence',
+        text: 'Does your cyber threat intelligence and security governance process explicitly consider AI-related threats — such as prompt injection, model poisoning, adversarial AI, AI supply-chain compromise, and agentic misuse?',
+        aiNote: 'AI-specific threat intelligence is a rapidly developing area. Most standard threat feeds do not yet cover AI attack vectors explicitly. If your threat intelligence process was not updated when AI was deployed, it is likely blind to the most relevant emerging threats.',
+        low: '0 — No AI threat intelligence. Standard feeds used with no AI-specific coverage.',
+        high: '10 — AI threat intelligence actively sourced. Findings update controls, testing, and risk assessments. Governance records maintained.',
+        evidence: [
+          'Threat intelligence participation records',
+          'AI-specific threat feeds or sector-sharing memberships',
+          'Records of AI-relevant threat updates: prompt injection, model poisoning, adversarial AI, AI supply-chain compromise',
+          'Evidence that AI threat intelligence updates controls or testing',
+          'Security governance minutes or action logs'
+        ]
+      }
+    ]
+  }
+];
+
+const scores = {};
+const answered = {};
+const evidenceOpen = {};
+
+function getExposureClass(v) {
+  if (v < 3) return 'gap-critical';
+  if (v < 6) return 'gap-partial';
+  if (v < 8) return 'gap-strong';
+  return 'gap-ready';
+}
+function getExposureLabel(v) {
+  if (v < 3) return 'Critical Exposure';
+  if (v < 6) return 'Material Exposure';
+  if (v < 8) return 'Managed Exposure';
+  return 'Low / Evidence Ready';
+}
+function getExposureLabelShort(v) {
+  if (v < 30) return 'Critical Exposure';
+  if (v < 55) return 'Material Exposure';
+  if (v < 75) return 'Managed Exposure';
+  return 'Low Exposure / Evidence Ready';
+}
+
+function buildDomains() {
+  const container = document.getElementById('domainsContainer');
+  container.innerHTML = domains.map(d => `
+    <div class="domain-card" id="domain-${d.id}">
+      <div class="domain-header" onclick="toggleDomain('${d.id}')">
+        <div>
+          <div class="domain-num">${d.num}${d.tprDomain ? ' · Priority AI Dependency Exposure' : ''}</div>
+          <div class="domain-title">${d.title}</div>
+          <div class="domain-meta">Weight: ${d.weight}%</div>
+        </div>
+        <div class="domain-right">
+          <div class="domain-score-badge empty" id="badge-${d.id}">—</div>
+          <div class="chevron">▾</div>
+        </div>
+      </div>
+      <div class="domain-body" id="body-${d.id}">
+        <div class="obligation-map">
+          <div class="obl-item"><div class="obl-label">DORA Obligation</div><div class="obl-value">${d.obligation.area}</div></div>
+          <div class="obl-item"><div class="obl-label">Typical Owners</div><div class="obl-value">${d.obligation.owners}</div></div>
+          <div class="obl-item"><div class="obl-label">Evidence Type</div><div class="obl-value">${d.obligation.evidence}</div></div>
+        </div>
+        <div class="domain-body-inner">
+          <div class="domain-ai-focus">
+            <div class="daf-label">AI Focus</div>
+            <div class="daf-text">${d.aiFocus}</div>
+          </div>
+          ${d.tprDomain ? `
+          <div class="tpr-explainer">
+            <div class="tpr-explainer-title">AI Third-Party Dependencies — What's typically missing from the Register</div>
+            <p>Under DORA, the question is not whether a service is called "AI" — it is whether it supports, influences, or creates dependency within an ICT service, operational process, or critical or important function. The following are frequently absent from vendor inventories and Registers of Information:</p>
+            <div class="tpr-examples">
+              <span class="tpr-ex-tag">Foundation-model providers</span>
+              <span class="tpr-ex-tag">Cloud AI platforms</span>
+              <span class="tpr-ex-tag">AI copilots</span>
+              <span class="tpr-ex-tag">AI-enabled SaaS platforms</span>
+              <span class="tpr-ex-tag">Agentic workflow tools</span>
+              <span class="tpr-ex-tag">AI observability tools</span>
+              <span class="tpr-ex-tag">AI-enabled ITSM / SecOps</span>
+              <span class="tpr-ex-tag">AI risk & compliance platforms</span>
+              <span class="tpr-ex-tag">AI customer-service platforms</span>
+              <span class="tpr-ex-tag">Embedded AI in enterprise software</span>
+            </div>
+          </div>` : ''}
+          ${d.questions.map(q => `
+            <div class="question-block">
+              <div class="q-header">
+                <div class="q-label">Question ${q.num} / 10</div>
+                <div class="q-ref">${q.doraRef || ''}</div>
+              </div>
+              <div class="q-text">${q.text}</div>
+              <div class="q-owner">Owner: ${q.owner || ''}</div>
+              <div class="q-ai-note">↳ ${q.aiNote}</div>
+              <div class="slider-wrap">
+                <input type="range" class="slider" min="0" max="10" value="5"
+                  id="slider-${q.id}" oninput="updateSlider('${q.id}', this.value)">
+                <div class="slider-val" id="val-${q.id}">—</div>
+              </div>
+              <div class="anchor-row">
+                <div class="anchor">${q.low}</div>
+                <div class="anchor right">${q.high}</div>
+              </div>
+              <span class="gap-tag gap-unanswered" id="gap-${q.id}">Not yet answered</span>
+              <div class="evidence-section">
+                <button class="evidence-toggle" id="ev-toggle-${q.id}" onclick="toggleEvidence('${q.id}')">
+                  <span class="ev-arrow">▶</span> Evidence to support this score
+                </button>
+                <ul class="evidence-list" id="ev-list-${q.id}">
+                  ${q.evidence.map(e => `<li>${e}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+          `).join('')}
+          ${d.tprDomain ? `
+          <div class="tpr-flag" id="tprFlag">
+            <div class="tpr-flag-label">⚠ Register of Information Gap — AI Vendors</div>
+            <div class="tpr-flag-text" id="tprFlagText"></div>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  domains.forEach(d => d.questions.forEach(q => {
+    scores[q.id] = null;
+    answered[q.id] = false;
+  }));
+  toggleDomain('ict-risk');
+}
+
+function toggleEvidence(qId) {
+  const list = document.getElementById('ev-list-' + qId);
+  const btn = document.getElementById('ev-toggle-' + qId);
+  const open = list.classList.contains('show');
+  list.classList.toggle('show', !open);
+  btn.classList.toggle('open', !open);
+}
+
+function toggleDomain(id) {
+  domains.forEach(d => {
+    const body = document.getElementById('body-' + d.id);
+    const card = document.getElementById('domain-' + d.id);
+    if (d.id === id) {
+      const isOpen = card.classList.contains('open');
+      if (isOpen) { card.classList.remove('open'); body.style.maxHeight = '0'; }
+      else { card.classList.add('open'); body.style.maxHeight = body.scrollHeight + 400 + 'px'; }
+    }
+  });
+}
+
+function updateSliderVisual(qId, val) {
+  val = parseInt(val);
+  const slider = document.getElementById('slider-' + qId);
+  if (!slider) return;
+  const pct = (val / 10) * 100;
+  slider.classList.add('touched');
+  slider.style.background = `linear-gradient(to right, var(--gold) ${pct}%, rgba(255,255,255,0.1) ${pct}%)`;
+  const valEl = document.getElementById('val-' + qId);
+  valEl.textContent = val;
+  valEl.classList.add('touched');
+  const gap = document.getElementById('gap-' + qId);
+  gap.className = 'gap-tag ' + getExposureClass(val);
+  gap.textContent = getExposureLabel(val);
+
+  // Show remediation hint if score < 6
+  const hint = document.getElementById('rem-hint-' + qId);
+  if (hint) hint.classList.toggle('show', val < 6);
+}
+
+function updateProgress() {
+  const answeredCount = Object.values(answered).filter(Boolean).length;
+  const total = Object.keys(answered).length;
+  document.getElementById('progressFill').style.width = (answeredCount / total * 100) + '%';
+  document.getElementById('progressLabel').textContent = answeredCount + ' / ' + total + ' questions answered';
+}
+
+function getCompletedDomains() {
+  return domains.filter(d => d.questions.every(q => answered[q.id]));
+}
+
+function calculateProvisionalScore() {
+  const completedDomains = getCompletedDomains();
+  if (completedDomains.length === 0) return null;
+  let weightedTotal = 0, weightTotal = 0;
+  completedDomains.forEach(d => {
+    const avg = d.questions.reduce((sum, q) => sum + scores[q.id], 0) / d.questions.length;
+    weightedTotal += avg * d.weight;
+    weightTotal += d.weight;
+  });
+  if (weightTotal === 0) return null;
+  return Math.round((weightedTotal / weightTotal) * 10);
+}
+
+function updateProvisionalScore() {
+  const answeredCount = Object.values(answered).filter(Boolean).length;
+  const total = Object.keys(answered).length;
+  if (answeredCount === total) return;
+  const provisional = calculateProvisionalScore();
+  if (provisional === null) {
+    document.getElementById('totalScore').textContent = '—';
+    document.getElementById('scoreLabel').textContent =
+      answeredCount === 0
+        ? 'Answer all questions to generate final score'
+        : 'Complete one pillar to see provisional score';
+    document.getElementById('exposureLabel').textContent = '—';
+    document.getElementById('exposureLabel').style.color = 'var(--muted)';
+    document.getElementById('priorityDomain').innerHTML = 'Awaiting completed pillar';
+    return;
+  }
+  const expLabel = getExposureLabelShort(provisional);
+  let expColor;
+  if (provisional < 30) expColor = '#e05c5c';
+  else if (provisional < 55) expColor = '#d4845a';
+  else if (provisional < 75) expColor = 'var(--teal)';
+  else expColor = '#7aaa8a';
+  document.getElementById('totalScore').textContent = provisional + '%';
+  document.getElementById('scoreLabel').textContent = 'Provisional — ' + answeredCount + ' / ' + total + ' answered';
+  document.getElementById('exposureLabel').textContent = expLabel;
+  document.getElementById('exposureLabel').style.color = expColor;
+}
+
+function updateSlider(qId, val) {
+  val = parseInt(val);
+  scores[qId] = val;
+  answered[qId] = true;
+  updateSliderVisual(qId, val);
+
+  const tprDomain = domains.find(d => d.tprDomain);
+  if (tprDomain && tprDomain.questions.some(q => q.id === qId)) checkTprFlag();
+
+  updateProgress();
+
+  const allAnswered = Object.values(answered).every(Boolean);
+  if (allAnswered) {
+    recalculate();
+  } else {
+    // Partial: update domain badge if domain is now complete
+    const domain = domains.find(d => d.questions.some(q => q.id === qId));
+    if (domain) {
+      const domainComplete = domain.questions.every(q => answered[q.id]);
+      if (domainComplete) {
+        const avg = domain.questions.reduce((s, q) => s + scores[q.id], 0) / domain.questions.length;
+        const badge = document.getElementById('badge-' + domain.id);
+        badge.textContent = avg.toFixed(1);
+        badge.className = 'domain-score-badge';
+        if (domain.tprDomain && avg < 5) badge.classList.add('flagged');
+      }
+    }
+    updateProvisionalScore();
+  }
+
+  domains.forEach(d => {
+    const card = document.getElementById('domain-' + d.id);
+    if (card && card.classList.contains('open')) {
+      document.getElementById('body-' + d.id).style.maxHeight = document.getElementById('body-' + d.id).scrollHeight + 400 + 'px';
+    }
+  });
+}
+
+function checkTprFlag() {
+  const tprDomain = domains.find(d => d.tprDomain);
+  const avg = tprDomain.questions.reduce((s, q) => s + (scores[q.id] || 5), 0) / tprDomain.questions.length;
+  const flag = document.getElementById('tprFlag');
+  if (!flag) return;
+  if (avg < 5) {
+    flag.classList.add('show');
+    document.getElementById('tprFlagText').innerHTML = `Your scores suggest AI vendors, foundation-model providers, and AI-enabled ICT services are not fully mapped in your Register of Information or contract review process. The Register of Information is one of the most visible supervisory artefacts under DORA — third-party ICT dependency mapping creates a direct evidence trail from supplier inventory to contractual controls, concentration risk, exit planning, and operational resilience. <strong>A 30-day AI vendor and AI-enabled ICT dependency review across procurement, technology, legal, risk, and operational resilience is recommended.</strong>`;
+  } else { flag.classList.remove('show'); }
+}
+
+function recalculate() {
+  let totalWeighted = 0;
+  const domainScores = {};
+
+  domains.forEach(d => {
+    const avg = d.questions.reduce((s, q) => s + (scores[q.id] || 5), 0) / d.questions.length;
+    domainScores[d.id] = { score: avg, title: d.title, weight: d.weight, tpr: d.tprDomain };
+    totalWeighted += avg * (d.weight / 100);
+    const badge = document.getElementById('badge-' + d.id);
+    badge.textContent = avg.toFixed(1);
+    badge.className = 'domain-score-badge';
+    if (d.tprDomain && avg < 5) badge.classList.add('flagged');
+  });
+
+  const pct = Math.round(totalWeighted * 10);
+  document.getElementById('totalScore').textContent = pct + '%';
+
+  const expLabel = getExposureLabelShort(pct);
+  let expColor;
+  if (pct < 30) expColor = '#e05c5c';
+  else if (pct < 55) expColor = '#d4845a';
+  else if (pct < 75) expColor = 'var(--teal)';
+  else expColor = '#7aaa8a';
+
+  document.getElementById('exposureLabel').textContent = expLabel;
+  document.getElementById('exposureLabel').style.color = expColor;
+  document.getElementById('scoreLabel').textContent = 'Final score — ' + expLabel;
+
+  const sorted = Object.values(domainScores).sort((a, b) => a.score - b.score);
+  const weakest = sorted[0];
+  document.getElementById('priorityDomain').innerHTML =
+    `<strong style="color:var(--text)">${weakest.title}</strong><br><span style="font-size:14px">${weakest.score.toFixed(1)}/10</span>`;
+
+  generateVerdict(pct, domainScores, weakest, sorted[sorted.length - 1]);
+}
+
+function generateVerdict(pct, domainScores, weakest, strongest) {
+  const tprScore = Object.values(domainScores).find(d => d.tpr);
+  const tprLow = tprScore && tprScore.score < 5;
+  const expLabel = getExposureLabelShort(pct);
+
+  // Evidence likely to be requested based on weakest domain
+  const evidenceByDomain = {
+    'ict-risk': 'ICT risk framework showing AI systems in scope, AI system inventory, risk assessment records, board reporting on AI ICT risk',
+    'incident': 'Incident taxonomy including AI failure modes, classification playbooks, tabletop records, third-party escalation workflow',
+    'testing': 'Resilience test plan including AI systems, AI-specific test scenarios and results, TLPT scoping rationale',
+    'tpr': 'Register of Information extract, AI vendor inventory, contract review records, exit plans, concentration risk assessment',
+    'governance': 'AI system ownership register, RACI matrix, DORA governance charter, board reporting records'
+  };
+
+  const nextActionByDomain = {
+    'ict-risk': 'Conduct an AI-enabled ICT inventory exercise and update the ICT risk framework to explicitly include AI systems, AI-enabled services, and agentic workflows.',
+    'incident': 'Run a tabletop incident simulation involving an AI-related failure. Update the incident taxonomy. Define the attribution and notification process for AI-sourced incidents.',
+    'testing': 'Review the digital operational resilience test programme scope and add AI-specific test scenarios. Revisit TLPT scoping if AI has been deployed into critical functions.',
+    'tpr': 'Run a 30-day AI vendor and AI-enabled ICT dependency review across procurement, technology, legal, risk, and operational resilience.',
+    'governance': 'Assign named accountable owners to each AI-enabled critical function. Update governance charters. Add AI risk reporting to the board pack.'
+  };
+
+  let verdict = '';
+
+  if (pct < 30) {
+    verdict = `<p><strong>Overall AI-related DORA exposure: Critical Exposure.</strong></p>
+    <p><strong>Priority domain: ${weakest.title}.</strong></p>
+    <p><strong>Why this matters:</strong> The issue is unlikely to be traditional DORA programme absence — it is more likely that AI systems, AI-enabled services, AI vendors, foundation-model dependencies, and agentic workflows have not been embedded into ICT risk, incident, testing, third-party, and governance evidence. All five pillars show material gaps.</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id] || 'AI system inventory, risk framework, vendor register, board reporting'}.</p>
+    <p><strong>Recommended next action:</strong> ${nextActionByDomain[weakest.id] || 'Establish an AI-enabled ICT inventory and map it to critical or important functions.'}</p>`;
+  } else if (pct < 55) {
+    verdict = `<p><strong>Overall AI-related DORA exposure: Material Exposure.</strong></p>
+    <p><strong>Priority domain: ${weakest.title}.</strong></p>
+    <p><strong>Why this matters:</strong> Your organisation appears to have DORA foundations in place for traditional ICT, but AI-enabled services sit in a grey zone between innovation, technology, procurement, and operational risk. Traditional ICT risk and resilience controls may exist while newer AI dependencies remain unmapped and uncontracted.</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id] || 'AI vendor register, contract review records, incident taxonomy, test plan'}.</p>
+    <p><strong>Recommended next action:</strong> ${nextActionByDomain[weakest.id] || 'Identify AI-enabled ICT dependencies and confirm Register of Information coverage.'}</p>`;
+  } else if (pct < 75) {
+    verdict = `<p><strong>Overall AI-related DORA exposure: Managed Exposure.</strong></p>
+    <p><strong>Priority domain: ${weakest.title}.</strong></p>
+    <p><strong>Why this matters:</strong> Your programme is directionally strong, but evidence and integration gaps remain. The risk is that AI systems are governed as a parallel track rather than fully embedded. Supervisors will examine evidence quality — Register completeness, contract review records, test results, board reporting, incident playbooks, and ownership records.</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id] || 'Register, contract review log, test results, board pack with AI risk section'}.</p>
+    <p><strong>Recommended next action:</strong> ${nextActionByDomain[weakest.id] || 'Focus on evidence quality: confirm documentation exists, is current, and is accessible under review conditions.'}</p>`;
+  } else {
+    verdict = `<p><strong>Overall AI-related DORA exposure: Low Exposure / Evidence Ready.</strong></p>
+    <p><strong>Priority domain: ${weakest.title} (${weakest.score.toFixed(1)}/10) — lowest score.</strong></p>
+    <p><strong>Why this matters:</strong> Your organisation appears to have embedded AI systems and AI-enabled ICT dependencies into its DORA-aligned operating model. The work now is maintenance: keeping the inventory current, refreshing vendor and model dependency maps, testing AI-specific incident scenarios, reviewing exit plans, and ensuring board reporting reflects the pace of AI adoption.</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id] || 'Current inventory, recent test results, updated contracts, board reporting records'}.</p>
+    <p><strong>Recommended next action:</strong> Establish a regular AI governance review cadence — quarterly inventory refresh, annual contract review, and tested incident playbook updates. A strong programme can become stale quickly if AI deployment outpaces governance updates.</p>`;
+  }
+
+  document.getElementById('verdictContent').innerHTML = verdict;
+
+  const tprSpotlight = document.getElementById('tprSpotlight');
+  if (tprLow) {
+    tprSpotlight.classList.add('show');
+    document.getElementById('tprSpotlightText').innerHTML =
+      `Your ICT Third-Party Risk score (${tprScore.score.toFixed(1)}/10) indicates AI vendors, foundation-model providers, and AI-enabled SaaS services are likely absent from or incomplete in your Register of Information. <strong>The Register of Information is one of the most visible supervisory artefacts under DORA.</strong> Standard cloud, SaaS, and foundation-model contracts may not, by default, provide the audit rights, sub-outsourcing transparency, incident notification commitments, exit support, and resilience obligations required for material or critical ICT third-party arrangements. This requires Legal, Procurement, Risk, and Technology review — not just a compliance statement.`;
+  } else { tprSpotlight.classList.remove('show'); }
+
+  // Board summary
+  document.getElementById('boardSummary').classList.add('show');
+  document.getElementById('bsExposure').innerHTML = '<strong>Exposure:</strong> Overall AI-DORA exposure is ' + getExposureLabelShort(pct) + ' at ' + pct + '%.';
+  document.getElementById('bsRisk').innerHTML = '<strong>Primary risk:</strong> The weakest pillar is ' + weakest.title + ' (' + weakest.score.toFixed(1) + '/10).';
+  document.getElementById('bsImplication').innerHTML = '<strong>Implication:</strong> AI-enabled ICT dependencies may not be fully evidenced across DORA-aligned risk, incident, testing, third-party, or governance controls.';
+  document.getElementById('bsAction').innerHTML = '<strong>Action:</strong> Assign an owner for the priority pillar and build the evidence pack before supervisory, audit, or incident-response pressure exposes the gap.';
+
+  // Remediation plan
+  const remItems = [];
+  domains.forEach(d => d.questions.forEach(q => {
+    if (scores[q.id] !== null && scores[q.id] < 6) {
+      remItems.push({ domain: d.title, score: scores[q.id], owner: q.owner || '', ref: q.doraRef || '' });
+    }
+  }));
+  remItems.sort((a, b) => a.score - b.score);
+  const remPlan = document.getElementById('remediationPlan');
+  if (remItems.length > 0) {
+    remPlan.classList.add('show');
+    document.getElementById('remediationItems').innerHTML = remItems.map(r =>
+      '<div class="rem-item"><div class="rem-score">' + r.score + '/10</div><div><div class="rem-domain">' + r.domain + ' · ' + r.ref + '</div><div class="rem-action"><strong>Owner: ' + r.owner + '</strong></div></div></div>'
+    ).join('');
+  }
+
+  // C-level questions
+  document.getElementById('clevelSection').classList.add('show');
+
+  document.getElementById('verdictCTA').style.display = 'flex';
+}
+
+function downloadCsv(filename, rows) {
+  const csv = rows.map(row =>
+    row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(',')
+  ).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url; link.download = filename; link.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportGapRegister() {
+  const rows = [['Domain', 'Question', 'Score', 'Exposure Level', 'Owner', 'DORA Reference', 'Evidence Required']];
+  domains.forEach(d => {
+    d.questions.forEach(q => {
+      const score = scores[q.id];
+      if (score !== null && score < 6) {
+        rows.push([d.title, q.text, score, getExposureLabel(score), q.owner || '', q.doraRef || '', q.evidence.join('; ')]);
+      }
+    });
+  });
+  downloadCsv('dora-ai-exposure-gap-register.csv', rows);
+  const btn = document.getElementById('exportGapBtn');
+  if (btn) { btn.textContent = '✓ Exported'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Export Gap Register'; btn.classList.remove('copied'); }, 2500); }
+}
+
+function exportEvidenceChecklist() {
+  const rows = [['Domain', 'Question', 'Evidence Item', 'Owner', 'DORA Reference', 'Status']];
+  domains.forEach(d => {
+    d.questions.forEach(q => {
+      q.evidence.forEach(item => {
+        rows.push([d.title, q.text, item, q.owner || '', q.doraRef || '', 'Not started']);
+      });
+    });
+  });
+  downloadCsv('dora-ai-exposure-evidence-checklist.csv', rows);
+  const btn = document.getElementById('exportEvidenceBtn');
+  if (btn) { btn.textContent = '✓ Exported'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'Export Evidence Checklist'; btn.classList.remove('copied'); }, 2500); }
+}
+
+function copyExecutiveSummary() {
+  const domainScores = {};
+  domains.forEach(d => {
+    const avg = d.questions.reduce((s, q) => s + (scores[q.id] || 5), 0) / d.questions.length;
+    domainScores[d.id] = { score: avg, title: d.title };
+  });
+  const totalWeighted = domains.reduce((s, d) => s + domainScores[d.id].score * (d.weight / 100), 0);
+  const pct = Math.round(totalWeighted * 10);
+  const expLabel = getExposureLabelShort(pct);
+  const sorted = Object.values(domainScores).sort((a, b) => a.score - b.score);
+  const weakest = sorted[0];
+  const tprScore = domainScores['tpr'];
+  const tprLow = tprScore && tprScore.score < 5;
+
+  const nextActions = {
+    'ict-risk': 'Conduct an AI-enabled ICT inventory exercise and update the ICT risk framework.',
+    'incident': 'Run a tabletop incident simulation involving an AI-related failure. Update the incident taxonomy.',
+    'testing': 'Review the digital operational resilience test programme scope and add AI-specific scenarios.',
+    'tpr': 'Run a 30-day AI vendor and AI-enabled ICT dependency review across procurement, technology, legal, risk, and operational resilience.',
+    'governance': 'Assign named accountable owners to each AI-enabled critical function. Update governance charters.'
+  };
+
+  let summary = `# DORA AI Exposure Assessment Summary\n`;
+  summary += `Generated: ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}\n\n`;
+  summary += `Overall score: ${pct}%\n`;
+  summary += `Exposure level: ${expLabel}\n`;
+  summary += `Priority domain: ${weakest.title}\n\n`;
+  summary += `## Domain Scores\n`;
+  domains.forEach(d => {
+    summary += `- ${d.title}: ${domainScores[d.id].score.toFixed(1)}/10\n`;
+  });
+  if (tprLow) {
+    summary += `\n## ⚠ Third-Party AI Dependency Risk — Flagged\n`;
+    summary += `ICT Third-Party Risk score: ${tprScore.score.toFixed(1)}/10. AI vendors and foundation-model providers are likely absent from or incomplete in the Register of Information.\n`;
+  }
+  summary += `\n## Executive Interpretation\n`;
+  summary += `${expLabel}. Priority domain: ${weakest.title} (${weakest.score.toFixed(1)}/10).\n\n`;
+  summary += `## Recommended Next Action\n`;
+  summary += `${nextActions[weakest.id] || 'Review AI governance across all five DORA pillars.'}\n\n`;
+  summary += `## Note\n`;
+  summary += `This is an executive orientation diagnostic only. Not legal advice. Validate with Legal, Risk, Compliance, Operational Resilience, and Audit teams.\n`;
+  summary += `Source: theaireadyist.com/dora`;
+
+  navigator.clipboard.writeText(summary).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Executive Summary'; btn.classList.remove('copied'); }, 2500);
+  }).catch(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copy failed — try again';
+    setTimeout(() => { btn.textContent = 'Copy Executive Summary'; }, 2000);
+  });
+}
+
+buildDomains();
+</script>
+</body>
+</html>

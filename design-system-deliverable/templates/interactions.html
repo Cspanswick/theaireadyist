@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interaction Patterns — theAIReadyist Observatory Design System</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/typography.css" />
+  <link rel="stylesheet" href="/styles/layout.css" />
+  <link rel="stylesheet" href="/styles/brand.css" />
+  <link rel="stylesheet" href="/styles/templates.css" />
+  <link rel="stylesheet" href="/styles/components.css" />
+  <link rel="stylesheet" href="/styles/interactions.css" />
+  <style>.sg{padding:var(--space-6) 0;border-top:1px solid var(--color-border-subtle);}.sg__row{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;margin-top:var(--space-3);}</style>
+</head>
+<body class="tmpl">
+  <main class="layout section">
+    <header class="masthead mb-5">
+      <span class="masthead__brand wordmark">the<span class="wordmark__ai">AI</span>Readyist</span>
+      <span class="masthead__product">Observatory Design System</span>
+      <span class="masthead__context">Phase 6 · Interaction Patterns</span>
+    </header>
+    <h1 class="t-display">Interaction Patterns</h1>
+    <p class="t-body-lg" style="max-width:var(--layout-reading)">States, focus and motion — calm, ≤250ms, colour/border/gap only. Interaction confirms; it never performs. Tab through this page: every control shows a teal focus ring.</p>
+
+    <section class="sg">
+      <p class="t-label">Button states (hover / focus / disabled)</p>
+      <div class="sg__row">
+        <a class="btn btn--primary btn--arrow" href="#">Find your primary constraint</a>
+        <a class="btn btn--link btn--arrow u-hover-accent" href="#">Take the index</a>
+        <button class="btn btn--primary" disabled>Disabled</button>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Custom slider (DD-20 resolved — keyboard + focus)</p>
+      <div style="max-width:360px;margin-top:var(--space-3)">
+        <input class="slider" type="range" min="0" max="10" value="6" aria-label="Readiness 0 to 10" />
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Loading / skeleton</p>
+      <div style="max-width:360px;margin-top:var(--space-3);display:grid;gap:10px">
+        <div class="skeleton" style="height:14px;width:80%"></div>
+        <div class="skeleton" style="height:14px;width:60%"></div>
+        <p class="is-loading mt-3">Loading signals…</p>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Empty &amp; error states</p>
+      <div style="max-width:480px;margin-top:var(--space-3);display:grid;gap:var(--space-3)">
+        <p class="state-empty">Intelligence incoming — the first approved insights will appear here.</p>
+        <p class="state-error">Couldn’t load the assessment. Check your connection and try again.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

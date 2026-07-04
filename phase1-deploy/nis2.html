@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Exposure Lens for NIS2 Readiness — theAIReadyist</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    /* Base */
+    --color-bg:              var(--color-bg);
+    --navy:                  var(--color-bg);
+    --deep-black:            #0a1220;
+    --off-white:             var(--color-text-primary);
+    --teal:                  var(--color-accent);
+    --slate:                 var(--color-text-muted);
+    --amber:                 var(--color-warning);
+
+    /* Text */
+    --color-text-primary:    var(--color-text-primary);
+    --color-text-secondary:  rgba(245,242,236,0.65);
+    --color-text-muted:      rgba(245,242,236,0.40);
+
+    /* Borders */
+    --color-border-card:     rgba(0,184,162,0.20);
+    --color-border-active:   rgba(0,184,162,0.60);
+    --color-border-subtle:   rgba(255,255,255,0.08);
+    --color-border-warning:  rgba(232,168,56,0.35);
+
+    /* Derived tokens — legacy aliases */
+    --bg:           var(--navy);
+    --bg2:          transparent;
+    --bg3:          transparent;
+    --gold:         var(--teal);
+    --gold-dim:     rgba(0,184,162,0.12);
+    --gold-border:  rgba(0,184,162,0.25);
+    --text:         var(--off-white);
+    --muted:        var(--slate);
+    --muted2:       rgba(245,242,236,0.65);
+    --teal-dim:     rgba(0,184,162,0.12);
+    --teal-border:  rgba(0,184,162,0.25);
+    --amber-dim:    rgba(232,168,56,0.12);
+    --rule:         rgba(107,122,141,0.20);
+    --rule-teal:    rgba(0,184,162,0.40);
+    --slate-70:     rgba(245,242,236,0.65);
+    --slate-60:     rgba(245,242,236,0.55);
+    --red:          #e05c5c;
+    --red-dim:      rgba(224,92,92,0.10);
+    --orange:       var(--amber);
+    --orange-dim:   var(--amber-dim);
+    --blue:         #6a9fc0;
+    --blue-dim:     rgba(106,159,192,0.10);
+    --green:        #7aaa8a;
+    --green-dim:    rgba(122,170,138,0.10);
+    --eu-ai:        #6a9fc0;
+    --dora:         var(--amber);
+    --nis2:         #7aaa8a;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color:var(--text); font-family:'DM Sans',sans-serif; font-size:19px; line-height:1.65; }
+
+  nav { padding: 0 48px; height: 56px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--rule); position:sticky; top:0; background:rgba(13,31,60,0.96); backdrop-filter:blur(8px); z-index:100; }
+  .nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:600; color:var(--text); text-decoration:none; }
+  .nav-back { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted2); text-decoration:none; transition:color 0.15s; }
+  .nav-back:hover { color:var(--gold); }
+
+  /* Scope gate */
+  .scope-gate { max-width:820px; margin:48px auto 0; padding:0 48px; }
+  .scope-card { background: transparent; border: 1px solid var(--color-border-card); padding:28px 32px; position:relative; overflow:hidden; }
+  .scope-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .scope-eyebrow { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+  .scope-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--text); margin-bottom:10px; }
+  .scope-sub { font-size:17px; color:var(--muted2); line-height:1.65; margin-bottom:16px; max-width:620px; }
+  .jurisdiction-note { background:var(--gold-dim); border-left:2px solid var(--gold); padding:10px 14px; margin-bottom:20px; font-size:16px; color:var(--muted2); line-height:1.6; }
+  .jurisdiction-note strong { color:var(--text); }
+  .multi-jurisdiction-row { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .multi-jurisdiction-row input[type="checkbox"] { accent-color:var(--gold); width:14px; height:14px; cursor:pointer; }
+  .multi-jurisdiction-row label { font-size:17px; color:var(--muted2); cursor:pointer; }
+  .scope-options { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px; }
+  .scope-btn { background: transparent; border:1px solid var(--rule); padding:16px 16px 14px; cursor:pointer; text-align:left; transition:all 0.15s; }
+  .scope-btn:hover { border-color:var(--gold-border); background:var(--gold-dim); }
+  .scope-btn.selected { border-color:var(--gold); background:var(--gold-dim); }
+  .scope-btn-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  .scope-btn-title { font-size:17px; color:var(--text); font-weight:500; margin-bottom:5px; line-height:1.3; }
+  .scope-btn-desc { font-size:15px; color:var(--muted2); line-height:1.45; }
+  .scope-note { font-size:15px; color:var(--muted); font-style:italic; }
+  .scope-proceed { display:none; margin-top:20px; }
+  .scope-proceed.show { display:block; }
+  .scope-result { padding:14px 18px; border-left:3px solid var(--gold); background:var(--gold-dim); font-size:17px; color:var(--muted2); line-height:1.6; }
+  .scope-result strong { color:var(--text); }
+
+  /* DORA/EU AI Act overlap callout */
+  .overlap-callout { display:none; margin-top:12px; padding:12px 16px; background:var(--blue-dim); border:1px solid rgba(106,159,192,0.2); border-left:3px solid var(--blue); font-size:16px; color:var(--muted2); line-height:1.6; }
+  .overlap-callout.show { display:block; }
+  .overlap-callout strong { color:var(--text); }
+  .overlap-callout-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--blue); margin-bottom:6px; }
+
+  /* Assessment wrapper */
+  .assessment-wrap { display:none; }
+  .assessment-wrap.show { display:block; }
+
+  /* Header */
+  .header { max-width:820px; margin:0 auto; padding:48px 48px 24px; text-align:center; }
+  .header-eyebrow { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; justify-content:center; gap:12px; }
+  .header-eyebrow::before,.header-eyebrow::after { content:''; width:24px; height:1px; background:var(--gold-border); }
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(22px,4vw,38px); font-weight:600; line-height:1.15; color:var(--text); margin-bottom:14px; }
+  h1 em { font-style:italic; color:var(--gold); }
+  .header-sub { font-size:18px; color:var(--muted2); max-width:600px; margin:0 auto; line-height:1.7; }
+
+  /* Disclaimer */
+  .disclaimer-bar { max-width:820px; margin:12px auto 0; padding:0 48px; }
+  .disclaimer-inner { background: transparent; border:1px solid var(--rule); border-left:3px solid var(--muted); padding:11px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .disc-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); flex-shrink:0; padding-top:1px; }
+  .disc-text { font-size:15px; color:var(--muted); line-height:1.55; font-style:italic; }
+
+  /* Urgency bar */
+  .urgency-bar { max-width:820px; margin:8px auto 0; padding:0 48px; }
+  .urgency-inner { background:var(--orange-dim); border:1px solid rgba(212,132,90,0.2); border-left:3px solid var(--orange); padding:11px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .urgency-icon { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--orange); flex-shrink:0; padding-top:1px; }
+  .urgency-text { font-size:16px; color:var(--muted2); line-height:1.55; }
+  .urgency-text strong { color:var(--text); }
+
+  /* AI lens bar */
+  .ai-lens-bar { max-width:820px; margin:8px auto 0; padding:0 48px; }
+  .ai-lens-inner { background:var(--gold-dim); border: 1px solid var(--color-border-card); border-left:3px solid var(--gold); padding:11px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .ai-lens-icon { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); white-space:nowrap; padding-top:1px; flex-shrink:0; }
+  .ai-lens-text { font-size:16px; color:var(--muted2); line-height:1.55; }
+  .ai-lens-text strong { color:var(--text); }
+
+  /* Cross-border bar */
+  .frag-bar { max-width:820px; margin:8px auto 0; padding:0 48px; }
+  .frag-inner { background:var(--blue-dim); border:1px solid rgba(106,159,192,0.2); border-left:3px solid var(--blue); padding:11px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .frag-icon { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--blue); flex-shrink:0; padding-top:1px; }
+  .frag-text { font-size:16px; color:var(--muted2); line-height:1.55; }
+  .frag-text strong { color:var(--text); }
+
+  /* Progress bar */
+  .progress-bar { max-width:820px; margin:20px auto 0; padding:0 48px; }
+  .progress-track { height:3px; background:var(--rule); border-radius: 0; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--gold); width:0%; transition:width 0.3s ease; border-radius: 0; }
+  .progress-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-top:6px; text-align:right; }
+
+  /* Score panel */
+  .score-panel { max-width:820px; margin:16px auto 0; padding:0 48px; }
+  .score-card { background: transparent; border: 1px solid var(--color-border-card); padding:22px 28px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; position:relative; overflow:hidden; }
+  .score-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .score-col { padding:0 20px; border-left:1px solid var(--rule); }
+  .score-col:first-child { border-left:none; padding-left:0; }
+  .score-col-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .score-value { font-family:'Playfair Display',serif; font-size:34px; font-weight:600; color:var(--gold); line-height:1; margin-bottom:4px; }
+  .score-sub { font-size:15px; color:var(--muted2); line-height:1.4; }
+
+  /* Domains */
+  .domains { max-width:820px; margin:24px auto 0; padding:0 48px; display:flex; flex-direction:column; gap:2px; }
+  .domain-card { background: transparent; overflow:hidden; }
+  .domain-header { padding:18px 24px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:16px; cursor:pointer; transition:background 0.15s; }
+  .domain-header:hover { background: transparent; }
+  .domain-num { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; color:var(--gold); margin-bottom:3px; }
+  .domain-title { font-family:'Playfair Display',serif; font-size:19px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .domain-meta { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
+  .domain-right { display:flex; align-items:center; gap:12px; }
+  .domain-score-badge { font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--gold); background:var(--gold-dim); border: 1px solid var(--color-border-card); padding:5px 13px; border-radius: 0; min-width:56px; text-align:center; transition:all 0.2s; }
+  .domain-score-badge.empty { color:var(--muted); background:transparent; border-color:var(--rule); font-family:'DM Mono',monospace; font-size:15px; }
+  .domain-score-badge.flagged { background:rgba(212,132,90,0.15); border-color:rgba(212,132,90,0.3); color:var(--orange); }
+  .chevron { font-size:18px; color:var(--muted); transition:transform 0.2s; user-select:none; }
+  .domain-card.open .chevron { transform:rotate(180deg); color:var(--gold); }
+
+  /* Obligation map */
+  .obligation-map { display:flex; background: transparent; border-bottom:1px solid var(--rule); }
+  .obl-item { padding:10px 16px; flex:1; border-right:1px solid var(--rule); }
+  .obl-item:last-child { border-right:none; }
+  .obl-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+  .obl-value { font-size:14px; color:var(--muted2); line-height:1.4; }
+
+  .domain-body { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+  .domain-body-inner { padding:0 24px 28px; border-top:1px solid var(--rule); }
+
+  .domain-ai-focus { display:flex; gap:10px; align-items:flex-start; background:var(--gold-dim); border-left:2px solid var(--gold); padding:12px 14px; margin:16px 0 20px; }
+  .daf-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); flex-shrink:0; margin-top:1px; }
+  .daf-text { font-size:16px; color:var(--muted2); line-height:1.6; }
+
+  /* Questions */
+  .question-block { padding:20px 0; border-bottom:1px solid var(--rule); }
+  .question-block:last-child { border-bottom:none; }
+  .q-header { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px; }
+  .q-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+  .q-ref { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--blue); opacity:0.8; }
+  .q-text { font-size:18px; color:var(--text); margin-bottom:6px; line-height:1.55; }
+  .q-ai-note { font-size:15px; color:var(--gold); font-style:italic; margin-bottom:14px; line-height:1.45; opacity:0.85; }
+  .q-owner { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+
+  .slider-wrap { display:flex; align-items:center; gap:16px; }
+  .slider { flex:1; -webkit-appearance:none; appearance:none; height:3px; background:rgba(255,255,255,0.1); border-radius: 0; outline:none; cursor:pointer; transition:background 0.1s; }
+  .slider.touched { background:linear-gradient(to right,var(--gold) 50%,rgba(255,255,255,0.1) 50%); }
+  .slider::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--muted); border:2px solid var(--bg); cursor:pointer; transition:background 0.2s; }
+  .slider.touched::-webkit-slider-thumb { background:var(--gold);  }
+  .slider-val { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--muted); min-width:28px; text-align:center; transition:color 0.2s; }
+  .slider-val.touched { color:var(--gold); }
+
+  .anchor-row { display:flex; justify-content:space-between; margin-top:8px; }
+  .anchor { font-size:14px; color:var(--muted); line-height:1.4; max-width:46%; }
+  .anchor.right { text-align:right; }
+
+  .gap-tag { display:inline-block; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; border-radius: 0; margin-top:8px; border:1px solid transparent; }
+  .gap-critical { background:rgba(224,92,92,0.1); color:var(--red); border-color:rgba(224,92,92,0.2); }
+  .gap-partial   { background:rgba(212,132,90,0.1); color:var(--orange); border-color:rgba(212,132,90,0.2); }
+  .gap-strong    { background:var(--teal-dim); color:var(--gold); border-color:var(--teal-border); }
+  .gap-ready     { background:rgba(122,170,138,0.1); color:var(--green); border-color:rgba(122,170,138,0.2); }
+  .gap-unanswered { background:rgba(106,109,120,0.1); color:var(--muted); border-color:rgba(106,109,120,0.15); }
+
+  /* Evidence panel */
+  .evidence-section { margin-top:12px; }
+  .evidence-toggle { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted2); background:none; border:none; cursor:pointer; padding:6px 0; display:flex; align-items:center; gap:6px; transition:color 0.15s; }
+  .evidence-toggle:hover { color:var(--gold); }
+  .evidence-toggle .ev-arrow { font-size:13px; transition:transform 0.2s; }
+  .evidence-toggle.open .ev-arrow { transform:rotate(90deg); }
+  .evidence-body { display:none; margin-top:8px; padding:12px 14px; background: transparent; border-left:2px solid var(--rule); }
+  .evidence-body.show { display:block; }
+  .evidence-body ul { list-style:none; display:flex; flex-direction:column; gap:5px; }
+  .evidence-body li { font-size:15px; color:var(--muted2); line-height:1.5; padding-left:14px; position:relative; }
+  .evidence-body li::before { content:'·'; position:absolute; left:0; color:var(--muted); }
+  .remediation-hint { margin-top:10px; padding-top:10px; border-top:1px solid var(--rule); font-size:15px; color:var(--orange); font-style:italic; display:none; }
+  .remediation-hint.show { display:block; }
+
+  /* SC flag */
+  .sc-flag { margin-top:20px; padding:14px 18px; background:rgba(212,132,90,0.08); border:1px solid rgba(212,132,90,0.2); border-left:3px solid var(--orange); display:none; }
+  .sc-flag.show { display:block; }
+  .sc-flag-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--orange); margin-bottom:6px; }
+  .sc-flag-text { font-size:16px; color:var(--muted2); line-height:1.6; }
+  .sc-flag-text strong { color:var(--text); }
+
+  /* Verdict */
+  .verdict-section { max-width:820px; margin:28px auto 0; padding:0 48px 80px; }
+  .verdict-box { background: transparent; border: 1px solid var(--color-border-card); padding:30px; position:relative; overflow:hidden; }
+  .verdict-box::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),transparent); }
+  .verdict-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+  #verdictContent p { font-size:18px; color:var(--muted2); line-height:1.75; margin-bottom:12px; }
+  #verdictContent p:last-child { margin-bottom:0; }
+  #verdictContent strong { color:var(--text); }
+  .verdict-placeholder { font-family:'Playfair Display',serif; font-size:19px; font-style:italic; color:var(--muted); padding:8px 0; }
+
+  /* Board summary */
+  .board-summary { margin-top:20px; padding:20px; background: transparent; border:1px solid var(--rule); display:none; }
+  .board-summary.show { display:block; }
+  .board-summary-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+  .board-summary p { font-size:17px; color:var(--muted2); line-height:1.65; margin-bottom:8px; }
+  .board-summary p:last-child { margin-bottom:0; }
+  .board-summary strong { color:var(--text); }
+
+  /* SC spotlight */
+  .sc-spotlight { margin-top:16px; padding:16px 20px; background:rgba(212,132,90,0.08); border:1px solid rgba(212,132,90,0.2); border-left:3px solid var(--orange); display:none; }
+  .sc-spotlight.show { display:block; }
+  .sc-spotlight-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--orange); margin-bottom:8px; }
+  .sc-spotlight p { font-size:17px; color:var(--muted2); line-height:1.65; margin-bottom:8px; }
+  .sc-spotlight p:last-child { margin-bottom:0; }
+  .sc-spotlight strong { color:var(--text); }
+
+  /* Fragmentation */
+  .frag-verdict { margin-top:14px; padding:14px 18px; background:var(--blue-dim); border:1px solid rgba(106,159,192,0.2); border-left:3px solid var(--blue); display:none; }
+  .frag-verdict.show { display:block; }
+  .frag-verdict-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--blue); margin-bottom:6px; }
+  .frag-verdict p { font-size:17px; color:var(--muted2); line-height:1.6; margin-bottom:0; }
+
+  /* Remediation plan */
+  .remediation-plan { margin-top:20px; display:none; }
+  .remediation-plan.show { display:block; }
+  .remediation-plan-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+  .rem-item { padding:14px 0; border-bottom:1px solid var(--rule); display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:start; }
+  .rem-item:last-child { border-bottom:none; }
+  .rem-score { font-family:'Playfair Display',serif; font-size:22px; font-weight:600; color:var(--orange); min-width:40px; text-align:center; line-height:1; padding-top:2px; }
+  .rem-domain { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+  .rem-action { font-size:16px; color:var(--muted2); line-height:1.55; }
+  .rem-action strong { color:var(--text); }
+
+  /* C-level questions */
+  .clevel-section { margin-top:24px; padding-top:20px; border-top:1px solid var(--rule); display:none; }
+  .clevel-section.show { display:block; }
+  .clevel-label { font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+  .clevel-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .clevel-list li { font-size:17px; color:var(--muted2); line-height:1.5; padding-left:16px; position:relative; }
+  .clevel-list li::before { content:'Q'; position:absolute; left:0; font-family:'DM Mono',monospace; font-size:10px; color:var(--gold); top:2px; }
+
+  .cta-row { display:flex; gap:10px; margin-top:24px; padding-top:20px; border-top:1px solid var(--rule); flex-wrap:wrap; align-items:center; }
+  .btn-primary { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 22px; background:var(--gold); color:var(--bg); border:none; cursor:pointer; text-decoration:none; display:inline-block; transition:opacity 0.15s; border-radius: 0; font-weight:500; }
+  .btn-primary:hover { opacity:0.88; }
+  .btn-secondary { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; padding:11px 22px; background:transparent; color:var(--gold); border: 1px solid var(--color-border-card); cursor:pointer; text-decoration:none; display:inline-block; transition:background 0.15s; border-radius: 0; }
+  .btn-secondary:hover { background:var(--gold-dim); }
+  .btn-export { font-family:'DM Mono',monospace; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; padding:11px 18px; background:transparent; color:var(--muted2); border:1px solid rgba(255,255,255,0.1); cursor:pointer; border-radius: 0; transition:all 0.15s; }
+  .btn-export:hover { color:var(--text); border-color:rgba(255,255,255,0.2); }
+  .btn-export.done { color:var(--green); border-color:rgba(122,170,138,0.3); }
+
+  footer { padding:24px 48px; border-top:1px solid var(--rule); }
+  .footer-main { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:10px; }
+  .footer-logo { font-family:'Playfair Display',serif; font-size:17px; color:var(--muted); }
+  .footer-note { font-size:14px; color:var(--muted); line-height:1.6; max-width:620px; font-style:italic; }
+
+  /* Usage bar */
+  .usage-bar { max-width:820px; margin:8px auto 0; padding:0 48px; }
+  .usage-inner { background: transparent; border:1px solid var(--rule); border-left:3px solid var(--muted); padding:10px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .usage-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.13em; text-transform:uppercase; color:var(--muted); flex-shrink:0; }
+  .usage-text { font-size:15px; color:var(--muted2); line-height:1.55; }
+
+  /* Verdict disclaimer */
+  .verdict-disclaimer { font-size:14px; color:var(--muted); margin-top:14px; font-style:italic; line-height:1.5; }
+  .hidden { display:none; }
+
+  @media (max-width:680px) {  @media (max-width:680px) {
+    nav { padding:16px 20px; }
+    .scope-gate,.header,.disclaimer-bar,.urgency-bar,.ai-lens-bar,.frag-bar,.usage-bar,.progress-bar,.score-panel,.domains,.verdict-section { padding-left:20px; padding-right:20px; }
+    .scope-options { grid-template-columns:1fr; }
+    .score-card { grid-template-columns:1fr; gap:16px; }
+    .score-col { border-left:none; padding-left:0; border-top:1px solid var(--rule); padding-top:14px; }
+    .score-col:first-child { border-top:none; padding-top:0; }
+    .obligation-map { flex-direction:column; }
+    .obl-item { border-right:none; border-bottom:1px solid var(--rule); }
+    footer { padding:20px; }
+  }
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+  <a class="nav-back" href="/">← All tools</a>
+</nav>
+
+<!-- SCOPE GATE -->
+<div class="scope-gate">
+  <div class="scope-card">
+    <div class="scope-eyebrow">NIS2 · AI Exposure Lens · Step 1 of 2</div>
+    <div class="scope-title">First: confirm your entity classification</div>
+    <p class="scope-sub">NIS2 places different supervisory expectations on essential and important entities. Your classification affects the weight of obligations and potential penalties. Select the description that best fits your organisation.</p>
+
+    <div class="jurisdiction-note">
+      <strong>Jurisdiction check:</strong> NIS2 is a directive, not a directly applicable regulation. Your obligations depend on how each Member State has transposed it into national law. If you operate across several EU countries, use this assessment as a group-level exposure lens, then validate country-specific obligations with legal counsel.
+    </div>
+
+    <div class="multi-jurisdiction-row">
+      <input type="checkbox" id="multiJurisdiction">
+      <label for="multiJurisdiction">We operate in more than one EU Member State</label>
+    </div>
+
+    <div class="scope-options">
+      <button class="scope-btn" onclick="setScope('essential', event)">
+        <div class="scope-btn-label">Essential Entity</div>
+        <div class="scope-btn-title">Energy, transport, banking, financial market infrastructure, health, drinking water, wastewater, digital infrastructure, ICT service management, public administration, space</div>
+        <div class="scope-btn-desc">Highest obligations. Proactive supervision. NIS2 requires Member States to provide maximum fines of at least €10M or 2% of global annual turnover for certain infringements, depending on national implementation.</div>
+      </button>
+      <button class="scope-btn" onclick="setScope('important', event)">
+        <div class="scope-btn-label">Important Entity</div>
+        <div class="scope-btn-title">Postal services, waste management, chemicals, food, manufacturing, digital providers, research</div>
+        <div class="scope-btn-desc">Same Article 21 obligations, reactive supervisory model. NIS2 requires Member States to provide maximum fines of at least €7M or 1.4% of global annual turnover for certain infringements, depending on national implementation.</div>
+      </button>
+      <button class="scope-btn" onclick="setScope('unsure', event)">
+        <div class="scope-btn-label">Not Sure / Determining</div>
+        <div class="scope-btn-title">We have not yet confirmed our NIS2 classification, or are assessing whether NIS2 applies</div>
+        <div class="scope-btn-desc">Classification depends on sector, size, Member State transposition, and national competent authority guidance. Confirm classification and obligations against the national law of each relevant Member State.</div>
+      </button>
+    </div>
+
+    <p class="scope-note">NIS2 generally applies to medium and large organisations (50+ employees or €10M+ turnover) in listed essential and important sectors, with some exceptions. Classification should be confirmed against the national law of each relevant Member State.</p>
+
+    <div class="scope-proceed" id="scopeProceed">
+      <div class="scope-result" id="scopeResult"></div>
+      <div class="overlap-callout" id="overlapCallout">
+        <div class="overlap-callout-label">DORA / EU AI Act Overlap</div>
+        If your organisation also falls within DORA or deploys AI systems covered by the EU AI Act, AI-related cyber controls may need to satisfy overlapping expectations across operational resilience, AI governance, third-party risk, incident reporting, and management accountability. <strong>Treat NIS2 as one layer of the wider AI resilience and governance stack, not as a standalone compliance exercise.</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ASSESSMENT -->
+<div class="assessment-wrap" id="assessmentWrap">
+
+  <div class="header">
+    <div class="header-eyebrow">NIS2 · AI Exposure Lens · Directive (EU) 2022/2555</div>
+    <h1>Where does <em>AI</em> sit inside<br>your NIS2 obligations?</h1>
+    <p class="header-sub">NIS2 requires cybersecurity risk management across network and information systems. Where AI systems, AI-enabled services, foundation model providers, or agentic workflows support those systems, influence operational decisions, or introduce cyber risk, they should be assessed within the NIS2 governance, risk management, incident reporting, and supply-chain security framework.</p>
+  </div>
+
+  <div class="disclaimer-bar">
+    <div class="disclaimer-inner">
+      <div class="disc-label">Note</div>
+      <div class="disc-text">This tool is an AI-specific exposure lens for NIS2 readiness. It is not a legal determination of NIS2 applicability, entity classification, national transposition requirements, or compliance status. Validate outputs with legal, risk, security, and jurisdiction-specific regulatory counsel.</div>
+    </div>
+  </div>
+
+  <div class="urgency-bar">
+    <div class="urgency-inner">
+      <div class="urgency-icon">Status</div>
+      <div class="urgency-text"><strong>NIS2 is now a live governance and evidence issue.</strong> Member State implementation is uneven, but supervisory expectations are moving from policy design to demonstrable controls, incident readiness, supply-chain visibility, and management-body oversight. AI systems and AI-enabled vendors should be mapped before they become a supervisory, audit, or incident-response gap.</div>
+    </div>
+  </div>
+
+  <div class="ai-lens-bar">
+    <div class="ai-lens-inner">
+      <div class="ai-lens-icon">AI Lens</div>
+      <div class="ai-lens-text"><strong>Your NIS2 programme may be mature for traditional cybersecurity, but incomplete for AI-enabled systems, AI vendors, AI-assisted attacks, shadow AI, autonomous workflows, and foundation-model dependencies.</strong> Every question is framed around AI-specific exposure within NIS2-relevant cybersecurity obligations — the gaps that emerge when AI systems, AI-enabled services, or agentic workflows are added without corresponding updates to governance, controls, incident response, supply-chain oversight, and evidence.</div>
+    </div>
+  </div>
+
+  <div class="usage-bar">
+    <div class="usage-inner">
+      <div class="usage-label">How to use</div>
+      <div class="usage-text">Score each question first. Open the evidence panels where the score is weak or where you need to prepare board, audit, or remediation evidence. Best used as a workshop tool: score the current state, open weak evidence panels, export the gap register, then assign owners for the remediation plan.</div>
+    </div>
+  </div>
+
+  <div class="frag-bar">
+    <div class="frag-inner">
+      <div class="frag-icon">Cross-border</div>
+      <div class="frag-text"><strong>NIS2 is a directive, not a directly applicable regulation.</strong> National transposition, registration requirements, competent authorities, supervisory practices, and enforcement timelines vary by Member State. If you operate across multiple EU jurisdictions, your group-level control framework may still require country-specific validation. The European Commission has taken infringement steps against Member States that failed to fully transpose NIS2.</div>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 10 questions answered</div>
+  </div>
+
+  <div class="score-panel">
+    <div class="score-card">
+      <div class="score-col">
+        <div class="score-col-label">AI-NIS2 Exposure Score</div>
+        <div class="score-value" id="totalScore">—</div>
+        <div class="score-sub" id="scoreLabel">Answer all questions to score</div>
+      </div>
+      <div class="score-col">
+        <div class="score-col-label">Exposure Level</div>
+        <div id="exposureLabel" style="font-family:'DM Mono',monospace;font-size:14px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-top:6px;margin-bottom:10px">—</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span style="font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius: 0;background:rgba(224,92,92,0.1);color:#e05c5c;border:1px solid rgba(224,92,92,0.2);letter-spacing:0.08em;text-transform:uppercase">Critical</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius: 0;background:rgba(212,132,90,0.1);color:#d4845a;border:1px solid rgba(212,132,90,0.2);letter-spacing:0.08em;text-transform:uppercase">Material</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius: 0;background:var(--teal-dim);color:var(--teal);border: 1px solid var(--color-border-card);letter-spacing:0.08em;text-transform:uppercase">Managed</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius: 0;background:rgba(122,170,138,0.1);color:#7aaa8a;border:1px solid rgba(122,170,138,0.2);letter-spacing:0.08em;text-transform:uppercase">Low / Evidence Ready</span>
+        </div>
+      </div>
+      <div class="score-col">
+        <div class="score-col-label">Priority Domain</div>
+        <div id="priorityDomain" style="font-size:17px;color:var(--muted2);margin-top:4px;line-height:1.5">Awaiting assessment</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="domains" id="domainsContainer"></div>
+
+  <div class="verdict-section">
+    <div class="verdict-box">
+      <div class="verdict-label">AI-NIS2 Exposure Verdict</div>
+      <div id="verdictContent">
+        <p class="verdict-placeholder">Answer all ten questions to generate your exposure verdict.</p>
+      </div>
+
+      <div class="board-summary" id="boardSummary">
+        <div class="board-summary-label">Board Summary</div>
+        <p id="bsExposure"></p>
+        <p id="bsRisk"></p>
+        <p id="bsImplication"></p>
+        <p id="bsAction"></p>
+      </div>
+
+      <div class="sc-spotlight" id="scSpotlight">
+        <div class="sc-spotlight-label">⚠ AI Supply Chain Exposure — Flagged</div>
+        <p id="scSpotlightText"></p>
+      </div>
+
+      <div class="frag-verdict" id="fragVerdict">
+        <div class="frag-verdict-label">Cross-Jurisdiction Risk</div>
+        <p>NIS2 national transposition is still uneven across EU Member States. If your organisation operates in multiple EU jurisdictions, a strong group-level compliance posture may still require country-specific validation against national law and local competent authority expectations. This is a separate risk from your technical control score.</p>
+      </div>
+
+      <div class="remediation-plan" id="remediationPlan">
+        <div class="remediation-plan-label">Priority Remediation Plan — Domains scoring below 6</div>
+        <div id="remediationItems"></div>
+      </div>
+
+      <div class="clevel-section" id="clevelSection">
+        <div class="clevel-label">Questions your Board / CISO / CRO should be able to answer</div>
+        <ul class="clevel-list">
+          <li>Which AI systems or AI-enabled services support our network and information systems?</li>
+          <li>Which AI vendors or AI-enabled suppliers create material cyber dependency?</li>
+          <li>Where is AI represented in our NIS2 Article 21 risk-management measures?</li>
+          <li>Can we detect and report an AI-originated or AI-assisted significant incident within the required reporting sequence — early warning within 24 hours, notification within 72 hours, final report within one month?</li>
+          <li>Who owns AI cybersecurity risk across business, IT, security, procurement, and legal?</li>
+          <li>Which AI-specific attack vectors have been tested?</li>
+          <li>What evidence would we show an auditor tomorrow?</li>
+        </ul>
+      </div>
+
+      <div class="cta-row" id="verdictCTA" style="display:none">
+        <a class="btn-primary" href="/eu-ai-act">EU AI Act Assessment</a>
+        <a class="btn-secondary" href="/dora">DORA Assessment</a>
+        <a class="btn-secondary" href="/radar">View Governance Radar</a>
+        <button class="btn-export" id="exportSummaryBtn" onclick="exportSummary()">Export Executive Summary</button>
+        <button class="btn-export" id="exportCsvBtn" onclick="exportCsv()">Export Gap Register</button>
+        <button class="btn-export" id="exportEvidenceBtn" onclick="exportEvidence()">Export Evidence Checklist</button>
+      </div>
+      <p class="verdict-disclaimer hidden" id="verdictDisclaimer">For orientation only. Not legal advice. Validate with Legal, Risk, Security, and Compliance teams in each relevant jurisdiction.</p>
+    </div>
+  </div>
+
+</div><!-- /assessment-wrap -->
+
+<footer>
+  <div class="footer-main">
+    <div class="footer-logo">the<span style="color:var(--teal)">AI</span>Readyist</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.08em">NIS2: Directive (EU) 2022/2555 · theaireadyist.com</div>
+  </div>
+  <div class="footer-note">For orientation only — not legal advice. This tool is an AI-specific exposure lens for NIS2 readiness, not a legal determination of entity classification, national transposition obligations, or compliance status. Validate outputs with legal, risk, security, and jurisdiction-specific regulatory counsel.</div>
+</footer>
+
+<script>
+let entityScope = null;
+const answered = {};
+const scores = {};
+
+const scopeMessages = {
+  essential: '<strong>Essential Entity.</strong> You are subject to the full NIS2 regime with proactive supervision. NIS2 requires Member States to provide maximum fines of at least €10M or 2% of total worldwide annual turnover, whichever is higher, for certain infringements. Exact enforcement powers and procedures depend on national implementation. Management bodies are expected to approve and oversee cybersecurity risk-management measures and may face consequences under national law.',
+  important: '<strong>Important Entity.</strong> Same Article 21 technical obligations as essential entities, under a reactive supervisory model. NIS2 requires Member States to provide maximum fines of at least €7M or 1.4% of total worldwide annual turnover, whichever is higher, for certain infringements, depending on national implementation.',
+  unsure: '<strong>Classification not yet confirmed.</strong> Use this assessment to identify likely AI-related exposure. Confirm legal classification and applicable obligations against the national law and competent authority guidance in each relevant Member State before making compliance decisions.'
+};
+
+const essentialSectors = ['essential'];
+
+function setScope(scope, evt) {
+  entityScope = scope;
+  document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('selected'));
+  if (evt && evt.currentTarget) evt.currentTarget.classList.add('selected');
+  const proceed = document.getElementById('scopeProceed');
+  proceed.classList.add('show');
+  document.getElementById('scopeResult').innerHTML = scopeMessages[scope];
+  // Show overlap callout for essential entities (banking, financial infra likely in DORA scope too)
+  const overlap = document.getElementById('overlapCallout');
+  overlap.classList.add('show');
+  setTimeout(() => {
+    document.getElementById('assessmentWrap').classList.add('show');
+    document.getElementById('assessmentWrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 700);
+}
+
+const domains = [
+  {
+    id: 'governance',
+    num: 'Domain 01',
+    title: 'Governance & Board Accountability',
+    weight: 20,
+    obligation: { ref: 'Art. 20', area: 'Management body oversight & training', owners: 'Board · ExCo · CISO · CRO', evidence: 'Board mandate, risk reporting, training records, AI risk register' },
+    aiFocus: 'NIS2 places cybersecurity risk-management oversight at management-body level, including approval, supervision, and training obligations. AI systems introduce cyber risks that many boards have not yet incorporated into oversight routines: adversarial attacks, model poisoning, prompt injection, data leakage, deepfake-enabled fraud, and AI-enabled social engineering.',
+    questions: [
+      {
+        id: 'q1', num: '01',
+        nis2Ref: 'Article 20',
+        owner: 'Board / ExCo / CRO / CISO',
+        text: 'Does your management body receive documented reporting and training on cybersecurity risks created or amplified by AI systems, AI-enabled services, and AI-assisted cyber threats — including how those risks affect NIS2 risk-management oversight?',
+        aiNote: 'NIS2 Article 20 requires management bodies to approve and oversee cybersecurity risk-management measures and to follow training. If AI changes the organisation\'s cyber risk profile, AI-specific risk should be visible in that oversight.',
+        low: '0 — No board reporting or training on AI-specific cyber risks.',
+        high: '10 — Board receives regular AI cyber risk reporting. AI-specific training documented and evidenced.',
+        evidence: ['Board pack or risk committee minutes showing AI cyber risk reporting', 'AI system inventory with business owner and security owner', 'Risk register entries for AI-specific threats', 'Board cybersecurity training records covering AI threat vectors', 'AI risk appetite statement or board mandate'],
+        remediation: 'Add AI-specific cyber risk to the board reporting pack. Commission AI threat training for the management body. Document AI risk appetite.'
+      },
+      {
+        id: 'q2', num: '02',
+        nis2Ref: 'Article 20',
+        owner: 'CISO / Risk / Business Owners / Procurement',
+        text: 'Is accountability for the cybersecurity of AI systems clearly documented across business owners, IT, security, data, procurement, and risk — rather than assumed to sit generically with the CISO?',
+        aiNote: 'Ambiguous AI security ownership creates gaps that are hard to defend under management-body accountability obligations. Each AI system or AI-enabled service with material cyber risk needs a named owner across the relevant functions.',
+        low: '0 — AI cybersecurity ownership assumed to sit with CISO. No RACI or ownership documentation.',
+        high: '10 — Documented AI ownership across business, security, procurement, and risk. Reviewed and updated regularly.',
+        evidence: ['RACI matrix covering AI-enabled systems and services', 'AI system ownership register', 'Governance charter showing AI accountability', 'Named business and security owners per AI system', 'Annual review record'],
+        remediation: 'Build a RACI for AI system cyber ownership. Assign named owners. Update governance charters. Brief the management body.'
+      }
+    ]
+  },
+  {
+    id: 'risk',
+    num: 'Domain 02',
+    title: 'Risk Management — Article 21 Measures',
+    weight: 25,
+    obligation: { ref: 'Art. 21', area: 'Cybersecurity risk-management measures (all-hazards)', owners: 'CISO · CRO · CIO · Business Owners', evidence: 'Risk framework, AI threat assessment, BCM plan, controls evidence' },
+    aiFocus: 'NIS2 Article 21 requires appropriate and proportionate technical, operational, and organisational cybersecurity risk-management measures. AI systems can alter the risk profile of network and information systems through adversarial inputs, prompt injection, data poisoning, model misuse, insecure integrations, over-permissioned agents, and compromised AI-assisted decisions.',
+    questions: [
+      {
+        id: 'q3', num: '03',
+        nis2Ref: 'Article 21',
+        owner: 'CISO / CRO / Risk',
+        text: 'Do your Article 21 cybersecurity risk-management measures explicitly cover AI-specific attack surfaces — including adversarial inputs, prompt injection, model poisoning, insecure AI integrations, and the security of data pipelines — where AI systems support or influence network and information systems?',
+        aiNote: 'An Article 21 implementation designed before AI deployment may no longer reflect the current threat surface. AI can introduce new risks that need to be assessed, controlled, tested, and evidenced.',
+        low: '0 — Article 21 measures do not reference AI-specific threats or attack surfaces.',
+        high: '10 — AI-specific risks explicitly within Article 21 scope. Controls documented, tested, and evidenced per system.',
+        evidence: ['Article 21 risk-management documentation showing AI systems in scope', 'AI-specific threat assessment', 'Controls mapped to AI attack vectors', 'Evidence of control testing for AI-specific risks', 'Risk register updated post-AI deployment'],
+        remediation: 'Review Article 21 measures against current AI deployment. Add AI attack surfaces to the risk register. Document and test controls.'
+      },
+      {
+        id: 'q4', num: '04',
+        nis2Ref: 'Article 21',
+        owner: 'COO / CIO / CISO / Business Continuity',
+        text: 'Does your business continuity and crisis-management planning address scenarios where AI systems fail, are unavailable, produce harmful outputs, are compromised, or trigger unsafe automated actions — including the ability to operate critical functions without those AI capabilities?',
+        aiNote: 'When AI is embedded in a critical function, its unavailability or compromise is a continuity event. Most BCM plans were written before AI entered those functions. Can your organisation operate if the AI is unavailable, behaving unexpectedly, or actively compromised?',
+        low: '0 — BCM plans do not reference AI systems. No fallback procedures for AI failure or unavailability.',
+        high: '10 — AI failure, compromise, and unsafe agentic action explicitly in BCM scope. Fallback procedures documented and tested.',
+        evidence: ['BCM plan showing AI-enabled critical function dependencies', 'Fallback procedures for AI system unavailability or failure', 'Crisis management playbook covering AI-related scenarios', 'Test or exercise record for AI failure scenarios', 'Recovery time objectives for AI-dependent critical functions'],
+        remediation: 'Map AI systems to critical functions in BCM planning. Document and test fallback procedures. Add AI failure scenarios to crisis exercises.'
+      }
+    ]
+  },
+  {
+    id: 'incident',
+    num: 'Domain 03',
+    title: 'Incident Detection & Reporting',
+    weight: 25,
+    obligation: { ref: 'Art. 23', area: 'Significant incident detection, reporting sequence, and management', owners: 'CISO · COO · Operational Resilience · Legal', evidence: 'Detection capability, incident taxonomy, reporting playbooks, simulation records' },
+    aiFocus: 'NIS2 Article 23 requires a time-bound reporting sequence: early warning within 24 hours of becoming aware of a significant incident, incident notification within 72 hours, and a final report within one month. AI-driven attacks — including AI-assisted phishing, deepfake social engineering, automated exploitation, and compromised AI systems — can compress the detection, attribution, and reporting window.',
+    questions: [
+      {
+        id: 'q5', num: '05',
+        nis2Ref: 'Article 23',
+        owner: 'CISO / SOC / Detection Engineering',
+        text: 'Does your incident detection capability cover AI-driven attack vectors — including AI-assisted phishing, deepfake or synthetic-identity impersonation, AI-generated malicious content, automated vulnerability discovery, and anomalous behaviour in AI systems themselves?',
+        aiNote: 'AI-generated attacks do not look like the attacks your detection systems were trained on. Your 24-hour early-warning window assumes you detect the incident before the clock starts.',
+        low: '0 — Detection systems not updated for AI attack vectors. No monitoring of AI system behaviour anomalies.',
+        high: '10 — Detection covers AI-specific threats. AI system behaviour monitored. Detection tested against AI threat scenarios.',
+        evidence: ['Detection engineering documentation covering AI attack vectors', 'Monitoring configuration for AI system behaviour anomalies', 'SIEM or SOC rules for AI-specific threats', 'Test or red team record covering AI-driven attacks', 'Threat intelligence integration covering AI threats'],
+        remediation: 'Update detection rules for AI-assisted phishing, deepfake impersonation, and AI system anomalies. Test detection against AI threat scenarios.'
+      },
+      {
+        id: 'q6', num: '06',
+        nis2Ref: 'Article 23',
+        owner: 'CISO / COO / Legal / Operational Resilience',
+        text: 'If an AI system in your estate caused or contributed to a significant cybersecurity incident, could you meet the NIS2 reporting sequence — early warning within 24 hours of becoming aware, incident notification within 72 hours, and a final report within one month — including a clear description of the AI component\'s role and containment actions?',
+        aiNote: 'Attribution is harder when the failure mode involves a model, agent, or AI-enabled workflow behaving unexpectedly. Reporting to a competent authority requires forensic evidence, ownership records, logs, containment steps, and clear operational impact analysis.',
+        low: '0 — No AI incident reporting process. No AI forensics capability. Attribution would be unclear.',
+        high: '10 — AI incident reporting process documented and tested for the full NIS2 reporting sequence. Attribution methodology established.',
+        evidence: ['Incident taxonomy covering AI-originated and AI-assisted incidents', 'Major incident reporting playbook with AI attribution process', 'Tabletop or simulation record covering an AI-related incident', 'Post-incident review template including AI component analysis', 'Competent authority notification templates and contacts'],
+        remediation: 'Update the incident taxonomy for AI-related scenarios. Test the full NIS2 reporting sequence including AI attribution. Confirm competent authority notification contacts.'
+      }
+    ]
+  },
+  {
+    id: 'supply',
+    num: 'Domain 04',
+    title: 'Supply Chain & AI Vendor Security',
+    weight: 20,
+    scDomain: true,
+    obligation: { ref: 'Art. 21(2)(d)', area: 'Supply-chain security, supplier and service-provider relationships', owners: 'CISO · COO · CPO · Legal · Procurement', evidence: 'Vendor inventory, security assessments, contract review records, supplier controls' },
+    aiFocus: 'NIS2 Article 21(2)(d) requires supply-chain security measures, including security-related aspects of relationships with direct suppliers and service providers. Organisations using foundation model APIs, AI-powered SaaS tools, outsourced AI services, or vendors with embedded AI capabilities may be creating cyber dependencies that are not yet visible in procurement, vendor risk, or security governance.',
+    questions: [
+      {
+        id: 'q7', num: '07',
+        nis2Ref: 'Article 21(2)(d)',
+        owner: 'CISO / Procurement / Risk',
+        text: 'Have you inventoried AI vendors, foundation model providers, AI-enabled SaaS tools, and embedded AI capabilities in material suppliers — and assessed the cybersecurity risk they represent to your network and information systems under NIS2 supply-chain obligations?',
+        aiNote: 'Shadow AI is a supply-chain visibility problem. Business units procuring AI tools outside IT, security, and procurement governance can create dependencies that are invisible to the NIS2 control framework.',
+        low: '0 — No AI vendor inventory. No supply-chain security assessment covering AI providers.',
+        high: '10 — Complete AI vendor inventory. Each assessed for NIS2 supply-chain risk. Documented and reviewed annually.',
+        evidence: ['AI vendor and service provider inventory', 'Cybersecurity risk assessments for material AI vendors', 'Mapping of AI vendors to critical services or functions', 'Shadow AI discovery or procurement governance records', 'Supplier security assessment methodology covering AI services'],
+        remediation: 'Run a shadow AI discovery exercise across business units. Build a complete AI vendor inventory. Assess material AI vendors for NIS2 supply-chain risk.'
+      },
+      {
+        id: 'q8', num: '08',
+        nis2Ref: 'Article 21(2)(d)',
+        owner: 'Legal / Procurement / CISO',
+        text: 'Do your contracts or supplier controls for material AI vendors include cybersecurity requirements aligned to NIS2-relevant supplier-risk obligations — including incident notification, security standards, audit or assurance rights, data handling, subcontractor transparency, and continuity expectations?',
+        aiNote: 'Standard AI vendor, SaaS, and cloud contracts may not by default include the security, notification, audit, subprocessor, data-protection, continuity, and assurance terms needed for your NIS2-aligned supplier-risk controls. Contract review should focus on materiality, data exposure, operational dependency, and incident-notification obligations.',
+        low: '0 — AI vendor contracts not reviewed for NIS2 requirements. No security or notification clauses.',
+        high: '10 — Material AI vendor contracts reviewed and updated. Security, notification, audit, and continuity clauses in place.',
+        evidence: ['Contract review checklist mapped to NIS2 supply-chain obligations', 'Incident notification and escalation clauses in AI vendor agreements', 'Audit or assurance rights provisions', 'Subcontractor and data-handling transparency records', 'Continuity expectations and exit clauses'],
+        remediation: 'Review material AI vendor contracts against NIS2 supply-chain requirements. Prioritise incident notification, audit rights, and subcontractor transparency. Engage Legal and Procurement.'
+      }
+    ]
+  },
+  {
+    id: 'resilience',
+    num: 'Domain 05',
+    title: 'Resilience Testing & Vulnerability Management',
+    weight: 10,
+    obligation: { ref: 'Art. 21', area: 'Cybersecurity testing, vulnerability management, and threat intelligence', owners: 'CISO · Penetration Testing · Threat Intelligence', evidence: 'Test plans, AI-specific test scenarios, vulnerability records, threat intelligence logs' },
+    aiFocus: 'NIS2 expects cybersecurity risk-management measures to include policies and procedures for assessing the effectiveness of controls and for handling vulnerabilities. AI systems introduce vulnerabilities that standard scanning and penetration testing may miss: prompt injection, model extraction, data leakage through AI interfaces, unsafe tool use, insecure plugins, over-permissioned agents, and weak monitoring of AI outputs.',
+    questions: [
+      {
+        id: 'q9', num: '09',
+        nis2Ref: 'Article 21',
+        owner: 'CISO / Penetration Testing / Red Team',
+        text: 'Does your vulnerability management and penetration-testing programme include AI systems and AI-enabled interfaces — testing for AI-specific vulnerabilities such as prompt injection, model extraction, data leakage, insecure tool use, unsafe agent permissions, and compromised AI integrations?',
+        aiNote: 'Traditional vulnerability scanning does not surface AI-specific weaknesses. An LLM-based interface, an AI-assisted internal tool, or an agentic workflow with tool access each has attack surfaces that standard testing methodologies miss.',
+        low: '0 — AI systems excluded from vulnerability management and testing. No AI-specific test scenarios.',
+        high: '10 — AI systems included in testing scope. AI-specific scenarios applied. Findings tracked and remediated.',
+        evidence: ['Penetration testing scope showing AI systems included', 'AI-specific test scenarios: prompt injection, model extraction, insecure agent permissions', 'Vulnerability management records for AI systems', 'Remediation tracking for AI-specific findings', 'Retest evidence after AI vulnerability remediation'],
+        remediation: 'Add AI systems to penetration testing scope. Develop AI-specific test scenarios. Track and remediate AI vulnerability findings.'
+      },
+      {
+        id: 'q10', num: '10',
+        nis2Ref: 'Article 21',
+        owner: 'CISO / Threat Intelligence / Security Governance',
+        text: 'Does your organisation participate in, or have access to, cyber threat intelligence covering AI-related threats — and is that intelligence fed back into Article 21 risk measures, detection engineering, security awareness, supplier controls, and incident playbooks?',
+        aiNote: 'AI-specific threat intelligence — adversarial techniques, model exploitation campaigns, deepfake fraud patterns, agentic misuse — is emerging rapidly and is not yet in most standard threat feeds. If your intelligence process was not updated when AI was deployed, it may be blind to the most relevant emerging threats.',
+        low: '0 — No AI threat intelligence. Standard feeds used with no AI-specific coverage.',
+        high: '10 — AI threat intelligence actively sourced and integrated. Findings update Article 21 measures, detection, and playbooks.',
+        evidence: ['Threat intelligence participation records or platform subscriptions', 'AI-specific threat feeds or sector information-sharing memberships', 'Records of AI threat updates fed into controls or detection', 'Security governance minutes or action logs showing AI threat review', 'Security awareness materials covering AI-driven attacks'],
+        remediation: 'Source AI-specific threat intelligence. Integrate findings into Article 21 measures, detection engineering, and incident playbooks. Document the process.'
+      }
+    ]
+  }
+];
+
+function getExposureClass(v) {
+  if (v < 3) return 'gap-critical';
+  if (v < 6) return 'gap-partial';
+  if (v < 8) return 'gap-strong';
+  return 'gap-ready';
+}
+function getExposureLabel(v) {
+  if (v < 3) return 'Critical Exposure';
+  if (v < 6) return 'Material Exposure';
+  if (v < 8) return 'Managed Exposure';
+  return 'Low / Evidence Ready';
+}
+function getExposureLabelPct(pct) {
+  if (pct < 30) return 'Critical Exposure';
+  if (pct < 55) return 'Material Exposure';
+  if (pct < 75) return 'Managed Exposure';
+  return 'Low Exposure / Evidence Ready';
+}
+
+// ── Provisional scoring ──
+function getAnsweredCount() {
+  return Object.values(answered).filter(Boolean).length;
+}
+
+function getTotalQuestionCount() {
+  return Object.keys(answered).length;
+}
+
+function getCompletedDomains() {
+  return domains.filter(d => d.questions.every(q => answered[q.id]));
+}
+
+function calculateProvisionalScore() {
+  const completedDomains = getCompletedDomains();
+  if (completedDomains.length === 0) return null;
+  let weightedTotal = 0, weightTotal = 0;
+  completedDomains.forEach(d => {
+    const avg = d.questions.reduce((sum, q) => sum + scores[q.id], 0) / d.questions.length;
+    weightedTotal += avg * d.weight;
+    weightTotal += d.weight;
+  });
+  if (weightTotal === 0) return null;
+  return Math.round((weightedTotal / weightTotal) * 10);
+}
+
+function updateProvisionalScore() {
+  const answeredCount = getAnsweredCount();
+  const total = getTotalQuestionCount();
+  if (answeredCount === total) return; // final recalculate handles this
+  const provisional = calculateProvisionalScore();
+  if (provisional === null) {
+    document.getElementById('totalScore').textContent = '—';
+    document.getElementById('scoreLabel').textContent = 'Complete one domain to see provisional score';
+    document.getElementById('exposureLabel').textContent = '—';
+    document.getElementById('exposureLabel').style.color = 'var(--muted)';
+    document.getElementById('priorityDomain').innerHTML = 'Awaiting completed domain';
+    return;
+  }
+  const expLabel = getExposureLabelPct(provisional);
+  let expColor;
+  if (provisional < 30) expColor = '#e05c5c';
+  else if (provisional < 55) expColor = '#d4845a';
+  else if (provisional < 75) expColor = 'var(--teal)';
+  else expColor = '#7aaa8a';
+  document.getElementById('totalScore').textContent = provisional + '%';
+  document.getElementById('scoreLabel').textContent = 'Provisional — ' + answeredCount + ' / ' + total + ' answered';
+  document.getElementById('exposureLabel').textContent = expLabel;
+  document.getElementById('exposureLabel').style.color = expColor;
+}
+
+function buildDomains() {
+  const container = document.getElementById('domainsContainer');
+  container.innerHTML = domains.map(d => `
+    <div class="domain-card" id="domain-${d.id}">
+      <div class="domain-header" onclick="toggleDomain('${d.id}')">
+        <div>
+          <div class="domain-num">${d.num}${d.scDomain ? ' · Highest AI Exposure' : ''}</div>
+          <div class="domain-title">${d.title}</div>
+          <div class="domain-meta">Weight: ${d.weight}%</div>
+        </div>
+        <div class="domain-right">
+          <div class="domain-score-badge empty" id="badge-${d.id}">—</div>
+          <div class="chevron">▾</div>
+        </div>
+      </div>
+      <div class="domain-body" id="body-${d.id}">
+        <div class="obligation-map">
+          <div class="obl-item"><div class="obl-label">NIS2 Reference</div><div class="obl-value">${d.obligation.ref}</div></div>
+          <div class="obl-item"><div class="obl-label">Obligation Area</div><div class="obl-value">${d.obligation.area}</div></div>
+          <div class="obl-item"><div class="obl-label">Typical Owners</div><div class="obl-value">${d.obligation.owners}</div></div>
+          <div class="obl-item"><div class="obl-label">Evidence Type</div><div class="obl-value">${d.obligation.evidence}</div></div>
+        </div>
+        <div class="domain-body-inner">
+          ${d.aiFocus ? `<div class="domain-ai-focus"><div class="daf-label">AI Focus</div><div class="daf-text">${d.aiFocus}</div></div>` : ''}
+          ${d.questions.map(q => `
+            <div class="question-block">
+              <div class="q-header">
+                <div class="q-label">Question ${q.num} / 10</div>
+                <div class="q-ref">${q.nis2Ref}</div>
+              </div>
+              <div class="q-text">${q.text}</div>
+              <div class="q-ai-note">↳ ${q.aiNote}</div>
+              <div class="q-owner">Owner: ${q.owner}</div>
+              <div class="slider-wrap">
+                <input type="range" class="slider" min="0" max="10" value="5"
+                  id="slider-${q.id}" oninput="updateSlider('${q.id}', this.value)">
+                <div class="slider-val" id="val-${q.id}">—</div>
+              </div>
+              <div class="anchor-row">
+                <div class="anchor">${q.low}</div>
+                <div class="anchor right">${q.high}</div>
+              </div>
+              <span class="gap-tag gap-unanswered" id="gap-${q.id}">Not yet answered</span>
+              <div class="evidence-section">
+                <button class="evidence-toggle" id="ev-toggle-${q.id}" onclick="toggleEvidence('${q.id}')">
+                  <span class="ev-arrow">▶</span> Evidence expected
+                </button>
+                <div class="evidence-body" id="ev-body-${q.id}">
+                  <ul>${q.evidence.map(e => `<li>${e}</li>`).join('')}</ul>
+                  <div class="remediation-hint" id="rem-hint-${q.id}">↳ ${q.remediation}</div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+          ${d.scDomain ? `
+            <div class="sc-flag" id="scFlag">
+              <div class="sc-flag-label">⚠ Shadow AI Supply Chain Gap Detected</div>
+              <div class="sc-flag-text" id="scFlagText"></div>
+            </div>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Initialise scores as null — not answered
+  domains.forEach(d => d.questions.forEach(q => {
+    scores[q.id] = null;
+    answered[q.id] = false;
+  }));
+
+  toggleDomain('governance');
+}
+
+function toggleEvidence(qId) {
+  const body = document.getElementById('ev-body-' + qId);
+  const btn = document.getElementById('ev-toggle-' + qId);
+  const open = body.classList.contains('show');
+  body.classList.toggle('show', !open);
+  btn.classList.toggle('open', !open);
+}
+
+function toggleDomain(id) {
+  domains.forEach(d => {
+    const body = document.getElementById('body-' + d.id);
+    const card = document.getElementById('domain-' + d.id);
+    if (d.id === id) {
+      const isOpen = card.classList.contains('open');
+      if (isOpen) { card.classList.remove('open'); body.style.maxHeight = '0'; }
+      else { card.classList.add('open'); body.style.maxHeight = body.scrollHeight + 400 + 'px'; }
+    }
+  });
+}
+
+function updateSlider(qId, val) {
+  val = parseInt(val);
+  scores[qId] = val;
+  answered[qId] = true;
+
+  const slider = document.getElementById('slider-' + qId);
+  const pct = (val / 10) * 100;
+  slider.classList.add('touched');
+  slider.style.background = `linear-gradient(to right, var(--gold) ${pct}%, rgba(255,255,255,0.1) ${pct}%)`;
+
+  const valEl = document.getElementById('val-' + qId);
+  valEl.textContent = val;
+  valEl.classList.add('touched');
+
+  const gap = document.getElementById('gap-' + qId);
+  gap.className = 'gap-tag ' + getExposureClass(val);
+  gap.textContent = getExposureLabel(val);
+
+  // Show remediation hint if score < 6
+  const hint = document.getElementById('rem-hint-' + qId);
+  hint.classList.toggle('show', val < 6);
+
+  // Update progress
+  const answeredCount = Object.values(answered).filter(Boolean).length;
+  const total = Object.keys(answered).length;
+  document.getElementById('progressFill').style.width = (answeredCount / total * 100) + '%';
+  document.getElementById('progressLabel').textContent = answeredCount + ' / ' + total + ' questions answered';
+
+  // SC domain check
+  const scDomain = domains.find(d => d.scDomain);
+  if (scDomain && scDomain.questions.some(q => q.id === qId)) checkScFlag();
+
+  // Recalculate only if all answered
+  const allAnswered = Object.values(answered).every(Boolean);
+  if (allAnswered) {
+    recalculate();
+  } else {
+    // Partial update: update domain badge if domain complete
+    const domain = domains.find(d => d.questions.some(q => q.id === qId));
+    if (domain) {
+      const domainAllAnswered = domain.questions.every(q => answered[q.id]);
+      if (domainAllAnswered) {
+        const avg = domain.questions.reduce((s, q) => s + scores[q.id], 0) / domain.questions.length;
+        const badge = document.getElementById('badge-' + domain.id);
+        badge.textContent = avg.toFixed(1);
+        badge.className = 'domain-score-badge';
+        if (domain.scDomain && avg < 5) badge.classList.add('flagged');
+      }
+    }
+    updateProvisionalScore();
+  }
+
+  // Re-measure open domain
+  domains.forEach(d => {
+    const card = document.getElementById('domain-' + d.id);
+    if (card && card.classList.contains('open')) {
+      document.getElementById('body-' + d.id).style.maxHeight = document.getElementById('body-' + d.id).scrollHeight + 400 + 'px';
+    }
+  });
+}
+
+function checkScFlag() {
+  const scDomain = domains.find(d => d.scDomain);
+  const answeredQuestions = scDomain.questions.filter(q => answered[q.id]);
+  if (answeredQuestions.length === 0) return;
+  const avg = answeredQuestions.reduce((s, q) => s + scores[q.id], 0) / answeredQuestions.length;
+  const flag = document.getElementById('scFlag');
+  if (!flag) return;
+  if (avg < 5) {
+    flag.classList.add('show');
+    document.getElementById('scFlagText').innerHTML = `Your scores suggest AI vendors and AI-enabled suppliers are not fully inventoried or assessed under NIS2 supply-chain obligations. <strong>Shadow AI is the most common gap</strong> — business units procuring AI tools outside IT, security, and procurement governance create dependencies invisible to the NIS2 control framework. Standard AI vendor contracts may not by default include the security, notification, audit, and continuity terms needed for NIS2-aligned supplier controls.`;
+  } else { flag.classList.remove('show'); }
+}
+
+function recalculate() {
+  let totalWeighted = 0;
+  const domainScores = {};
+
+  domains.forEach(d => {
+    const avg = d.questions.reduce((s, q) => s + scores[q.id], 0) / d.questions.length;
+    domainScores[d.id] = { score: avg, title: d.title, weight: d.weight, sc: d.scDomain, id: d.id };
+    totalWeighted += avg * (d.weight / 100);
+    const badge = document.getElementById('badge-' + d.id);
+    badge.textContent = avg.toFixed(1);
+    badge.className = 'domain-score-badge';
+    if (d.scDomain && avg < 5) badge.classList.add('flagged');
+  });
+
+  const pct = Math.round(totalWeighted * 10);
+  document.getElementById('totalScore').textContent = pct + '%';
+
+  const expLabel = getExposureLabelPct(pct);
+  let expColor;
+  if (pct < 30) expColor = '#e05c5c';
+  else if (pct < 55) expColor = '#d4845a';
+  else if (pct < 75) expColor = 'var(--teal)';
+  else expColor = '#7aaa8a';
+
+  document.getElementById('exposureLabel').textContent = expLabel;
+  document.getElementById('exposureLabel').style.color = expColor;
+  document.getElementById('scoreLabel').textContent = 'Final — ' + expLabel;
+
+  const sorted = Object.values(domainScores).sort((a, b) => a.score - b.score);
+  const weakest = sorted[0];
+  const strongest = sorted[sorted.length - 1];
+  document.getElementById('priorityDomain').innerHTML =
+    `<strong style="color:var(--text)">${weakest.title}</strong><br><span style="font-size:14px">${weakest.score.toFixed(1)}/10</span>`;
+
+  generateVerdict(pct, domainScores, weakest, strongest);
+}
+
+function generateVerdict(pct, domainScores, weakest, strongest) {
+  const scScore = Object.values(domainScores).find(d => d.sc);
+  const scLow = scScore && scScore.score < 5;
+  const multiJurisdiction = document.getElementById('multiJurisdiction').checked;
+  const expLabel = getExposureLabelPct(pct);
+
+  const evidenceByDomain = {
+    governance: 'Board reporting pack with AI cyber risk section, management body training records, AI risk register, RACI for AI ownership',
+    risk: 'Article 21 documentation showing AI systems in scope, AI threat assessment, BCM plan with AI failure scenarios',
+    incident: 'Incident taxonomy covering AI scenarios, reporting playbook with NIS2 reporting sequence, tabletop records, competent authority contacts',
+    supply: 'AI vendor inventory, supply-chain security assessments, contract review records, shadow AI discovery evidence',
+    resilience: 'Penetration test scope and results for AI systems, AI vulnerability records, threat intelligence participation records'
+  };
+
+  let verdictHtml = '';
+
+  if (pct < 30) {
+    verdictHtml = `<p><strong>Overall AI-related NIS2 exposure: Critical Exposure.</strong></p>
+    <p><strong>Priority domain: ${weakest.title}.</strong></p>
+    <p><strong>Why this matters:</strong> Critical gaps across multiple NIS2 domains indicate AI systems, AI-enabled services, and AI vendors are not embedded in cybersecurity governance, controls, or evidence. Management-body accountability and potential national-law consequences apply where AI materially changes the organisation's cyber risk profile.</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id]}.</p>
+    <p><strong>Recommended next action:</strong> Establish an AI cyber risk inventory. Map AI systems and AI vendors to NIS2-relevant network and information systems. Brief the management body. Commission an Article 21 gap assessment covering AI-specific threats.</p>`;
+  } else if (pct < 55) {
+    verdictHtml = `<p><strong>Overall AI-related NIS2 exposure: Material Exposure.</strong></p>
+    <p><strong>Priority domain: ${weakest.title}.</strong></p>
+    <p><strong>Why this matters:</strong> NIS2 foundations appear to exist for traditional cybersecurity, but AI systems sit in a governance grey zone. The most common pattern is a programme built before AI was deployed, not updated since. Supervisors are moving from policy design to demonstrable controls and evidence quality.</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id]}.</p>
+    <p><strong>Recommended next action:</strong> Identify AI systems and vendors not yet reflected in Article 21 measures, supply-chain controls, and incident playbooks. Prioritise the ${weakest.title} domain.</p>`;
+  } else if (pct < 75) {
+    verdictHtml = `<p><strong>Overall AI-related NIS2 exposure: Managed Exposure.</strong></p>
+    <p><strong>Priority domain: ${weakest.title}.</strong></p>
+    <p><strong>Why this matters:</strong> The programme is directionally strong but evidence and integration gaps remain. Focus on evidence quality — can you demonstrate AI inventory, Article 21 measures, vendor controls, and incident playbooks under audit conditions?</p>
+    <p><strong>Evidence likely to be requested:</strong> ${evidenceByDomain[weakest.id]}.</p>
+    <p><strong>Recommended next action:</strong> Stress-test evidence quality in the ${weakest.title} domain. Confirm AI systems are traceable from inventory through controls to test results and board reporting.</p>`;
+  } else {
+    verdictHtml = `<p><strong>Overall AI-related NIS2 exposure: Low Exposure / Evidence Ready.</strong></p>
+    <p><strong>Lowest-scoring domain: ${weakest.title} (${weakest.score.toFixed(1)}/10).</strong></p>
+    <p><strong>Why this matters:</strong> AI systems appear embedded in NIS2 governance and controls. The maintenance agenda is keeping AI vendor inventory current, refreshing Article 21 measures as threats evolve, and ensuring management-body reporting reflects AI adoption pace.</p>
+    <p><strong>Recommended next action:</strong> Establish a regular AI NIS2 review cadence. Quarterly inventory refresh. Annual contract review. Tested incident playbook updates. Monitor national transposition developments.</p>`;
+  }
+
+  document.getElementById('verdictContent').innerHTML = verdictHtml;
+
+  // Board summary
+  const bs = document.getElementById('boardSummary');
+  bs.classList.add('show');
+  document.getElementById('bsExposure').innerHTML = `<strong>AI exposure level:</strong> ${expLabel}.`;
+  document.getElementById('bsRisk').innerHTML = `<strong>Primary risk:</strong> ${scLow ? 'AI supply-chain dependencies are not fully inventoried or assessed.' : weakest.title + ' — lowest domain at ' + weakest.score.toFixed(1) + '/10.'}`;
+  document.getElementById('bsImplication').innerHTML = `<strong>Regulatory implication:</strong> NIS2 Article 21 controls, supply-chain oversight, incident detection, and management-body oversight may not fully reflect the current AI-enabled threat surface.`;
+  document.getElementById('bsAction').innerHTML = `<strong>Recommended board action:</strong> ${pct < 55 ? 'Commission a 30-day AI cyber exposure review covering system inventory, supplier controls, incident reporting, and management-body oversight.' : 'Review the priority gap domain and confirm evidence quality before the next supervisory review.'}`;
+
+  // SC spotlight
+  const scSpotlight = document.getElementById('scSpotlight');
+  if (scLow) {
+    scSpotlight.classList.add('show');
+    document.getElementById('scSpotlightText').innerHTML = `Your supply-chain score (${scScore.score.toFixed(1)}/10) indicates AI vendors are not fully mapped. <strong>Standard AI vendor contracts may not by default include the security, notification, audit, and continuity terms needed for NIS2-aligned supplier controls.</strong> Shadow AI is the most common root cause. Contract review should focus on materiality, data exposure, operational dependency, and incident-notification obligations.`;
+  } else { scSpotlight.classList.remove('show'); }
+
+  // Fragmentation
+  document.getElementById('fragVerdict').classList.toggle('show', multiJurisdiction);
+
+  // Remediation plan
+  const remItems = [];
+  domains.forEach(d => d.questions.forEach(q => {
+    if (scores[q.id] !== null && scores[q.id] < 6) {
+      remItems.push({ domain: d.title, score: scores[q.id], action: q.remediation, owner: q.owner });
+    }
+  }));
+  remItems.sort((a, b) => a.score - b.score);
+
+  const remPlan = document.getElementById('remediationPlan');
+  if (remItems.length > 0) {
+    remPlan.classList.add('show');
+    document.getElementById('remediationItems').innerHTML = remItems.map(r =>
+      `<div class="rem-item"><div class="rem-score">${r.score}/10</div><div><div class="rem-domain">${r.domain}</div><div class="rem-action"><strong>Owner: ${r.owner}</strong><br>${r.action}</div></div></div>`
+    ).join('');
+  } else { remPlan.classList.remove('show'); }
+
+  document.getElementById('clevelSection').classList.add('show');
+  document.getElementById('verdictCTA').style.display = 'flex';
+  document.getElementById('verdictDisclaimer').classList.remove('hidden');
+}
+
+function getExportData() {
+  const domainScores = {};
+  let totalWeighted = 0;
+  domains.forEach(d => {
+    const answeredQs = d.questions.filter(q => answered[q.id]);
+    if (answeredQs.length > 0) {
+      const avg = answeredQs.reduce((s, q) => s + scores[q.id], 0) / answeredQs.length;
+      domainScores[d.id] = { score: avg, title: d.title, weight: d.weight, id: d.id };
+      totalWeighted += avg * (d.weight / 100);
+    }
+  });
+  const pct = Math.round(totalWeighted * 10);
+  return { pct, domainScores };
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function markDone(btnId) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.classList.add('done');
+  setTimeout(() => btn.classList.remove('done'), 2500);
+}
+
+function exportSummary() {
+  const { pct, domainScores } = getExportData();
+  const sorted = Object.values(domainScores).sort((a, b) => a.score - b.score);
+  const weakest = sorted[0] || { title: '—', score: 0 };
+  let md = `# NIS2 AI Exposure Assessment — Executive Summary
+
+Generated: ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+
+`;
+  md += `**Overall score:** ${pct}%
+**Exposure level:** ${getExposureLabelPct(pct)}
+**Priority domain:** ${weakest.title}
+
+## Domain Scores
+`;
+  domains.forEach(d => { const ds = domainScores[d.id]; if (ds) md += `- ${d.title}: ${ds.score.toFixed(1)}/10
+`; });
+  md += `
+## Scope
+Entity: ${entityScope || 'Not confirmed'}
+Multi-jurisdiction: ${document.getElementById('multiJurisdiction').checked ? 'Yes' : 'No'}
+
+## Disclaimer
+For orientation only. Not legal advice. Validate with legal, risk, security, and jurisdiction-specific regulatory counsel.
+Source: theaireadyist.com/nis2`;
+  downloadFile(md, 'nis2-ai-exposure-summary.md', 'text/markdown');
+  markDone('exportSummaryBtn');
+}
+
+function exportCsv() {
+  let csv = 'Domain,Question,Score,Exposure Level,Owner,Recommended Action\n';
+  domains.forEach(d => d.questions.forEach(q => {
+    if (answered[q.id]) {
+      const score = scores[q.id];
+      csv += `"${d.title}","${q.text.replace(/"/g,'""').substring(0,80)}...",${score},"${getExposureLabel(score)}","${q.owner}","${q.remediation.replace(/"/g,'""')}"
+`;
+    }
+  }));
+  downloadFile(csv, 'nis2-ai-exposure-gap-register.csv', 'text/csv');
+  markDone('exportCsvBtn');
+}
+
+function exportEvidence() {
+  let md = '# NIS2 AI Exposure Assessment — Evidence Checklist\n\n';
+  md += 'Generated: ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '\n\n';
+  domains.forEach(d => {
+    md += '## ' + d.title + '\n\n';
+    d.questions.forEach(q => {
+      const score = answered[q.id] ? scores[q.id] : null;
+      md += '### Q' + q.num + ' (' + q.nis2Ref + '): ' + q.text.substring(0,80) + '...\n';
+      md += (score !== null ? 'Score: ' + score + '/10 — ' + getExposureLabel(score) : 'Not answered');
+      md += ' | Owner: ' + q.owner + '\n\n**Evidence expected:**\n';
+      q.evidence.forEach(e => { md += '- ' + e + '\n'; });
+      if (score !== null && score < 6) md += '\n**Action:** ' + q.remediation + '\n';
+      md += '\n';
+    });
+  });
+  md += '---\nFor orientation only. Not legal advice.\nSource: theaireadyist.com/nis2';
+  downloadFile(md, 'nis2-ai-exposure-evidence-checklist.md', 'text/markdown');
+  markDone('exportEvidenceBtn');
+}
+
+buildDomains();
+</script>
+</body>
+</html>

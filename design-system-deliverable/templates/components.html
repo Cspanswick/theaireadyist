@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component Library — theAIReadyist Observatory Design System</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/typography.css" />
+  <link rel="stylesheet" href="/styles/layout.css" />
+  <link rel="stylesheet" href="/styles/brand.css" />
+  <link rel="stylesheet" href="/styles/templates.css" />
+  <link rel="stylesheet" href="/styles/components.css" />
+  <style>
+    .sg { padding: var(--space-6) 0; border-top: 1px solid var(--color-border-subtle); }
+    .sg__row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-3); }
+  </style>
+</head>
+<body class="tmpl">
+  <main class="layout section">
+    <header class="masthead mb-5">
+      <span class="masthead__brand wordmark">the<span class="wordmark__ai">AI</span>Readyist</span>
+      <span class="masthead__product">Observatory Design System</span>
+      <span class="masthead__context">Phase 3 · Component Library</span>
+    </header>
+    <h1 class="t-display">Components</h1>
+    <p class="t-body-lg" style="max-width:var(--layout-reading)">Every reusable component, tokenised and anchored to the hero. §9 Restraint: each one recurs across products.</p>
+
+    <section class="sg">
+      <p class="t-label">Buttons / CTAs</p>
+      <div class="sg__row">
+        <a class="btn btn--link btn--arrow" href="#">Take the Decision Performance Index</a>
+        <a class="btn btn--primary btn--arrow" href="#">Find your primary constraint</a>
+        <button class="btn btn--ghost">Secondary action</button>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Filter chips (aria-pressed)</p>
+      <div class="sg__row" role="group" aria-label="Pillars">
+        <button class="chip" aria-pressed="true">All</button>
+        <button class="chip" aria-pressed="false">Agentic Governance</button>
+        <button class="chip" aria-pressed="false">AI Economics</button>
+        <button class="chip" aria-pressed="false">Sovereign AI</button>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Badges &amp; tags (colour + word, §6)</p>
+      <div class="sg__row">
+        <span class="badge badge--success">Ready</span>
+        <span class="badge badge--warning">Partial</span>
+        <span class="badge badge--risk">Critical gap</span>
+        <span class="badge badge--neutral">Not rated</span>
+        <span class="badge badge--score">Score 5</span>
+        <span class="tag">Post-Quantum Cryptography</span>
+        <span class="tag">Token Economics</span>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Card (border-only, teal-top accent)</p>
+      <div class="grid--cards mt-3">
+        <article class="card card--accent" style="display:flex;flex-direction:column;min-height:200px;">
+          <p class="card__meta">Sovereign AI · 23 Jun 2026 · <span class="badge badge--score">Score 5</span></p>
+          <h3 class="card__title mt-3">Federal quantum deadlines make post-quantum crypto a board-level risk</h3>
+          <p class="card__body mt-3">A decision-relevant one-line summary of the signal.</p>
+          <div class="card__tags mt-3"><span class="tag">Cyber Resilience</span><span class="tag">Quantum Risk</span></div>
+          <p class="card__foot mt-3"><span>CIO.com</span><a class="btn btn--link btn--arrow" href="#">Source</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Score / progress bars</p>
+      <div style="max-width:360px;margin-top:var(--space-3);display:grid;gap:var(--space-3)">
+        <div class="bar"><div class="bar__track"><div class="bar__fill bar__fill--teal" style="width:61%"></div></div></div>
+        <div class="bar"><div class="bar__track"><div class="bar__fill bar__fill--amber" style="width:44%"></div></div></div>
+        <div class="bar"><div class="bar__track"><div class="bar__fill bar__fill--risk" style="width:28%"></div></div></div>
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Slider (range, keyboard + focus)</p>
+      <div style="max-width:360px;margin-top:var(--space-3)">
+        <input class="slider" type="range" min="0" max="10" value="6" aria-label="Readiness 0 to 10" />
+      </div>
+    </section>
+
+    <section class="sg">
+      <p class="t-label">Data figures</p>
+      <div class="sg__row">
+        <span class="data-figure data-figure--accent">47<span class="data-figure__denom"> / 100</span></span>
+        <span class="data-figure data-figure--warning">44</span>
+        <span class="data-figure data-figure--risk">28</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

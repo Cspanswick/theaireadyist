@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The AI Readyist is the Decision Intelligence platform for enterprise leaders — improving decision quality, velocity and accountability in an AI-native world.">
+<title>The AI Readyist — Decision Intelligence for Enterprise Leaders</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Brief-spec colour tokens — The Intelligence Terminal */
+    --navy:        #0D1F3C;  /* Primary surface: bg, nav, dominant panels */
+    --deep-black:  #0C1118;  /* Deep surface: behind-panel bg, overlay zones */
+    --off-white:   #F5F2EC;  /* Primary text: all body + headlines on dark */
+    --teal:        #00B8A2;  /* Signal / precision accent: data, CTAs, active states */
+    --slate:       #6B7A8D;  /* Secondary / structural: sub-labels, inactive, supporting */
+    --amber:       #E8A838;  /* Attention / data callout: risk indicators, scores */
+
+    /* Derived utility tokens */
+    --teal-dim:    rgba(0,184,162,0.12);
+    --teal-border: rgba(0,184,162,0.30);
+    --amber-dim:   rgba(232,168,56,0.12);
+    --rule:        rgba(107,122,141,0.20);   /* 1px structural rules */
+    --rule-teal:   rgba(0,184,162,0.40);     /* teal rule accent */
+    --slate-40:    rgba(107,122,141,0.40);   /* muted supporting text */
+    --slate-70:    rgba(245,242,236,0.70);   /* body text at 70% opacity */
+    --slate-60:    rgba(245,242,236,0.60);   /* sub-statement at 60% opacity */
+
+    /* Semantic aliases (match prior codebase roles) */
+    --bg:    var(--navy);
+    --bg2:   #162440;        /* slightly lighter navy for card surfaces */
+    --bg3:   #1c2d4e;        /* tertiary surface */
+    --text:  var(--off-white);
+    --muted: var(--slate);
+    --muted2: #A0AEBB;       /* slightly lighter slate for secondary text */
+    --gold:        var(--teal);
+    --gold-dim:    var(--teal-dim);
+    --gold-border: var(--teal-border);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* NAV */
+  nav {
+    padding: 0 48px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: rgba(13,31,60,0.97);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    height: 56px;
+  }
+
+  .nav-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 0;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--off-white);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .nav-logo .nav-ai { color: var(--teal); }
+
+  .nav-edition {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate);
+    line-height: 1;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+    text-decoration: none;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-left: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover { color: var(--off-white); }
+
+  .nav-links a.active { color: var(--teal); }
+
+  .nav-links a.nav-subscribe {
+    color: var(--teal);
+    border-left: 1px solid var(--rule);
+  }
+
+  .nav-links a.nav-subscribe:hover { background: var(--teal-dim); }
+
+  .nav-mobile-toggle {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    align-self: center;
+  }
+
+  /* HERO — 70/30 two-column split */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    background: var(--navy);
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px 72px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* Left column */
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-edition {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 14px;
+  }
+
+  .hero-rule {
+    width: 100%;
+    height: 1px;
+    background: var(--rule-teal);
+    margin-bottom: 32px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4.2vw, 52px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--off-white);
+    margin-bottom: 22px;
+  }
+
+  .hero-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 19px;
+    font-weight: 300;
+    color: rgba(240,244,248,0.72);
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 580px;
+  }
+
+  .hero-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.2s;
+  }
+  .hero-cta:hover { gap: 12px; }
+  .hero-cta::after { content: '→'; }
+
+  /* Right column — readiness instrument */
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .score-instrument {
+    border: 1px solid var(--rule);
+    background: var(--deep-black);
+    padding: 28px 28px 24px;
+  }
+
+  .score-instrument-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 18px;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .score-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 48px;
+    font-weight: 500;
+    color: var(--teal);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .score-denom {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    color: var(--slate);
+    line-height: 1;
+  }
+
+  .score-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 24px;
+  }
+
+  .score-rule {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 20px;
+  }
+
+  .score-dimensions {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 24px;
+  }
+
+  .score-dim {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .score-dim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .score-dim-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .score-dim-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    color: var(--slate);
+  }
+
+  .score-bar-track {
+    height: 3px;
+    background: rgba(107,122,141,0.18);
+    position: relative;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.6s ease;
+  }
+
+  .score-bar-fill.teal  { background: var(--teal); }
+  .score-bar-fill.amber { background: var(--amber); }
+
+  .score-instrument-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    transition: opacity 0.15s;
+  }
+  .score-instrument-cta:hover { opacity: 0.75; }
+  .score-instrument-cta::after { content: '→'; }
+
+  /* Shared CTA button styles (kept for any remaining uses) */
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    background: var(--teal);
+    color: var(--deep-black);
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    background: transparent;
+    color: var(--teal);
+    border: 1px solid var(--teal-border);
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--teal-dim); }
+
+  /* Hero mobile */
+  @media (max-width: 860px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      padding: 52px 20px 48px;
+      gap: 40px;
+    }
+  }
+
+  /* PILLARS */
+  .pillars-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+  /* PILLAR INDEX — full-width indexed vertical list */
+  .pillar-index {
+    border-top: 1px solid var(--rule);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .pillar-row {
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 0;
+    align-items: stretch;
+    transition: background 0.2s;
+    position: relative;
+    cursor: default;
+  }
+
+  .pillar-row:hover { background: rgba(0,184,162,0.025); }
+
+  /* Left: large dim number */
+  .pillar-row-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    color: rgba(107,122,141,0.25);
+    line-height: 1;
+    padding: 36px 0 36px 48px;
+    letter-spacing: -0.03em;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 38px;
+  }
+
+  /* Centre: title + desc + tags — takes up most of the width */
+  .pillar-row-main {
+    padding: 36px 48px 36px 32px;
+    border-left: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .pillar-row-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--off-white);
+    margin-bottom: 10px;
+    line-height: 1.2;
+    transition: color 0.15s;
+  }
+
+  .pillar-row:hover .pillar-row-title { color: var(--teal); }
+
+  .pillar-row-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--slate-70);
+    line-height: 1.7;
+    max-width: 580px;
+    margin-bottom: 14px;
+  }
+
+  .pillar-row-tags {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(107,122,141,0.55);
+  }
+
+  /* Right: assess CTA — vertically centred, pinned right */
+  .pillar-row-assess {
+    padding: 36px 48px 36px 32px;
+    border-left: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    min-width: 220px;
+  }
+
+  .pillar-assess-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-decoration: none;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: gap 0.2s;
+  }
+  .pillar-assess-cta:hover { gap: 12px; }
+  .pillar-assess-cta::after { content: '→'; }
+
+  /* Mobile */
+  @media (max-width: 860px) {
+    .pillar-row {
+      grid-template-columns: 44px 1fr;
+      grid-template-rows: auto auto;
+    }
+    .pillar-row-num {
+      padding: 28px 0 0 20px;
+      font-size: 22px;
+    }
+    .pillar-row-main {
+      padding: 28px 20px 20px 16px;
+      grid-column: 2;
+      border-left: none;
+    }
+    .pillar-row-assess {
+      grid-column: 1 / -1;
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding: 16px 20px 20px;
+      flex-direction: row;
+      align-items: center;
+      min-width: unset;
+    }
+  }
+
+  /* READINESS INSTRUMENTS */
+  .instruments-section {
+    background: var(--deep-black);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .instruments-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px;
+  }
+
+  /* Featured instrument — EU AI Act — full width */
+  .instrument-featured {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    margin-bottom: 2px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .instrument-featured:hover { border-color: var(--teal-border); }
+
+  .instrument-featured-body {
+    padding: 36px 40px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .instrument-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .instrument-status.live   { color: var(--teal); }
+  .instrument-status.soon   { color: var(--slate); }
+  .instrument-status.amber  { color: var(--amber); }
+
+  .instrument-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--off-white);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .instrument-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--slate-70);
+    line-height: 1.65;
+    margin-bottom: 28px;
+    max-width: 500px;
+  }
+
+  .instrument-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .instrument-aud {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .instrument-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+  .instrument-cta:hover { gap: 10px; }
+  .instrument-cta::after { content: '→'; }
+
+  /* Featured right panel — teaser readiness bars */
+  .instrument-featured-panel {
+    padding: 36px 32px;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .panel-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+
+  .panel-dimensions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .panel-dim-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .panel-dim-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .panel-bar-track {
+    height: 2px;
+    background: rgba(107,122,141,0.15);
+    position: relative;
+  }
+
+  .panel-bar-fill {
+    height: 100%;
+    position: absolute;
+    left: 0; top: 0;
+  }
+  .panel-bar-fill.teal  { background: var(--teal); }
+  .panel-bar-fill.amber { background: var(--amber); }
+  .panel-bar-fill.slate { background: rgba(107,122,141,0.4); }
+
+  .panel-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-cta::after { content: '→'; }
+
+  /* Standard instrument cards — 3-col grid */
+  .instruments-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .instrument-card {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    padding: 28px 28px 24px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .instrument-card:hover:not(.disabled) { border-color: var(--teal-border); }
+  .instrument-card.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .instrument-card .instrument-name {
+    font-size: 17px;
+    margin-bottom: 10px;
+    flex: 1;
+  }
+
+  .instrument-card .instrument-desc {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .instrument-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Instruments mobile */
+  @media (max-width: 860px) {
+    .instruments-inner { padding: 48px 20px; }
+    .instrument-featured { grid-template-columns: 1fr; }
+    .instrument-featured-body { border-right: none; border-bottom: 1px solid var(--rule); }
+    .instrument-featured-panel { padding: 24px 20px; }
+    .instruments-grid { grid-template-columns: 1fr; }
+  }
+
+  /* LATEST INTELLIGENCE FEED */
+  .feed-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px 80px;
+  }
+
+  /* Asymmetric 2-col: lead (wider) left, two supporting right */
+  .feed-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Lead article — left column, full height */
+  .feed-lead {
+    background: transparent;
+    padding: 36px 36px 36px 36px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid var(--li-border-sub);
+    transition: background 0.15s;
+    min-height: 280px;
+  }
+  .feed-lead:hover { background: rgba(0,184,162,0.05); }
+
+  .feed-lead .feed-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .feed-lead .feed-summary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--slate-70);
+    line-height: 1.65;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  /* Supporting articles — right column, stacked */
+  .feed-supporting {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .feed-item {
+    background: transparent;
+    padding: 24px 26px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border: 1px solid var(--li-border-sub);
+    transition: background 0.15s;
+  }
+  .feed-item:hover { background: rgba(0,184,162,0.05); }
+
+  .feed-item .feed-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .feed-item .feed-summary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  /* Shared meta row: tag · date · read time */
+  .feed-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .feed-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  .feed-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .feed-readtime {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .feed-source {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-left: auto;
+  }
+
+  .feed-meta-sep {
+    color: var(--rule);
+    font-size: 10px;
+  }
+
+  /* Feed mobile */
+  @media (max-width: 860px) {
+    .feed-section { padding-left: 20px; padding-right: 20px; }
+    .feed-grid {
+      grid-template-columns: 1fr;
+    }
+    .feed-lead { border-right: none; border-bottom: 1px solid var(--rule); min-height: auto; }
+  }
+
+  /* ACCESS THE BRIEFING */
+  .access-section {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .access-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px;
+  }
+
+  .access-rule {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 48px;
+  }
+
+  .access-body {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 80px;
+    align-items: end;
+  }
+
+  .access-left {}
+
+  .access-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+
+  .access-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+
+  .access-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--slate);
+    line-height: 1.8;
+    text-transform: uppercase;
+  }
+
+  .access-desc span {
+    display: block;
+  }
+
+  /* Email input form */
+  .access-right {}
+
+  .access-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .access-input-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--slate);
+    margin-bottom: 24px;
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .access-input-row:focus-within {
+    border-bottom-color: var(--teal);
+  }
+
+  .access-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    padding: 8px 0;
+    caret-color: var(--teal);
+  }
+
+  .access-input::placeholder {
+    color: var(--slate);
+  }
+
+  .access-submit {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+    white-space: nowrap;
+  }
+  .access-submit:hover { gap: 10px; }
+  .access-submit::after { content: '→'; }
+
+  .access-terms {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 860px) {
+    .access-inner { padding: 52px 20px; }
+    .access-body {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 48px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links a { padding: 0 12px; font-size: 9px; }
+    .nav-edition { display: none; }
+  }
+
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: var(--navy);
+      border-bottom: 1px solid var(--rule);
+      z-index: 99;
+    }
+    .nav-links.open a {
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding: 14px 20px;
+    }
+    .nav-mobile-toggle { display: block; }
+    .pillars-section { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 24px 20px; }
+  }
+
+
+  /* FUNCTION LENSES */
+  .lenses-section {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--deep-black);
+  }
+
+  .lenses-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Tab bar */
+  .lenses-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--rule);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .lenses-tabs::-webkit-scrollbar { display: none; }
+
+  .lenses-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate);
+    padding: 18px 32px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+  }
+
+  .lenses-tab:hover { color: var(--off-white); }
+
+  .lenses-tab.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  /* Content panel */
+  .lenses-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    min-height: 320px;
+  }
+
+  /* Thesis column */
+  .lenses-thesis {
+    padding: 40px 40px 40px 48px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lenses-function-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+
+  .lenses-thesis-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    flex: 1;
+    margin-bottom: 28px;
+  }
+
+  .lenses-thesis-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.65;
+  }
+
+  /* Pillars column */
+  .lenses-pillars {
+    padding: 40px 32px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .lenses-col-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+
+  .lenses-pillar-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    transition: background 0.1s;
+  }
+  .lenses-pillar-item:last-child { border-bottom: none; }
+
+  .lenses-pillar-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(107,122,141,0.4);
+    min-width: 18px;
+  }
+
+  .lenses-pillar-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .lenses-pillar-item:hover .lenses-pillar-name { color: var(--teal); }
+
+  .lenses-pillar-priority {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: auto;
+    padding: 2px 6px;
+    border: 1px solid;
+  }
+  .lenses-pillar-priority.high {
+    color: var(--teal);
+    border-color: var(--teal-border);
+  }
+  .lenses-pillar-priority.watch {
+    color: var(--amber);
+    border-color: rgba(232,168,56,0.3);
+  }
+
+  /* Articles column */
+  .lenses-articles {
+    padding: 40px 40px 40px 32px;
+  }
+
+  .lenses-article-item {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+  .lenses-article-item:last-child { border-bottom: none; }
+
+  .lenses-article-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+
+  .lenses-article-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--slate-70);
+    line-height: 1.4;
+    transition: color 0.15s;
+  }
+  .lenses-article-item:hover .lenses-article-title { color: var(--off-white); }
+
+  /* Lenses mobile */
+  @media (max-width: 860px) {
+    .lenses-tab { padding: 14px 18px; font-size: 9px; }
+    .lenses-panel { grid-template-columns: 1fr; }
+    .lenses-thesis { border-right: none; border-bottom: 1px solid var(--rule); padding: 28px 20px; }
+    .lenses-pillars { border-right: none; border-bottom: 1px solid var(--rule); padding: 24px 20px; }
+    .lenses-articles { padding: 24px 20px; }
+  }
+
+
+  /* INTELLIGENCE LOOP — nav score indicator */
+  .nav-score {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    border-left: 1px solid var(--rule);
+    padding: 0 18px;
+  }
+  .nav-score.visible { display: flex; }
+
+  .nav-score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .nav-score-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--teal);
+    letter-spacing: -0.01em;
+  }
+
+  .nav-score-bar {
+    width: 36px;
+    height: 2px;
+    background: rgba(107,122,141,0.2);
+    position: relative;
+  }
+
+  .nav-score-bar-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    background: var(--teal);
+    transition: width 0.4s ease;
+  }
+
+  /* INTELLIGENCE LOOP — pillar dimension tags */
+  .pillar-dimension-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .pillar-dimension-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.5;
+  }
+
+  /* INTELLIGENCE LOOP — contextual assess prompt (enhanced) */
+  .pillar-assess-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pillar-assess-score-val {
+    color: var(--amber);
+  }
+
+  /* INTELLIGENCE LOOP — scroll highlight on pillar row */
+  .pillar-row.in-view {
+    background: rgba(0,184,162,0.025);
+  }
+
+  .pillar-row.in-view .pillar-assess-cta {
+    color: var(--teal);
+    opacity: 1;
+  }
+
+  /* INTELLIGENCE LOOP — score update pulse animation */
+  @keyframes score-pulse {
+    0%   { opacity: 1; }
+    40%  { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  .score-pulse { animation: score-pulse 0.6s ease; }
+
+
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a class="nav-logo" href="/">the<span class="nav-ai">AI</span>Readyist</a>
+    <span class="nav-edition">Intelligence Briefing &middot; Edition 42 &middot; June 2026</span>
+  </div>
+  <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+  <div class="nav-links">
+    <a href="#intelligence" class="active">Intelligence</a>
+    <a href="#readiness">Readiness</a>
+    <a href="#function-lenses">Function Lenses</a>
+    <a href="#tools">Tools</a>
+    <div class="nav-score" id="nav-score">
+      <span class="nav-score-label">Readiness</span>
+      <div class="nav-score-bar"><div class="nav-score-bar-fill" id="nav-score-fill" style="width:0%"></div></div>
+      <span class="nav-score-value" id="nav-score-val">—</span>
+    </div>
+    <a href="https://cspanswick.substack.com" target="_blank" class="nav-subscribe">Subscribe</a>
+  </div>
+</nav>
+
+<section class="hero" id="intelligence">
+  <div class="hero-inner">
+
+    <!-- Left: editorial statement -->
+    <div class="hero-left">
+      <div class="hero-edition">Intelligence Briefing &middot; Edition 42 &middot; June 2026</div>
+      <div class="hero-rule"></div>
+      <h1>Most organisations don’t have an AI problem. They have a Decision Performance problem. AI simply exposes it.</h1>
+      <p class="hero-sub">The AI Readyist is the Decision Intelligence platform that helps enterprise leaders improve decision quality, velocity, and accountability — at the speed AI demands.</p>
+      <a class="hero-cta" href="/dpi.html">Take the Decision Performance Index</a>
+    </div>
+
+    <!-- Right: AI Readiness Score instrument -->
+    <div class="hero-right">
+      <div class="score-instrument">
+        <div class="score-instrument-label">AI Readiness Score</div>
+        <div class="score-display">
+          <span class="score-number">47</span>
+          <span class="score-denom">/ 100</span>
+        </div>
+        <div class="score-status">Developing &mdash; Significant gaps identified</div>
+        <div class="score-rule"></div>
+        <div class="score-dimensions">
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">AI Economics</span>
+              <span class="score-dim-value">38</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill amber" style="width:38%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Agentic Governance</span>
+              <span class="score-dim-value">52</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill teal" style="width:52%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Human Agency</span>
+              <span class="score-dim-value">61</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill teal" style="width:61%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Executive Operating Models</span>
+              <span class="score-dim-value">33</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill amber" style="width:33%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Decision Intelligence</span>
+              <span class="score-dim-value">44</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill amber" style="width:44%"></div></div>
+          </div>
+          <div class="score-dim">
+            <div class="score-dim-header">
+              <span class="score-dim-name">Sovereign AI</span>
+              <span class="score-dim-value">58</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill teal" style="width:58%"></div></div>
+          </div>
+        </div>
+        <a class="score-instrument-cta" href="/eu-ai-act">Assess your organisation</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LIVE INSIGHTS — ticker section
+     Place directly below the hero in index.html.
+     Self-contained: scoped styles + Supabase read-only fetch.
+     Reads approved insights from public.insights (status = 'published').
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="li-section" id="live-insights" aria-label="Latest agent-produced insights">
+
+  <div class="li-head">
+    <div class="li-head-left">
+      <span class="li-pulse" aria-hidden="true"></span>
+      <span class="li-eyebrow">Live Insights</span>
+    </div>
+    <div class="li-head-right">
+      <span class="li-updated" id="li-updated"></span>
+      <a class="li-viewall" href="/signals">View all &rarr;</a>
+    </div>
+  </div>
+
+  
+
+  <!-- Ticker viewport -->
+  <div class="li-ticker" id="li-ticker" tabindex="0" aria-label="Scrolling insights. Hover or focus to pause.">
+    <div class="li-track" id="li-track">
+      <!-- Cards injected by JS. Track is duplicated for seamless loop. -->
+      <div class="li-empty" id="li-empty">
+        <span class="li-empty-icon" aria-hidden="true">◎</span>
+        <span>Intelligence incoming — the first approved insights will appear here.</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* ── Scoped to .li-section — uses your brand tokens ── */
+  .li-section {
+    --li-navy:      var(--color-bg);
+    --li-surface:   #0F2233;
+    --li-raised:    #122739;
+    --li-teal:      var(--color-accent);
+    --li-amber:     var(--color-warning);
+    --li-text:      var(--color-text-primary);
+    --li-text-sec:  rgba(245,242,236,0.65);
+    --li-text-mut:  rgba(245,242,236,0.40);
+    --li-border:    rgba(0,184,162,0.20);
+    --li-border-hi: rgba(0,184,162,0.55);
+    --li-border-sub: rgba(255,255,255,0.08);
+
+    background: var(--li-navy);
+    border-top: 1px solid var(--li-border);
+    border-bottom: 1px solid var(--li-border);
+    padding: 40px 0 44px;
+    overflow: hidden;
+  }
+
+  .li-head {
+    max-width: 1400px; margin: 0 auto;
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .li-head-left { display: flex; align-items: center; gap: 12px; }
+
+  .li-pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--li-teal); flex-shrink: 0;
+    animation: li-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes li-pulse {
+    0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,184,162,0.45); }
+    50%     { opacity: 0.6; box-shadow: 0 0 0 6px rgba(0,184,162,0); }
+  }
+
+  .li-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--li-teal);
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+
+  .li-head-right { display: flex; align-items: center; gap: 20px; }
+  .li-updated {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--li-text-mut);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .li-viewall {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--li-text); text-decoration: none;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    border-bottom: 1px solid var(--li-border); padding-bottom: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .li-viewall:hover { color: var(--li-teal); border-color: var(--li-teal); }
+
+  .li-strap {
+    max-width: 1400px; margin: 10px auto 0;
+    padding: 0 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--li-text-sec);
+    line-height: 1.55; max-width: 640px;
+  }
+
+  /* ── Ticker ── */
+  .li-ticker {
+    margin-top: 28px;
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .li-ticker:focus { outline: 1px solid var(--li-border-hi); outline-offset: 4px; }
+
+  .li-track {
+    display: flex; gap: 16px;
+    width: max-content;
+    padding: 0 40px;
+    animation: li-scroll 60s linear infinite;
+  }
+  @keyframes li-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* Pause on hover / focus */
+  .li-ticker:hover .li-track,
+  .li-ticker:focus .li-track,
+  .li-ticker:focus-within .li-track { animation-play-state: paused; }
+
+  /* Respect reduced motion — no auto-scroll, becomes a manual scroll strip */
+  @media (prefers-reduced-motion: reduce) {
+    .li-track { animation: none; }
+    .li-ticker { overflow-x: auto; scrollbar-width: thin; }
+  }
+
+  /* ── Cards ── */
+  .li-card {
+    flex: 0 0 340px; width: 340px;
+    background: var(--li-surface);
+    border: 1px solid var(--li-border);
+    padding: 22px;
+    display: flex; flex-direction: column; gap: 12px;
+    text-decoration: none; color: inherit;
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
+  }
+  .li-card:hover {
+    border-color: var(--li-border-hi);
+    background: var(--li-raised);
+    transform: translateY(-2px);
+  }
+
+  .li-card-meta {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--li-text-mut);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .li-card-date { color: var(--li-teal); }
+
+  .li-card-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px; font-weight: 700; line-height: 1.25;
+    color: var(--li-text);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .li-card-summary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--li-text-sec); line-height: 1.55;
+    flex: 1;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .li-card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .li-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; color: var(--li-text-sec);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border: 1px solid var(--li-border-sub);
+    padding: 3px 7px;
+  }
+
+  .li-card-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--li-teal);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .li-card-cta::after { content: ' \2192'; }
+
+  /* ── Empty state ── */
+  .li-empty {
+    display: flex; align-items: center; gap: 14px;
+    padding: 28px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--li-text-mut);
+  }
+  .li-empty-icon {
+    font-family: 'Playfair Display', serif; font-size: 28px;
+    color: var(--li-border-hi);
+  }
+
+  @media (max-width: 640px) {
+    .li-head, .li-strap { padding-left: 20px; padding-right: 20px; }
+    .li-track { padding: 0 20px; }
+    .li-card { flex-basis: 280px; width: 280px; }
+  }
+</style>
+
+<script>
+(function () {
+  // ── Config ──────────────────────────────────────────
+  // Read-only: this fetches published insights only.
+  // The publishable key is safe in client code ONLY IF the
+  // insights table RLS grants anon SELECT but NOT write.
+  const SUPABASE_URL = 'https://mydxofjvpuurwwaohqys.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_gAIR6BSI1ZwMNSzafJCAdQ_hAb6jtAR';
+  const TABLE = 'executive_signals';
+
+  const track = document.getElementById('li-track');
+  const empty = document.getElementById('li-empty');
+  const updatedEl = document.getElementById('li-updated');
+
+  // Fetch published insights, newest first, limit 8
+  const url = `${SUPABASE_URL}/rest/v1/${TABLE}`
+    + `?select=signal_title,why_it_matters,primary_pillar,secondary_pillar,executive_relevance_score,published_at,created_at`
+    + `&approval_status=eq.published`
+    + `&order=created_at.desc`
+    + `&limit=40`;
+
+  fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(rows => {
+      if (!Array.isArray(rows) || rows.length === 0) return; // keep empty state
+      renderTicker(rows);
+    })
+    .catch(err => {
+      // On error, leave the empty state in place — never break the homepage
+      console.warn('Live Insights fetch failed:', err);
+    });
+
+  function renderTicker(rows) {
+    // Dedupe by normalised title (agent runs same topic multiple times)
+    const seen = new Set();
+    const unique = rows.filter(row => {
+      const key = (row.signal_title || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 20);
+    // Build card HTML for each distinct insight
+    const cards = unique.map(cardHTML).join('');
+
+    // Duplicate the set so the -50% scroll loops seamlessly
+    track.innerHTML = cards + cards;
+    if (empty) empty.remove();
+
+    // "Updated" stamp from the newest item
+    const newest = rows[0].created_at || rows[0].published_at;
+    if (newest) {
+      const d = new Date(newest);
+      updatedEl.textContent = 'Updated ' + d.toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      });
+    }
+  }
+
+  function cardHTML(row) {
+    const date = (row.created_at || row.published_at)
+      ? new Date(row.created_at || row.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+      : '';
+    const score = row.executive_relevance_score ? ('Score ' + row.executive_relevance_score) : 'Signal';
+    const tags = [row.primary_pillar, row.secondary_pillar]
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(t => `<span class="li-tag">${esc(t)}</span>`)
+      .join('');
+
+    return `
+      <a class="li-card" href="/signals">
+        <div class="li-card-meta">
+          <span class="li-card-date">${esc(date)}</span>
+          <span>${esc(score)}</span>
+        </div>
+        <div class="li-card-title">${esc(row.signal_title || 'Untitled signal')}</div>
+        <div class="li-card-summary">${esc(row.why_it_matters || '')}</div>
+        <div class="li-card-tags">${tags}</div>
+        <div class="li-card-cta">Read signal</div>
+      </a>`;
+  }
+
+  // Basic HTML escaping for safety against injected content
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+})();
+</script>
+
+<section class="lenses-section" id="function-lenses">
+  <div class="lenses-inner">
+
+    <!-- Tab bar -->
+    <div class="lenses-tabs" role="tablist">
+      <button class="lenses-tab active" onclick="setLens('ceo')" role="tab" aria-selected="true">CEO</button>
+      <button class="lenses-tab" onclick="setLens('cfo')" role="tab" aria-selected="false">CFO</button>
+      <button class="lenses-tab" onclick="setLens('coo')" role="tab" aria-selected="false">COO</button>
+      <button class="lenses-tab" onclick="setLens('tech')" role="tab" aria-selected="false">Tech Executive</button>
+      <button class="lenses-tab" onclick="setLens('chro')" role="tab" aria-selected="false">CHRO</button>
+      <button class="lenses-tab" onclick="setLens('board')" role="tab" aria-selected="false">Board</button>
+    </div>
+
+    <!-- Content panel — rendered by JS -->
+    <div class="lenses-panel" id="lenses-panel"></div>
+
+  </div>
+</section>
+
+
+<section id="readiness" style="max-width:1200px;margin:0 auto;padding:72px 48px 0;">
+  <div class="section-label">The Six Pillars of AI Readiness</div>
+</section>
+
+<div class="pillar-index">
+  <!-- 01 Executive Operating Models -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">01</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">Executive Operating Models</div>
+      <p class="pillar-row-desc">How organisations redesign operating models to improve decision velocity in an AI-native world.</p>
+    </div>
+    <div class="pillar-row-assess"></div>
+  </div>
+  <!-- 02 Decision Intelligence -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">02</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">Decision Intelligence</div>
+      <p class="pillar-row-desc">How organisations improve decision quality through data, context, governance and AI.</p>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/dpi.html">Take the Decision Performance Index</a>
+    </div>
+  </div>
+  <!-- 03 Agentic Governance -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">03</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">Agentic Governance</div>
+      <p class="pillar-row-desc">How organisations govern AI authority, accountability and autonomous decision-making.</p>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/eu-ai-act.html">EU AI Act Readiness</a>
+    </div>
+  </div>
+  <!-- 04 AI Economics -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">04</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">AI Economics</div>
+      <p class="pillar-row-desc">How organisations measure the value, cost and return of AI-enabled decisions.</p>
+    </div>
+    <div class="pillar-row-assess"></div>
+  </div>
+  <!-- 05 Human Agency -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">05</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">Human Agency</div>
+      <p class="pillar-row-desc">How leaders preserve judgement, accountability and capability in AI-enabled organisations.</p>
+    </div>
+    <div class="pillar-row-assess"></div>
+  </div>
+  <!-- 06 Sovereign AI -->
+  <div class="pillar-row">
+    <div class="pillar-row-num">06</div>
+    <div class="pillar-row-main">
+      <div class="pillar-row-title">Sovereign AI</div>
+      <p class="pillar-row-desc">How organisations maintain resilient and trusted decision systems across regulatory and geopolitical boundaries.</p>
+    </div>
+    <div class="pillar-row-assess">
+      <a class="pillar-assess-cta" href="/dora.html">DORA Readiness Assessment</a>
+    </div>
+  </div>
+</div>
+
+<section class="instruments-section" id="tools">
+  <div class="instruments-inner">
+
+    <div class="section-label">Readiness Instruments</div>
+
+    <!-- Featured: Decision Performance Index — flagship diagnostic -->
+    <a class="instrument-featured" href="/dpi">
+      <div class="instrument-featured-body">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">Decision Performance Index</div>
+        <p class="instrument-desc">The flagship diagnostic. Rate your organisation across the six dimensions of Decision Performance to identify the single constraint most limiting high-value decisions. Constraint-led executive report. Takes 5&ndash;7 minutes.</p>
+        <div class="instrument-meta">
+          <span class="instrument-aud">CEO &middot; COO &middot; CIO &middot; CTO &middot; CFO &middot; 7 Min</span>
+          <span class="instrument-cta">Find your primary constraint</span>
+        </div>
+      </div>
+      <div class="instrument-featured-panel">
+        <div class="panel-label">Decision Performance dimensions</div>
+        <div class="panel-dimensions">
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Decision Quality</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:62%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Decision Velocity</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:48%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Decision Accountability</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:38%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Decision Capability</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:66%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Decision Value</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:54%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Decision Resilience</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:60%"></div></div>
+          </div>
+        </div>
+        <div class="panel-cta">Your primary constraint</div>
+      </div>
+    </a>
+
+    <!-- Featured: EU AI Act Assessment — full width with teaser bars -->
+    <a class="instrument-featured" href="/eu-ai-act">
+      <div class="instrument-featured-body">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">EU AI Act Readiness Assessment</div>
+        <p class="instrument-desc">Rate your organisation across five governance domains. Weighted readiness score with gap analysis, compliance verdict, and dimension-level recommendations. Takes 10 minutes.</p>
+        <div class="instrument-meta">
+          <span class="instrument-aud">CIO &middot; CFO &middot; CTO &middot; Legal &middot; 10 Min</span>
+          <span class="instrument-cta">See where your organisation stands</span>
+        </div>
+      </div>
+      <div class="instrument-featured-panel">
+        <div class="panel-label">Governance dimensions</div>
+        <div class="panel-dimensions">
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Risk Classification</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:42%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Data Governance</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:58%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Human Oversight</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:35%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Transparency</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:61%"></div></div>
+          </div>
+          <div class="panel-dim-row">
+            <span class="panel-dim-label">Accountability</span>
+            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:29%"></div></div>
+          </div>
+        </div>
+        <div class="panel-cta">Your organisation&rsquo;s score</div>
+      </div>
+    </a>
+
+    <!-- Standard instrument cards -->
+    <div class="instruments-grid">
+
+      <a class="instrument-card" href="/eu-ai-act-tiers">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">EU AI Act Tier Navigator</div>
+        <p class="instrument-desc">Understand which risk tier your AI systems fall into — and what that means for your P&amp;L, controls, and accountability structure.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CIO &middot; CFO &middot; Legal &middot; 5 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card" href="/dora">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">DORA AI Exposure Assessment</div>
+        <p class="instrument-desc">Map your AI-related exposures across DORA&rsquo;s five pillars. Gap register, risk scoring, and export-ready output for your ICT risk framework.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CIO &middot; CTO &middot; Risk &middot; 10 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card" href="/nis2">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">NIS2 AI Exposure Lens</div>
+        <p class="instrument-desc">Classify your entity type then assess AI-specific exposures across NIS2&rsquo;s security and incident obligations. Prioritised gap output included.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CISO &middot; CIO &middot; Legal &middot; 8 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card" href="/radar">
+        <div class="instrument-status live">&#9679;&nbsp; Live</div>
+        <div class="instrument-name">AI Governance Exposure Radar</div>
+        <p class="instrument-desc">Pulls scores from all three assessments into a single 8-axis control view. See your aggregate regulatory exposure at a glance.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">Board &middot; CIO &middot; CFO &middot; 2 Min</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card disabled" href="#">
+        <div class="instrument-status soon">Coming Soon</div>
+        <div class="instrument-name">AI Maturity Map</div>
+        <p class="instrument-desc">Benchmark your organisation across five AI maturity dimensions. Identifies where you are, where the gaps are, and what moves the needle.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CIO &middot; CHRO</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+      <a class="instrument-card disabled" href="#">
+        <div class="instrument-status soon">Coming Soon</div>
+        <div class="instrument-name">Vendor AI Scorecard</div>
+        <p class="instrument-desc">Evaluate vendor AI claims against a structured framework. Cut through the marketing and identify what actually matters for enterprise deployment.</p>
+        <div class="instrument-card-footer">
+          <span class="instrument-aud">CPO &middot; CFO</span>
+          <span class="instrument-cta"></span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="feed-section">
+  <div class="section-label">Latest Intelligence</div>
+  <div class="feed-grid">
+
+    <!-- Lead article — left, larger -->
+    <a class="feed-lead" href="https://cspanswick.substack.com/p/are-you-sitting-comfortably-your" target="_blank">
+      <div>
+        <div class="feed-meta">
+          <span class="feed-tag">Governance, Trust &amp; Risk</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Jun 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">5 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">Are You Sitting Comfortably? Your AI Agents Have More Authority Than You Think.</div>
+        <div class="feed-summary">The gap between what you approved and what is actually running is widening. A customer feels it first, through an outage. Then it lands with your board — and regulators land last, and can land hard.</div>
+      </div>
+    </a>
+
+    <!-- Supporting articles — right column, stacked -->
+    <div class="feed-supporting">
+
+      <a class="feed-item" href="https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" target="_blank">
+        <div class="feed-meta">
+          <span class="feed-tag">Executive Operating Models</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Apr 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">6 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">Vibe Coding Has a Stop Sign.</div>
+        <div class="feed-summary">The enthusiasm for AI-assisted coding is real — and so is the cliff edge most organisations are building toward. Speed without structure is not productivity. It is deferred failure.</div>
+      </a>
+
+      <a class="feed-item" href="https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" target="_blank">
+        <div class="feed-meta">
+          <span class="feed-tag">Human &amp; Culture Layer</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Apr 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">5 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">Can You Prove This Role Can't Be Done by AI?</div>
+        <div class="feed-summary">The uncomfortable question every function leader will face in the next 18 months — and the ones who answer it honestly will be better placed than those who don't.</div>
+      </a>
+
+      <a class="feed-item" href="https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" target="_blank">
+        <div class="feed-meta">
+          <span class="feed-tag">AI Economics</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-date">Mar 2026</span>
+          <span class="feed-meta-sep">·</span>
+          <span class="feed-readtime">4 Min Read</span>
+          <span class="feed-source">→ Substack</span>
+        </div>
+        <div class="feed-headline">The AI Bill Shock Nobody Is Budgeting For</div>
+        <div class="feed-summary">Inference costs are not on anyone's radar until the invoice arrives. By then the architecture decisions that caused them are already locked in.</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="access-section">
+  <div class="access-inner">
+    <div class="access-rule"></div>
+    <div class="access-body">
+
+      <div class="access-left">
+        <div class="access-label">The Intelligence Briefing</div>
+        <div class="access-title">Built for leaders who don&rsquo;t have time to be wrong about AI.</div>
+        <div class="access-desc">
+          <span>Published every other Tuesday.</span>
+          <span>Structured. Scannable. No filler.</span>
+          <span>No vendor promotion.</span>
+        </div>
+      </div>
+
+      <div class="access-right">
+        <form class="access-form" action="https://cspanswick.substack.com/subscribe" method="get" target="_blank">
+          <div class="access-input-row">
+            <input
+              class="access-input"
+              type="email"
+              name="email"
+              placeholder="Your email"
+              required
+            >
+            <button class="access-submit" type="submit">Access the briefing</button>
+          </div>
+          <div class="access-terms">No noise. Unsubscribe any time.</div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">theAIReadyist</div>
+  <div class="footer-note">By Clive Spanswick &middot; theaireadyist.com &middot; &copy; 2026</div>
+</footer>
+
+
+<script>
+const LENSES = {
+  ceo: {
+    label: "CEO Lens",
+    thesis: "Are we becoming an AI-ready enterprise?",
+    sub: "Competitive advantage, growth and transformation now turn on AI readiness. The CEO owns whether the organisation is positioning to lead the category or follow it.",
+    pillars: [
+      { num: "02", name: "Decision Intelligence", priority: "high" },
+      { num: "01", name: "Executive Operating Models", priority: "high" },
+      { num: "04", name: "AI Economics", priority: "watch" },
+      { num: "05", name: "Human Agency", priority: "watch" },
+    ],
+    articles: [
+      { tag: "Executive Operating Models", title: "The Operating Model Is the Strategy", href: "https://cspanswick.substack.com" },
+      { tag: "Executive Operating Models", title: "What AI-Native Actually Looks Like at Scale", href: "https://cspanswick.substack.com" },
+      { tag: "AI Economics", title: "The AI Bill Shock Nobody Is Budgeting For", href: "https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" },
+    ]
+  },
+  cfo: {
+    label: "CFO Lens",
+    thesis: "Are we investing wisely and creating measurable value?",
+    sub: "AI is a capital-allocation decision before it is a technology one. The CFO owns investment discipline, ROI and value realisation across the AI portfolio.",
+    pillars: [
+      { num: "04", name: "AI Economics", priority: "high" },
+      { num: "01", name: "Executive Operating Models", priority: "watch" },
+      { num: "03", name: "Agentic Governance", priority: "watch" },
+      { num: "02", name: "Decision Intelligence", priority: "watch" },
+    ],
+    articles: [
+      { tag: "AI Economics", title: "The AI Bill Shock Nobody Is Budgeting For", href: "https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" },
+      { tag: "AI Economics", title: "When Agents Talk to Agents, Who Pays?", href: "https://cspanswick.substack.com" },
+      { tag: "Agentic Governance", title: "Who Owns the Model When It Gets It Wrong?", href: "https://cspanswick.substack.com" },
+    ]
+  },
+  coo: {
+    label: "COO Lens",
+    thesis: "Can the organisation operationalise AI safely and repeatably?",
+    sub: "Operating model, execution and decision velocity. The COO owns the gap between an AI that demos and an AI that runs the business every day.",
+    pillars: [
+      { num: "01", name: "Executive Operating Models", priority: "high" },
+      { num: "02", name: "Decision Intelligence", priority: "high" },
+      { num: "05", name: "Human Agency", priority: "watch" },
+      { num: "03", name: "Agentic Governance", priority: "watch" },
+    ],
+    articles: [
+      { tag: "Executive Operating Models", title: "The Operating Model Is the Strategy", href: "https://cspanswick.substack.com" },
+      { tag: "Executive Operating Models", title: "Production Readiness Is Not a Technical Problem", href: "https://cspanswick.substack.com" },
+      { tag: "Decision Intelligence", title: "What AI-Native Actually Looks Like at Scale", href: "https://cspanswick.substack.com" },
+    ]
+  },
+  tech: {
+    label: "Tech Executive Lens",
+    serving: "CIO \u2022 CTO \u2022 CAIO \u2022 CDAO \u2022 CISO",
+    thesis: "Can we build, govern and operate AI at enterprise scale?",
+    sub: "Enterprise architecture, data and production readiness, AI platforms and operations, governance implementation, cyber resilience and trust \u2014 the collective technology leadership accountable for making AI real.",
+    pillars: [
+      { num: "03", name: "Agentic Governance", priority: "high" },
+      { num: "06", name: "Sovereign AI", priority: "high" },
+      { num: "02", name: "Decision Intelligence", priority: "watch" },
+      { num: "01", name: "Executive Operating Models", priority: "watch" },
+    ],
+    articles: [
+      { tag: "Agentic Governance", title: "Vibe Coding Has a Stop Sign", href: "https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" },
+      { tag: "Sovereign AI", title: "The EU AI Act Is Not an IT Problem", href: "https://cspanswick.substack.com" },
+      { tag: "Executive Operating Models", title: "Production Readiness Is Not a Technical Problem", href: "https://cspanswick.substack.com" },
+    ]
+  },
+  chro: {
+    label: "CHRO Lens",
+    thesis: "Can our people adapt successfully?",
+    sub: "Workforce transformation, skills, leadership and human agency. The CHRO owns whether the organisation's people thrive alongside AI rather than merely survive it.",
+    pillars: [
+      { num: "05", name: "Human Agency", priority: "high" },
+      { num: "01", name: "Executive Operating Models", priority: "watch" },
+      { num: "02", name: "Decision Intelligence", priority: "watch" },
+      { num: "03", name: "Agentic Governance", priority: "watch" },
+    ],
+    articles: [
+      { tag: "Human Agency", title: "Can You Prove This Role Can't Be Done by AI?", href: "https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" },
+      { tag: "Human Agency", title: "Why AI Champions Burn Out", href: "https://cspanswick.substack.com" },
+      { tag: "Executive Operating Models", title: "What AI-Native Actually Looks Like at Scale", href: "https://cspanswick.substack.com" },
+    ]
+  },
+  board: {
+    label: "Board Lens",
+    thesis: "Are we governing AI responsibly?",
+    sub: "Governance, oversight, fiduciary responsibility, strategic risk and resilience. The board owns whether AI is being adopted with appropriate accountability.",
+    pillars: [
+      { num: "03", name: "Agentic Governance", priority: "high" },
+      { num: "06", name: "Sovereign AI", priority: "high" },
+      { num: "04", name: "AI Economics", priority: "watch" },
+      { num: "05", name: "Human Agency", priority: "watch" },
+    ],
+    articles: [
+      { tag: "Agentic Governance", title: "Governance Without Theatre", href: "https://cspanswick.substack.com" },
+      { tag: "Agentic Governance", title: "Who Owns the Model When It Gets It Wrong?", href: "https://cspanswick.substack.com" },
+      { tag: "Sovereign AI", title: "The EU AI Act Is Not an IT Problem", href: "https://cspanswick.substack.com" },
+    ]
+  }
+};
+
+function renderLens(key) {
+  const d = LENSES[key];
+  const panel = document.getElementById('lenses-panel');
+
+  const pillarsHTML = d.pillars.map(p => `
+    <a class="lenses-pillar-item" href="#readiness">
+      <span class="lenses-pillar-num">${p.num}</span>
+      <span class="lenses-pillar-name">${p.name}</span>
+      <span class="lenses-pillar-priority ${p.priority}">${p.priority === 'high' ? 'Priority' : 'Monitor'}</span>
+    </a>`).join('');
+
+  const articlesHTML = d.articles.map(a => `
+    <a class="lenses-article-item" href="${a.href}" target="_blank">
+      <div class="lenses-article-tag">${a.tag}</div>
+      <div class="lenses-article-title">${a.title}</div>
+    </a>`).join('');
+
+  panel.innerHTML = `
+    <div class="lenses-thesis">
+      <div>
+        <div class="lenses-function-label">${d.label}</div>${d.serving ? `<div class="lenses-serving" style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(240,244,248,.5);margin-top:6px;">Serving: ${d.serving}</div>` : ""}
+        <div class="lenses-thesis-text">${d.thesis}</div>
+        <div class="lenses-thesis-sub">${d.sub}</div>
+      </div>
+    </div>
+    <div class="lenses-pillars">
+      <div class="lenses-col-label">Priority pillars</div>
+      ${pillarsHTML}
+    </div>
+    <div class="lenses-articles">
+      <div class="lenses-col-label">Relevant reading</div>
+      ${articlesHTML}
+    </div>
+  `;
+}
+
+function setLens(key) {
+  document.querySelectorAll('.lenses-tab').forEach(t => {
+    t.classList.toggle('active', t.getAttribute('onclick') === `setLens('${key}')`);
+    t.setAttribute('aria-selected', t.getAttribute('onclick') === `setLens('${key}')`);
+  });
+  renderLens(key);
+}
+
+// Initialise on CEO
+renderLens('ceo');
+</script>
+
+
+<script>
+// ── INTELLIGENCE LOOP ENGINE ──────────────────────────────────────────────
+
+// Dimension scores — mirrors hero instrument. In Phase 3+ these come from
+// localStorage once the user has completed assessments.
+const DIMENSION_SCORES = {
+  'AI Economics':    { score: 38, color: 'amber' },
+  'Agentic Governance':    { score: 52, color: 'teal'  },
+  'Human Agency':       { score: 61, color: 'teal'  },
+  'Executive Operating Models':       { score: 33, color: 'amber' },
+  'Decision Intelligence':  { score: 44, color: 'amber' },
+  'Sovereign AI': { score: 58, color: 'teal'  },
+};
+
+const COMPOSITE_SCORE = Math.round(
+  Object.values(DIMENSION_SCORES).reduce((s, d) => s + d.score, 0)
+  / Object.values(DIMENSION_SCORES).length
+);
+
+// ── 1. Nav score indicator ────────────────────────────────────────────────
+// Shows once the user has scrolled past the hero — signals "you're now
+// inside the platform, your score travels with you."
+
+const navScore     = document.getElementById('nav-score');
+const navScoreFill = document.getElementById('nav-score-fill');
+const navScoreVal  = document.getElementById('nav-score-val');
+const hero         = document.querySelector('.hero');
+
+function activateNavScore() {
+  navScore.classList.add('visible');
+  navScoreVal.textContent = COMPOSITE_SCORE;
+  navScoreFill.style.width = COMPOSITE_SCORE + '%';
+}
+
+function deactivateNavScore() {
+  navScore.classList.remove('visible');
+}
+
+// Use IntersectionObserver to watch when hero exits viewport
+if (hero && navScore) {
+  const heroObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) {
+        activateNavScore();
+      } else {
+        deactivateNavScore();
+      }
+    },
+    { threshold: 0.1 }
+  );
+  heroObserver.observe(hero);
+}
+
+// ── 2. Pillar row scroll highlight ────────────────────────────────────────
+// Highlights the pillar row currently in view — makes the assess CTA feel
+// contextually active rather than static.
+
+const pillarRows = document.querySelectorAll('.pillar-row');
+
+if (pillarRows.length) {
+  const rowObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
+      });
+    },
+    { threshold: 0.4, rootMargin: '-80px 0px -20% 0px' }
+  );
+  pillarRows.forEach(row => rowObserver.observe(row));
+}
+
+// ── 3. Score bar live sync ────────────────────────────────────────────────
+// Connects the hero score bars to the same DIMENSION_SCORES data object,
+// so when scores update (Phase 3 localStorage integration) both the hero
+// instrument and nav indicator update together.
+
+function syncScoreBars() {
+  // Hero instrument bars
+  document.querySelectorAll('.score-dim').forEach(dim => {
+    const nameEl = dim.querySelector('.score-dim-name');
+    const valEl  = dim.querySelector('.score-dim-value');
+    const fill   = dim.querySelector('.score-bar-fill');
+    if (!nameEl) return;
+
+    const key = nameEl.textContent.replace(' &amp; ', ' & ').replace(' & ', ' & ');
+    const match = Object.entries(DIMENSION_SCORES).find(([k]) =>
+      k.toLowerCase().includes(key.toLowerCase().split(' ')[0]) ||
+      key.toLowerCase().includes(k.toLowerCase().split(' ')[0])
+    );
+
+    if (match && fill) {
+      const [, data] = match;
+      fill.style.width = data.score + '%';
+      fill.className = 'score-bar-fill ' + data.color;
+      if (valEl) valEl.textContent = data.score;
+    }
+  });
+
+  // Update hero composite score
+  const scoreNumber = document.querySelector('.score-number');
+  if (scoreNumber) {
+    scoreNumber.textContent = COMPOSITE_SCORE;
+    scoreNumber.classList.add('score-pulse');
+    setTimeout(() => scoreNumber.classList.remove('score-pulse'), 700);
+  }
+}
+
+// ── 4. Assess CTA click tracking ─────────────────────────────────────────
+// When a user clicks "Assess this dimension", store which dimension they
+// came from. The EU AI Act tool page can read this to contextualise results.
+
+document.querySelectorAll('.pillar-assess-cta').forEach(cta => {
+  cta.addEventListener('click', () => {
+    const dim = cta.getAttribute('data-dimension');
+    const score = cta.getAttribute('data-score');
+    if (dim) {
+      try {
+        sessionStorage.setItem('assess_from_dimension', dim);
+        sessionStorage.setItem('assess_from_score', score);
+        sessionStorage.setItem('assess_from_page', 'homepage_pillar');
+      } catch(e) {}
+    }
+  });
+});
+
+// ── 5. Score instrument CTA click ────────────────────────────────────────
+const instrumentCta = document.querySelector('.score-instrument-cta');
+if (instrumentCta) {
+  instrumentCta.addEventListener('click', () => {
+    try {
+      sessionStorage.setItem('assess_from_page', 'homepage_hero_instrument');
+      sessionStorage.setItem('assess_composite', COMPOSITE_SCORE);
+    } catch(e) {}
+  });
+}
+
+// Initialise
+syncScoreBars();
+</script>
+
+</body>
+</html>

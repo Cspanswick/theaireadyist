@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Signals — Review · theAIReadyist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: var(--color-bg); --surface: #0F2233; --raised: #122739;
+      --teal: var(--color-accent); --amber: var(--color-warning);
+      --text: var(--color-text-primary); --text-sec: rgba(245,242,236,0.65); --text-mut: rgba(245,242,236,0.40);
+      --border: rgba(0,184,162,0.20); --border-hi: rgba(0,184,162,0.55);
+      --border-sub: rgba(255,255,255,0.08); --border-warn: rgba(232,168,56,0.35);
+      --red: #e05c5c;
+      --head: 'Playfair Display', Georgia, serif;
+      --body: 'DM Sans', -apple-system, sans-serif;
+      --mono: 'DM Mono', 'Courier New', monospace;
+    }
+    html { font-size: 17px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.6; min-height: 100vh; }
+
+    .header { border-bottom: 1px solid var(--border); padding: 48px 48px 28px; }
+    .header-inner { max-width: 1040px; margin: 0 auto; }
+    .eyebrow {
+      display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--teal); letter-spacing: 0.14em; text-transform: uppercase;
+      border: 1px solid var(--border); padding: 4px 10px; margin-bottom: 18px;
+    }
+    h1 { font-family: var(--head); font-size: clamp(30px, 4vw, 44px); font-weight: 700; line-height: 1.12; margin-bottom: 12px; }
+    h1 em { color: var(--teal); font-style: italic; }
+    .header-desc { font-size: 15px; color: var(--text-sec); max-width: 660px; }
+    .header-nav { margin-top: 18px; display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+    .nav-link {
+      font-family: var(--mono); font-size: 12px; color: var(--text); text-decoration: none;
+      letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 2px;
+    }
+    .nav-link:hover { color: var(--teal); border-color: var(--teal); }
+
+    .main { max-width: 1040px; margin: 0 auto; padding: 28px 48px 80px; }
+
+    /* Filters */
+    .filters { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 22px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mut); }
+    .field select, .field input {
+      background: var(--surface); color: var(--text); border: 1px solid var(--border);
+      padding: 8px 10px; font-family: var(--body); font-size: 14px; min-width: 150px;
+    }
+    .field select:focus, .field input:focus { outline: none; border-color: var(--border-hi); }
+    .btn-refresh {
+      background: none; color: var(--teal); border: 1px solid var(--border-hi);
+      padding: 8px 16px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+    }
+    .btn-refresh:hover { background: rgba(0,184,162,0.1); }
+
+    .status-line { font-family: var(--mono); font-size: 13px; min-height: 22px; margin-bottom: 20px; letter-spacing: 0.03em; }
+    .status-line.success { color: var(--teal); }
+    .status-line.error { color: var(--red); }
+    .status-line.info { color: var(--amber); }
+    .counter { font-family: var(--mono); font-size: 12px; color: var(--text-mut); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 18px; }
+
+    .empty { border: 1px dashed var(--border); padding: 56px 32px; text-align: center; color: var(--text-mut); font-size: 16px; }
+    .empty-icon { font-family: var(--head); font-size: 44px; color: var(--border-hi); display: block; margin-bottom: 12px; }
+
+    /* Signal card */
+    .sig-card { background: transparent; border: 1px solid var(--border); border-left: 2px solid var(--amber); margin-bottom: 26px; }
+    .sig-card[data-status="approved"] { border-left-color: var(--teal); }
+    .sig-card[data-status="published"] { border-left-color: var(--teal); opacity: 0.85; }
+    .sig-card[data-status="rejected"] { border-left-color: var(--red); opacity: 0.7; }
+    .sig-head { padding: 22px 28px 8px; }
+    .sig-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--text-mut); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+    .sig-id { color: var(--amber); }
+    .pill { border: 1px solid var(--border-sub); padding: 2px 8px; }
+    .pill.pillar { color: var(--teal); border-color: var(--border); }
+    .pill.score { color: var(--amber); border-color: var(--border-warn); }
+    .pill.score-5 { background: rgba(232,168,56,0.14); }
+    .pill.conf-low { color: var(--red); border-color: rgba(224,92,92,0.4); }
+
+    .sig-orig { font-size: 12.5px; color: var(--text-mut); margin-bottom: 14px; }
+    .sig-orig a { color: var(--text-sec); }
+    .sig-orig a:hover { color: var(--teal); }
+
+    .grid { display: grid; gap: 14px; padding: 0 28px 18px; }
+    .ed { display: flex; flex-direction: column; gap: 5px; }
+    .ed label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-mut); }
+    .ed input, .ed textarea, .ed select {
+      background: var(--raised); color: var(--text); border: 1px solid var(--border-sub);
+      padding: 9px 11px; font-family: var(--body); font-size: 14.5px; line-height: 1.5; width: 100%; resize: vertical;
+    }
+    .ed input:focus, .ed textarea:focus, .ed select:focus { outline: none; border-color: var(--border-hi); }
+    .ed .title-input { font-family: var(--head); font-size: 18px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr 110px; gap: 12px; }
+    @media (max-width: 680px) { .row2 { grid-template-columns: 1fr; } }
+
+    .sig-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding: 14px 28px 22px; border-top: 1px solid var(--border-sub); }
+    .btn { padding: 9px 16px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border: 1px solid; background: none; }
+    .btn-save { color: var(--text); border-color: var(--border-sub); }
+    .btn-save:hover { border-color: var(--text-sec); }
+    .btn-approve { color: var(--teal); border-color: var(--border-hi); }
+    .btn-approve:hover { background: rgba(0,184,162,0.12); }
+    .btn-publish { color: var(--bg); background: var(--teal); border-color: var(--teal); }
+    .btn-publish:hover { filter: brightness(1.1); }
+    .btn-candidate { color: var(--amber); border-color: var(--border-warn); }
+    .btn-candidate:hover { background: rgba(232,168,56,0.12); }
+    .btn-reject { color: var(--red); border-color: rgba(224,92,92,0.4); }
+    .btn-reject:hover { background: rgba(224,92,92,0.1); }
+    .gate-note { font-family: var(--mono); font-size: 10.5px; color: var(--text-mut); letter-spacing: 0.04em; margin-left: auto; }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <span class="eyebrow">Executive Signal Agent · v1</span>
+      <h1>Signal <em>Review</em> Queue</h1>
+      <p class="header-desc">Pillar-classified executive signals awaiting human approval. Nothing is published automatically — approve, edit, or reject each signal. Only approved &amp; published signals can ever appear on the public site.</p>
+      <div class="header-nav">
+        <a class="nav-link" href="/admin/approvals/">Insight approvals</a>
+        <a class="nav-link" href="/signals.html">Public signals</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="filters">
+      <div class="field">
+        <label for="f-status">Status</label>
+        <select id="f-status">
+          <option value="pending" selected>Pending</option>
+          <option value="approved">Approved</option>
+          <option value="published">Published</option>
+          <option value="rejected">Rejected</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-pillar">Pillar</label>
+        <select id="f-pillar">
+          <option value="">All pillars</option>
+          <option>Executive Operating Models</option>
+          <option>Decision Intelligence</option>
+          <option>Agentic Governance</option>
+          <option>AI Economics</option>
+          <option>Human Agency</option>
+          <option>Sovereign AI</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-source">Source</label>
+        <input id="f-source" type="text" placeholder="e.g. CIO.com" />
+      </div>
+      <div class="field">
+        <label for="f-score">Min score</label>
+        <select id="f-score">
+          <option value="">Any</option>
+          <option value="5">5 only</option>
+          <option value="4" selected>4+</option>
+          <option value="3">3+</option>
+          <option value="1">1+</option>
+        </select>
+      </div>
+      <button type="button" class="btn-refresh" id="apply">Apply filters</button>
+    </div>
+
+    <div class="status-line" id="status"></div>
+    <div class="counter" id="counter"></div>
+    <div id="list"></div>
+  </main>
+
+<script>
+(function () {
+  var list    = document.getElementById('list');
+  var counter = document.getElementById('counter');
+  var statusEl = document.getElementById('status');
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg || '';
+    statusEl.className = 'status-line' + (kind ? ' ' + kind : '');
+    if (msg) setTimeout(function(){ if (statusEl.textContent === msg) { statusEl.textContent=''; statusEl.className='status-line'; } }, 6000);
+  }
+
+  function getAdminKey(force) {
+    var k = !force && localStorage.getItem('adminApiKey');
+    if (!k) {
+      k = window.prompt('Enter admin key');
+      if (k) localStorage.setItem('adminApiKey', k);
+    }
+    return k;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function pillarOptions(selected) {
+    var ps = ['Executive Operating Models','Decision Intelligence','Agentic Governance','AI Economics','Human Agency','Sovereign AI'];
+    var out = '<option value=""' + (selected ? '' : ' selected') + '>— none —</option>';
+    ps.forEach(function(p){ out += '<option' + (p === selected ? ' selected' : '') + '>' + esc(p) + '</option>'; });
+    return out;
+  }
+
+  function buildQuery() {
+    var p = new URLSearchParams();
+    p.set('status', document.getElementById('f-status').value);
+    var pillar = document.getElementById('f-pillar').value;
+    var source = document.getElementById('f-source').value.trim();
+    var score  = document.getElementById('f-score').value;
+    if (pillar) p.set('pillar', pillar);
+    if (source) p.set('source', source);
+    if (score)  p.set('minScore', score);
+    return p.toString();
+  }
+
+  async function load(force) {
+    var key = getAdminKey(force);
+    if (!key) { list.innerHTML = emptyMsg('Admin key required — reload to enter it.'); return; }
+    setStatus('Loading…', 'info');
+    try {
+      var res = await fetch('/api/signals-pending?' + buildQuery(), { headers: { 'x-admin-key': key } });
+      if (res.status === 401) {
+        localStorage.removeItem('adminApiKey');
+        list.innerHTML = emptyMsg('Admin key rejected.');
+        if (!force) load(true);
+        return;
+      }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      setStatus('');
+      render(data.signals || []);
+    } catch (e) {
+      list.innerHTML = emptyMsg('Could not load signals — is the API configured?');
+    }
+  }
+
+  function emptyMsg(t) { return '<div class="empty"><span class="empty-icon">◎</span>' + esc(t) + '</div>'; }
+
+  function render(signals) {
+    counter.textContent = signals.length + ' signal' + (signals.length === 1 ? '' : 's');
+    if (!signals.length) { list.innerHTML = emptyMsg('No signals match these filters. New pending signals appear here after each agent run.'); return; }
+    list.innerHTML = signals.map(cardHTML).join('');
+  }
+
+  function cardHTML(d) {
+    var created = d.created_at ? new Date(d.created_at).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+    var score = d.executive_relevance_score;
+    var tags = (Array.isArray(d.suggested_tags) ? d.suggested_tags : []).join(', ');
+    var confClass = d.classification_confidence === 'low' ? ' conf-low' : '';
+    var pub = d.published_at ? new Date(d.published_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '—';
+    return ''
+      + '<article class="sig-card" data-id="' + esc(d.id) + '" data-status="' + esc(d.approval_status) + '">'
+      +   '<div class="sig-head">'
+      +     '<div class="sig-meta">'
+      +       '<span class="sig-id">' + esc(d.id) + '</span>'
+      +       '<span class="pill">' + esc(d.approval_status) + '</span>'
+      +       (d.primary_pillar ? '<span class="pill pillar">' + esc(d.primary_pillar) + '</span>' : '')
+      +       '<span class="pill score score-' + esc(score) + '">Score ' + esc(score) + '</span>'
+      +       '<span class="pill' + confClass + '">' + esc(d.classification_confidence || '—') + '</span>'
+      +       '<span>' + esc(d.source_name || '') + '</span>'
+      +       '<span>' + esc(created) + '</span>'
+      +     '</div>'
+      +     '<div class="sig-orig">Original: “' + esc(d.original_title || '') + '” · Published ' + esc(pub) + ' · <a href="' + esc(d.source_url) + '" target="_blank" rel="noopener noreferrer">source ↗</a></div>'
+      +   '</div>'
+      +   '<div class="grid">'
+      +     field('Signal title', '<input class="title-input" data-f="signal_title" value="' + esc(d.signal_title || '') + '" />')
+      +     field('Why it matters', '<textarea data-f="why_it_matters" rows="3">' + esc(d.why_it_matters || '') + '</textarea>')
+      +     field('Decision question', '<textarea data-f="decision_question" rows="2">' + esc(d.decision_question || '') + '</textarea>')
+      +     '<div class="row2">'
+      +       field('Primary pillar', '<select data-f="primary_pillar">' + pillarOptions(d.primary_pillar) + '</select>')
+      +       field('Secondary pillar', '<select data-f="secondary_pillar">' + pillarOptions(d.secondary_pillar) + '</select>')
+      +       field('Score', '<select data-f="executive_relevance_score">' + [1,2,3,4,5].map(function(n){ return '<option' + (n==score?' selected':'') + '>' + n + '</option>'; }).join('') + '</select>')
+      +     '</div>'
+      +     field('Suggested tags (comma-separated)', '<input data-f="suggested_tags" value="' + esc(tags) + '" />')
+      +   '</div>'
+      +   '<div class="sig-actions">'
+      +     '<button type="button" class="btn btn-save" onclick="window._act(this,\'save\')">Save edits</button>'
+      +     '<button type="button" class="btn btn-approve" onclick="window._act(this,\'approve\')">✓ Approve</button>'
+      +     '<button type="button" class="btn btn-publish" onclick="window._act(this,\'publish\')">▲ Publish</button>'
+      +     '<button type="button" class="btn btn-candidate" onclick="window._act(this,\'publish_candidate\')">▲+ Publish + Research Candidate</button>'
+      +     '<button type="button" class="btn btn-reject" onclick="window._act(this,\'reject\')">✕ Reject</button>'
+      +     '<span class="gate-note">Publish = visible on /signals.html · approval is mandatory</span>'
+      +   '</div>'
+      + '</article>';
+  }
+
+  function field(label, control) {
+    return '<div class="ed"><label>' + esc(label) + '</label>' + control + '</div>';
+  }
+
+  function collectEdits(card) {
+    var edits = {};
+    card.querySelectorAll('[data-f]').forEach(function(el){
+      var f = el.getAttribute('data-f');
+      var v = el.value;
+      if (f === 'suggested_tags') edits[f] = v.split(',').map(function(s){return s.trim();}).filter(Boolean);
+      else if (f === 'executive_relevance_score') edits[f] = Number(v);
+      else if (f === 'secondary_pillar') edits[f] = v || null;
+      else edits[f] = v;
+    });
+    return edits;
+  }
+
+  window._act = async function (btn, action) {
+    var card = btn.closest('.sig-card');
+    var id = card.getAttribute('data-id');
+    var makeCandidate = (action === 'publish_candidate');
+    if (makeCandidate) action = 'publish';
+    var candPayload = null;
+    if (makeCandidate) {
+      var e0 = collectEdits(card);
+      var srcA = card.querySelector('.sig-orig a');
+      candPayload = { signal_id: id, signal_url: srcA ? srcA.href : '', signal_title: e0.signal_title || '', pillar: e0.primary_pillar || null, candidate_topic: e0.signal_title || 'Untitled signal' };
+    }
+    if (action === 'publish' && !confirm(makeCandidate ? 'Publish this signal AND add it to the research backlog?' : 'Publish this signal to the public site (/signals.html)?')) return;
+    if (action === 'reject' && !confirm('Reject this signal? It is archived, not deleted.')) return;
+    var key = getAdminKey();
+    if (!key) return;
+
+    var body = { id: id, action: action, edits: collectEdits(card) };
+    if (action === 'reject') body.rejected_reason = 'admin_rejected';
+
+    var btns = card.querySelectorAll('.btn');
+    btns.forEach(function(b){ b.disabled = true; });
+    try {
+      var res = await fetch('/api/signals-decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+        body: JSON.stringify(body)
+      });
+      var data = await res.json().catch(function(){ return {}; });
+      if (res.ok) {
+        if (action === 'save') {
+          setStatus(id + ' saved.', 'success');
+        } else {
+          // If the card no longer matches the active status filter, remove it
+          var activeStatus = document.getElementById('f-status').value;
+          var newStatus = data.signal && data.signal.approval_status;
+          if (activeStatus !== 'all' && newStatus !== activeStatus) {
+            card.remove();
+            var remaining = document.querySelectorAll('.sig-card').length;
+            counter.textContent = remaining + ' signal' + (remaining === 1 ? '' : 's');
+            if (!remaining) render([]);
+          } else {
+            card.setAttribute('data-status', newStatus);
+          }
+          setStatus(id + ' → ' + newStatus + '.', 'success');
+          if (makeCandidate && candPayload) {
+            try {
+              var cr = await fetch('/api/research-candidates', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: JSON.stringify(candPayload) });
+              var cd = await cr.json().catch(function(){ return {}; });
+              setStatus(cr.ok ? (id + ' published + added as ' + ((cd.candidate && cd.candidate.id) || 'candidate') + '.') : (id + ' published, but candidate add failed.'), cr.ok ? 'success' : 'error');
+            } catch (e) { setStatus(id + ' published; candidate add errored.', 'error'); }
+          }
+        }
+      } else if (res.status === 401) {
+        localStorage.removeItem('adminApiKey');
+        setStatus('Admin key rejected — reload to re-enter it.', 'error');
+      } else {
+        setStatus('Action failed: ' + (data.error || 'HTTP ' + res.status), 'error');
+      }
+    } catch (e) {
+      setStatus('Action failed — could not reach the API.', 'error');
+    }
+    btns.forEach(function(b){ b.disabled = false; });
+  };
+
+  document.getElementById('apply').addEventListener('click', function(){ load(); });
+  ['f-status','f-pillar','f-score'].forEach(function(idd){
+    document.getElementById(idd).addEventListener('change', function(){ load(); });
+  });
+  document.getElementById('f-source').addEventListener('keydown', function(e){ if (e.key === 'Enter') load(); });
+
+  load();
+})();
+</script>
+</body>
+</html>

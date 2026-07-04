@@ -1,0 +1,54 @@
+diff --git a/index.html b/index.html
+index 518583b..93ae1f0 100644
+--- a/index.html
++++ b/index.html
+@@ -1855,6 +1855,49 @@
+ 
+     <div class="section-label">Readiness Instruments</div>
+ 
++    <!-- Featured: Decision Performance Index — flagship diagnostic -->
++    <a class="instrument-featured" href="/dpi">
++      <div class="instrument-featured-body">
++        <div class="instrument-status live">&#9679;&nbsp; Live</div>
++        <div class="instrument-name">Decision Performance Index</div>
++        <p class="instrument-desc">The flagship diagnostic. Rate your organisation across the six dimensions of Decision Performance to identify the single constraint most limiting high-value decisions. Constraint-led executive report. Takes 5&ndash;7 minutes.</p>
++        <div class="instrument-meta">
++          <span class="instrument-aud">CEO &middot; COO &middot; CIO &middot; CTO &middot; CFO &middot; 7 Min</span>
++          <span class="instrument-cta">Find your primary constraint</span>
++        </div>
++      </div>
++      <div class="instrument-featured-panel">
++        <div class="panel-label">Decision Performance dimensions</div>
++        <div class="panel-dimensions">
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Quality</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:62%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Velocity</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:48%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Accountability</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:38%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Capability</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:66%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Value</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:54%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Resilience</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:60%"></div></div>
++          </div>
++        </div>
++        <div class="panel-cta">Your primary constraint</div>
++      </div>
++    </a>
++
+     <!-- Featured: EU AI Act Assessment — full width with teaser bars -->
+     <a class="instrument-featured" href="/eu-ai-act">
+       <div class="instrument-featured-body">

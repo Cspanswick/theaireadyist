@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Research — The AI Readyist Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:var(--color-bg);
+  --teal:var(--color-accent);
+  --amber:var(--color-warning);
+  --red:#e05c5c;
+  --text-primary:var(--color-text-primary);
+  --text-secondary:rgba(245,242,236,0.65);
+  --text-muted:rgba(245,242,236,0.40);
+  --border-card:rgba(0,184,162,0.20);
+  --border-active:rgba(0,184,162,0.60);
+  --border-subtle:rgba(255,255,255,0.08);
+  --border-warning:rgba(232,168,56,0.35);
+}
+body{background:var(--navy);color:var(--text-primary);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:var(--type-body-sm)}
+
+/* ── NAV ── */
+nav{
+  height:56px;border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;padding:0 2rem;gap:2rem;
+  position:sticky;top:0;background:var(--navy);z-index:100;
+  backdrop-filter:blur(8px);
+}
+.wordmark{font-family:'DM Sans',sans-serif;font-size:var(--type-body-sm);font-weight:500;text-decoration:none;color:var(--text-primary);letter-spacing:.01em}
+.wordmark span{color:var(--teal)}
+.nav-links{display:flex;gap:1.5rem;margin-left:auto}
+.nav-links a{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--text-primary)}
+.nav-links a.active{color:var(--teal)}
+
+/* ── LAYOUT ── */
+.page{max-width:860px;margin:0 auto;padding:3rem 2rem 6rem}
+.page-header{margin-bottom:3rem}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.75rem,3vw,2.25rem);font-weight:600;margin-bottom:.4rem}
+.page-header p{color:var(--text-secondary);font-size:.9rem;line-height:1.6}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:2.5rem}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:.75rem;display:block
+}
+
+/* ── PILLAR GRID ── */
+.pillar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem}
+.pillar-card{
+  border:1px solid var(--border-card);padding:1rem 1.1rem;cursor:pointer;
+  transition:border-color .15s,background .15s;position:relative;
+}
+.pillar-card:hover{border-color:rgba(0,184,162,0.4);background:rgba(0,184,162,0.04)}
+.pillar-card.selected{border-color:var(--teal);background:rgba(0,184,162,0.08)}
+.pillar-card.selected::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal)
+}
+.pillar-card input[type="radio"]{display:none}
+.pillar-num{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--teal);margin-bottom:.35rem}
+.pillar-name{font-family:'DM Sans',sans-serif;font-weight:500;font-size:.88rem;margin-bottom:.4rem;line-height:1.3}
+.pillar-hint{font-size:.78rem;color:var(--text-muted);line-height:1.5}
+
+/* ── FORM FIELDS ── */
+.field{margin-bottom:1.5rem}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem}
+.field textarea,.field input[type="text"]{
+  width:100%;background:transparent;border:1px solid var(--border-card);
+  color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.9rem;
+  padding:.75rem 1rem;outline:none;resize:vertical;
+  transition:border-color .15s;
+}
+.field textarea:focus,.field input[type="text"]:focus{border-color:var(--teal)}
+.field textarea{min-height:80px}
+.field textarea::placeholder,.field input::placeholder{color:var(--text-muted)}
+
+/* ── TOGGLE GROUPS ── */
+.toggle-group{display:flex;flex-wrap:wrap;gap:.5rem}
+.toggle-btn{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;
+  border:1px solid var(--border-card);background:transparent;color:var(--text-secondary);
+  padding:.45rem .9rem;cursor:pointer;transition:all .15s;text-transform:uppercase;
+}
+.toggle-btn:hover{border-color:rgba(0,184,162,0.4);color:var(--text-primary)}
+.toggle-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(0,184,162,0.08)}
+
+/* ── TOPIC CHIPS ── */
+.topic-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.topic-chip{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--border-subtle);color:var(--text-muted);padding:3px 8px;cursor:pointer;
+  transition:all .15s;
+}
+.topic-chip:hover{border-color:var(--border-card);color:var(--text-secondary)}
+
+/* ── GENERATE BUTTON ── */
+.btn-generate{
+  display:inline-block;background:var(--teal);color:var(--color-bg);
+  font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  padding:.8rem 2rem;border:none;cursor:pointer;font-weight:500;
+  transition:opacity .15s;
+}
+.btn-generate:hover{opacity:.88}
+.btn-generate:disabled{opacity:.4;cursor:default}
+
+/* ── OUTPUT ── */
+.output-wrap{margin-top:2.5rem;display:none}
+.output-wrap.visible{display:block}
+.output-header{
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border-subtle);padding-bottom:.75rem;margin-bottom:1rem
+}
+.output-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.btn-copy{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--border-card);background:transparent;color:var(--text-secondary);
+  padding:.4rem .9rem;cursor:pointer;transition:all .15s;
+}
+.btn-copy:hover{border-color:var(--teal);color:var(--teal)}
+.btn-copy.copied{border-color:var(--teal);color:var(--teal)}
+#prompt-output{
+  background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);
+  padding:1.5rem;font-family:'DM Mono',monospace;font-size:.8rem;line-height:1.8;
+  color:var(--text-secondary);white-space:pre-wrap;word-break:break-word;
+  max-height:520px;overflow-y:auto;
+}
+
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1px solid var(--border-subtle);margin:2.5rem 0}
+
+/* ── VALIDATION MSG ── */
+.val-msg{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);margin-top:.5rem;display:none}
+.val-msg.visible{display:block}
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body class="tmpl tmpl-product">
+
+<nav>
+  <a class="wordmark" href="/"><span>the</span><span style="color:var(--teal)">AI</span><span>Readyist</span></a>
+  <div class="nav-links">
+    <a href="/admin/research-agent">Briefs</a>
+    <a href="/admin/approvals">Approvals</a>
+    <a href="/admin/blog-research" class="active">Blog Research</a>
+    <a href="/insights">Insights ↗</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>Blog Research Prompt Builder</h1>
+    <p>Configure your post, generate a structured research prompt, copy it into your agent of choice.</p>
+  </div>
+
+  <!-- 01 PILLAR -->
+  <div class="section">
+    <span class="section-label">01 — Editorial Pillar</span>
+    <div class="pillar-grid" id="pillar-grid">
+
+      <label class="pillar-card" data-pillar="1">
+        <input type="radio" name="pillar" value="1">
+        <div class="pillar-num">PILLAR 01</div>
+        <div class="pillar-name">AI Cost Intelligence</div>
+        <div class="pillar-hint">Agentic cost spirals, FinOps, CFO governance frameworks</div>
+      </label>
+
+      <label class="pillar-card" data-pillar="2">
+        <input type="radio" name="pillar" value="2">
+        <div class="pillar-num">PILLAR 02</div>
+        <div class="pillar-name">PoC Purgatory</div>
+        <div class="pillar-hint">Why pilots succeed and production deployments fail</div>
+      </label>
+
+      <label class="pillar-card" data-pillar="3">
+        <input type="radio" name="pillar" value="3">
+        <div class="pillar-num">PILLAR 03</div>
+        <div class="pillar-name">Governance, Trust &amp; Risk</div>
+        <div class="pillar-hint">TRiSM, accountability, audit trails, regulatory compliance</div>
+      </label>
+
+      <label class="pillar-card" data-pillar="4">
+        <input type="radio" name="pillar" value="4">
+        <div class="pillar-num">PILLAR 04</div>
+        <div class="pillar-name">The Human &amp; Culture Layer</div>
+        <div class="pillar-hint">Adoption, automation anxiety, leadership behaviours</div>
+      </label>
+
+      <label class="pillar-card" data-pillar="5">
+        <input type="radio" name="pillar" value="5">
+        <div class="pillar-num">PILLAR 05</div>
+        <div class="pillar-name">AI-Native Operating Model</div>
+        <div class="pillar-hint">Redesigning work, compounding value, workforce design</div>
+      </label>
+
+    </div>
+    <div id="topic-chips-wrap" style="display:none">
+      <div class="topic-chips" id="topic-chips"></div>
+      <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:.5rem;letter-spacing:.06em">TAP A TOPIC TO USE AS A STARTING POINT</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 02 ANGLE -->
+  <div class="section">
+    <span class="section-label">02 — Post Angle</span>
+    <div class="field">
+      <label for="angle">What is the specific argument, question, or thesis of this post?</label>
+      <textarea id="angle" placeholder="e.g. Most enterprises have no financial governance framework for agentic AI — they're about to get the invoice before they built the controls"></textarea>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 03 AUDIENCE -->
+  <div class="section">
+    <span class="section-label">03 — Primary Audience Lens</span>
+    <div class="toggle-group" id="audience-group">
+      <button class="toggle-btn" data-val="CFO">CFO</button>
+      <button class="toggle-btn" data-val="CIO">CIO</button>
+      <button class="toggle-btn" data-val="CTO">CTO</button>
+      <button class="toggle-btn" data-val="CHRO">CHRO</button>
+      <button class="toggle-btn" data-val="Board">Board</button>
+      <button class="toggle-btn" data-val="All C-Suite">All C-Suite</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 04 POST TYPE -->
+  <div class="section">
+    <span class="section-label">04 — Post Type</span>
+    <div class="toggle-group" id="posttype-group">
+      <button class="toggle-btn active" data-val="Substack long-form">Substack Long-Form</button>
+      <button class="toggle-btn" data-val="LinkedIn post">LinkedIn Post</button>
+      <button class="toggle-btn" data-val="Framework or tool">Framework / Tool</button>
+      <button class="toggle-btn" data-val="Case study">Case Study</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 05 DEPTH & SOURCES -->
+  <div class="section">
+    <span class="section-label">05 — Research Depth</span>
+    <div class="toggle-group" id="depth-group">
+      <button class="toggle-btn active" data-val="Deep — full evidence base with data, named examples, and contrarian views">Deep</button>
+      <button class="toggle-btn" data-val="Standard — key evidence, 2–3 examples, main counterargument">Standard</button>
+      <button class="toggle-btn" data-val="Quick — headline evidence and one strong example only">Quick</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 06 COUNTERARGUMENTS -->
+  <div class="section">
+    <span class="section-label">06 — Counterarguments to Stress-Test <span style="color:var(--text-muted);font-size:10px">(optional)</span></span>
+    <div class="field">
+      <label for="counter">What's the strongest argument against your thesis? Force the research to engage with it.</label>
+      <textarea id="counter" placeholder="e.g. The counterargument is that inference costs are falling fast enough that governance frameworks will be unnecessary by 2027" style="min-height:64px"></textarea>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 07 ADDITIONAL CONTEXT -->
+  <div class="section">
+    <span class="section-label">07 — Additional Context <span style="color:var(--text-muted);font-size:10px">(optional)</span></span>
+    <div class="field">
+      <label for="context">Named sources to prioritise, specific data you already have, angles to avoid</label>
+      <textarea id="context" placeholder="e.g. Gartner's 2025 AI TRiSM report is key. Avoid referencing OpenAI directly — focus on enterprise use patterns." style="min-height:64px"></textarea>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <p class="val-msg" id="val-msg">Select a pillar and enter a post angle before generating.</p>
+  <button class="btn-generate" id="btn-generate" onclick="generatePrompt()">Generate Research Prompt</button>
+
+  <!-- OUTPUT -->
+  <div class="output-wrap" id="output-wrap">
+    <div class="output-header">
+      <span class="output-title">Research Prompt — Ready to Copy</span>
+      <button class="btn-copy" id="btn-copy" onclick="copyPrompt()">Copy to clipboard</button>
+    </div>
+    <pre id="prompt-output"></pre>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── Pillar data ─────────────────────────────────────────────
+const PILLARS = {
+  '1': {
+    name: 'AI Cost Intelligence',
+    summary: 'The financial governance problem that most enterprises have not yet solved: agentic AI is about to create a cost spiral that mirrors the cloud cost shock of the 2010s.',
+    topics: [
+      'Agentic cost amplification — how agent-to-agent workflows multiply inference costs',
+      'AI FinOps — the emerging discipline of managing AI spend at enterprise scale',
+      'CFO conversations — building a cost governance framework before it becomes a crisis',
+      'The cloud cost spiral analogy — why enterprises should have learned this lesson already',
+      'Inference cost per outcome — the metric that matters, not cost per call'
+    ]
+  },
+  '2': {
+    name: 'PoC Purgatory',
+    summary: '30–50% of AI projects fail after the proof-of-concept stage. The pilot worked. The demo impressed. Then nothing. This pillar dissects why.',
+    topics: [
+      'Why AI pilots succeed and production deployments fail',
+      'The five questions every AI programme must answer before the pilot starts',
+      'How to define ROI before you spend the budget, not after',
+      'What organisations that escaped PoC purgatory have in common',
+      'Success metrics that survive CFO scrutiny'
+    ]
+  },
+  '3': {
+    name: 'Governance, Trust & Risk',
+    summary: 'TRiSM — Trust, Risk and Security Management — is the quiet killer of AI at scale. Governance conversations happen too late, after something goes wrong.',
+    topics: [
+      'Who owns accountability when an AI decision causes harm or cost',
+      'Building governance frameworks before scale, not after failure',
+      'Explainability and audit trails in agentic systems',
+      'Security risks specific to AI in IT and digital operations',
+      'Regulatory and compliance dimensions — GDPR, EU AI Act, sector-specific'
+    ]
+  },
+  '4': {
+    name: 'The Human & Culture Layer',
+    summary: 'The main reason AI value stays locked in organisations is not the technology — it is the humans. Most AI transformation programmes treat change management as a checkbox.',
+    topics: [
+      'Why your teams are not using the AI you bought them',
+      'The identity problem — what happens to expertise in an AI-assisted world',
+      'Leadership behaviours that accelerate adoption versus kill it',
+      'Designing workflows that humans actually adopt',
+      'The difference between AI-aware, AI-assisted, and AI-native cultures'
+    ]
+  },
+  '5': {
+    name: 'The AI-Native Operating Model',
+    summary: 'Deploying AI on top of existing processes is the least ambitious — and often most expensive — thing an organisation can do with it.',
+    topics: [
+      'What it means to be AI-native versus AI-enabled',
+      'Reimagining process design with AI capabilities as the starting point',
+      'How compounding AI value works — each capability making the next one easier',
+      'Workforce design in an AI-native organisation',
+      'Measuring transformation outcomes, not just AI usage'
+    ]
+  }
+};
+
+const AUDIENCE_CONTEXT = {
+  'CFO':         'Frame the business problem primarily in terms of financial exposure, governance risk, and capital allocation. The CFO cares about cost, liability, and ROI rigour.',
+  'CIO':         'Frame the problem in terms of operational scale, technical risk, security accountability, and the gap between IT strategy and AI reality.',
+  'CTO':         'Frame the problem in terms of architectural decisions, technical debt created by AI shortcuts, and building systems that can scale without breaking.',
+  'CHRO':        'Frame the problem in terms of workforce transformation, adoption failure, culture change, and the human cost of getting AI wrong.',
+  'Board':       'Frame the problem in terms of governance accountability, strategic risk, fiduciary exposure, and what the board should be asking management.',
+  'All C-Suite': 'Frame the problem so it speaks equally to financial, operational, and human dimensions — this is a cross-functional issue that no single executive owns alone.'
+};
+
+const POST_TYPE_CONTEXT = {
+  'Substack long-form': 'The output will be a long-form Substack post (~1,800–2,500 words). Research should support a full argument arc: problem framing, evidence base, implications, and a concrete takeaway.',
+  'LinkedIn post':       'The output will be a LinkedIn post (~300–500 words). Research should surface one sharp insight, one strong example, and one clear call to action.',
+  'Framework or tool':   'The output will be a practical framework or decision tool. Research should map the problem space and identify 3–5 structured dimensions that give readers something actionable to apply.',
+  'Case study':          'The output will be a case study or pattern analysis. Research should identify real named examples (companies, programmes, decisions) with outcomes — success and failure both.'
+};
+
+// ── State ────────────────────────────────────────────────────
+let selectedPillar = null;
+let selectedAudience = null;
+let selectedPostType = 'Substack long-form';
+let selectedDepth = 'Deep — full evidence base with data, named examples, and contrarian views';
+
+// ── Pillar selection ─────────────────────────────────────────
+document.querySelectorAll('.pillar-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.pillar-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedPillar = card.dataset.pillar;
+    renderTopicChips(selectedPillar);
+  });
+});
+
+function renderTopicChips(pillarId) {
+  const wrap = document.getElementById('topic-chips-wrap');
+  const container = document.getElementById('topic-chips');
+  const topics = PILLARS[pillarId].topics;
+  container.innerHTML = topics.map(t =>
+    `<span class="topic-chip" onclick="useTopicChip(this)">${t}</span>`
+  ).join('');
+  wrap.style.display = 'block';
+}
+
+function useTopicChip(el) {
+  const angleField = document.getElementById('angle');
+  if (!angleField.value.trim()) {
+    angleField.value = el.textContent;
+  } else {
+    angleField.value = el.textContent;
+  }
+  angleField.focus();
+}
+
+// ── Toggle groups ────────────────────────────────────────────
+function setupToggleGroup(groupId, setter) {
+  document.querySelectorAll(`#${groupId} .toggle-btn`).forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll(`#${groupId} .toggle-btn`).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setter(btn.dataset.val);
+    });
+  });
+}
+
+setupToggleGroup('audience-group',  v => { selectedAudience = v; });
+setupToggleGroup('posttype-group',  v => { selectedPostType = v; });
+setupToggleGroup('depth-group',     v => { selectedDepth = v; });
+
+// ── Generate ─────────────────────────────────────────────────
+function generatePrompt() {
+  const angle   = document.getElementById('angle').value.trim();
+  const counter = document.getElementById('counter').value.trim();
+  const context = document.getElementById('context').value.trim();
+  const valMsg  = document.getElementById('val-msg');
+
+  if (!selectedPillar || !angle) {
+    valMsg.classList.add('visible');
+    return;
+  }
+  valMsg.classList.remove('visible');
+
+  const pillar   = PILLARS[selectedPillar];
+  const audience = selectedAudience || 'Senior enterprise leaders (CIO, CTO, CFO, CHRO, Board)';
+  const audCtx   = AUDIENCE_CONTEXT[selectedAudience] || 'Frame the problem for senior enterprise leaders who need to act, not just understand.';
+  const ptCtx    = POST_TYPE_CONTEXT[selectedPostType] || POST_TYPE_CONTEXT['Substack long-form'];
+
+  const lines = [
+    `RESEARCH BRIEF — The AI Readyist`,
+    `${'─'.repeat(60)}`,
+    ``,
+    `PUBLICATION IDENTITY`,
+    `The AI Readyist is an independent publication for senior enterprise leaders.`,
+    `Voice: direct, credible, practitioner-level. Never hype. Never fear.`,
+    `Thesis: People won't be replaced by AI. They'll be replaced by people who know how to leverage it.`,
+    `Strapline: Because being AI-ready is harder than being AI-excited.`,
+    ``,
+    `EDITORIAL PILLAR`,
+    `Pillar ${selectedPillar}: ${pillar.name}`,
+    `${pillar.summary}`,
+    ``,
+    `POST ANGLE`,
+    `${angle}`,
+    ``,
+    `PRIMARY AUDIENCE: ${audience}`,
+    `${audCtx}`,
+    ``,
+    `POST TYQR: ${selectedPostType}`,
+    `${ptCtx}`,
+    ``,
+    `RESEARCH DEPTH: ${selectedDepth.split(' — ')[0]}`,
+    selectedDepth.includes('—') ? selectedDepth.split(' — ')[1] : selectedDepth,
+    ``,
+    `─`.repeat(60),
+    `WHAT I NEED FROM YOU`,
+    `─`.repeat(60),
+    ``,
+    `1. EVIDENCE BASE`,
+    `   Find recent, credible evidence (last 12 months preferred) that supports or challenges the post angle.`,
+    `   Source hierarchy:`,
+    `   → Primary: official announcements, regulators, standards bodies, company statements`,
+    `   → Secondary: recognised analyst firms (Gartner, Forrester, McKinsey, Deloitte, PwC, KPMG)`,
+    `   → Trade press: credible specialist publications`,
+    `   → Vendor material: only if clearly labelled as vendor perspective, not treated as neutral evidence`,
+    ``,
+    `2. NAMED EXAMPLES`,
+    `   Real organisations, programmes, or decisions — with outcomes. Avoid generic "a major bank" framing.`,
+    `   Include both success cases and cautionary cases where relevant.`,
+    ``,
+    `3. DATA POINTS`,
+    `   Quantified evidence: percentages, costs, timelines, failure rates. Cite source and date for each.`,
+    `   Flag if a statistic is widely repeated but has a weak or unclear original source.`,
+  ];
+
+  if (counter) {
+    lines.push(``, `4. COUNTERARGUMENT ENGAGEMENT`);
+    lines.push(`   The strongest argument against this thesis is:`);
+    lines.push(`   "${counter}"`);
+    lines.push(`   Research should engage with this directly — find evidence that either strengthens or undermines it.`);
+    lines.push(`   Do not ignore it. The post is stronger if it addresses the best objection.`);
+  }
+
+  lines.push(``, `${counter ? '5' : '4'}. KEY TENSIONS AND CONTRADICTIONS`);
+  lines.push(`   Where does the evidence conflict? Where do credible sources disagree?`);
+  lines.push(`   Flag weak or contested claims — do not smooth over them.`);
+
+  lines.push(``, `${counter ? '6' : '5'}. WHAT EXECUTIVES ARE ACTUALLY DOING`);
+  lines.push(`   How are leading organisations responding to this problem right now?`);
+  lines.push(`   What are the early movers doing that the laggards are not?`);
+
+  if (context) {
+    lines.push(``, `─`.repeat(60));
+    lines.push(`ADDITIONAL CONTEXT FROM THE AUTHOR`);
+    lines.push(`─`.repeat(60));
+    lines.push(context);
+  }
+
+  lines.push(``, `─`.repeat(60));
+  lines.push(`GUARDRAILS — NON-NEGOTIABLE`);
+  lines.push(`─`.repeat(60));
+  lines.push(`✗  Do not write the blog post. Provide research, not prose.`);
+  lines.push(`✗  Do not promote any vendor or product.`);
+  lines.push(`✗  Do not present vendor claims as neutral evidence.`);
+  lines.push(`✗  Do not fabricate statistics or invent sources.`);
+  lines.push(`✗  Do not write in a way that would not hold up in a room full of sceptical senior executives.`);
+  lines.push(`✗  Do not use jargon that a CFO would need a glossary to decode.`);
+  lines.push(`✓  Cite every factual claim with source name, publication, and date.`);
+  lines.push(`✓  Show confidence level where evidence is contested or thin.`);
+  lines.push(`✓  Surface the uncomfortable truths — that's the whole point.`);
+
+  const prompt = lines.join('\n');
+  document.getElementById('prompt-output').textContent = prompt;
+
+  const outputWrap = document.getElementById('output-wrap');
+  outputWrap.classList.add('visible');
+  setTimeout(() => outputWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+// ── Copy ─────────────────────────────────────────────────────
+function copyPrompt() {
+  const text = document.getElementById('prompt-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy to clipboard';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => {
+    // fallback
+    const el = document.getElementById('prompt-output');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+  });
+}
+</script>
+</body>
+</html>

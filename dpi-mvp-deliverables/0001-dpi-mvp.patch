@@ -1,0 +1,1504 @@
+From e16d752394a59aee914a537e1deba229655f5ac7 Mon Sep 17 00:00:00 2001
+From: Clive Spanswick <spanswickclive@gmail.com>
+Date: Mon, 22 Jun 2026 16:16:02 +0000
+Subject: [PATCH] feat(dpi): Decision Performance Index MVP v1.0
+
+- dpi.html: flagship constraint-led assessment (6 dimensions x 3 Likert
+  statements, 1-5 scale), progress indicator, save-on-submit, executive
+  report (score, band, primary/secondary constraint, dimension breakdown,
+  recommended focus area + next step), printable, mobile + desktop.
+- api/dpi-submit.js: optional anonymous, benchmark-ready storage endpoint
+  (best-effort, fails silently; no personal data).
+- migration_build4.sql: dpi_results table (RLS locked, server-write only,
+  band/constraint/score CHECK constraints, benchmark cohort index).
+- index.html: DPI added as flagship featured instrument.
+- docs/builds/dpi-mvp-build-notes.md: architecture, data model, scoring,
+  benchmark hooks, open issues.
+
+Scoring per methodology: dim score=((raw-3)/12)*100; overall=mean of six;
+bands 0-39/40-59/60-79/80-100; primary=lowest dimension. Verified 19/19
+unit + 4/4 end-to-end (jsdom) + 5/5 API assertions.
+---
+ api/dpi-submit.js                  |  116 +++
+ docs/builds/dpi-mvp-build-notes.md |  137 ++++
+ dpi.html                           | 1070 ++++++++++++++++++++++++++++
+ index.html                         |   43 ++
+ migration_build4.sql               |   68 ++
+ 5 files changed, 1434 insertions(+)
+ create mode 100644 api/dpi-submit.js
+ create mode 100644 docs/builds/dpi-mvp-build-notes.md
+ create mode 100644 dpi.html
+ create mode 100644 migration_build4.sql
+
+diff --git a/api/dpi-submit.js b/api/dpi-submit.js
+new file mode 100644
+index 0000000..5ae10e7
+--- /dev/null
++++ b/api/dpi-submit.js
+@@ -0,0 +1,116 @@
++/**
++ * POST /api/dpi-submit — store an anonymous Decision Performance Index result.
++ *
++ * The DPI assessment (dpi.html) computes the score entirely client-side and
++ * works with or without this endpoint. On submission it POSTs an anonymous,
++ * benchmark-ready result here. The page ignores any failure, so the assessment
++ * always completes for the user even if storage is not yet configured.
++ *
++ * Privacy: this endpoint stores NO personal data. It accepts only the scores,
++ * the identified constraints, and optional coarse benchmark dimensions
++ * (industry / org size / geography). Any unexpected fields are dropped.
++ *
++ * Body (application/json):
++ *   {
++ *     "assessment_id": "DPI-2026-06-22T...",
++ *     "timestamp": "2026-06-22T...Z",
++ *     "version": "1.0",
++ *     "overall_score": 64.0,
++ *     "band": "Performing",
++ *     "primary_constraint": "Decision Accountability",
++ *     "secondary_constraint": "Decision Velocity",
++ *     "dimension_scores": { "quality": 75, "velocity": 50, ... },
++ *     "industry": null, "org_size": null, "geography": null
++ *   }
++ *
++ * Requires env var (server-side only, bypasses RLS):
++ *   SUPABASE_SECRET_KEY  — Supabase secret key
++ *
++ * Storage is best-effort. If SUPABASE_SECRET_KEY is absent the endpoint returns
++ * 200 with { ok: true, stored: false } so the client never sees an error.
++ */
++const SUPABASE_URL = 'https://mydxofjvpuurwwaohqys.supabase.co';
++
++const DIMENSION_IDS = ['quality', 'velocity', 'accountability', 'capability', 'value', 'resilience'];
++const BANDS = ['Reactive', 'Developing', 'Performing', 'Adaptive'];
++const CONSTRAINTS = [
++  'Decision Quality', 'Decision Velocity', 'Decision Accountability',
++  'Decision Capability', 'Decision Value', 'Decision Resilience'
++];
++
++function clampScore(n) {
++  const x = Number(n);
++  if (!Number.isFinite(x)) return null;
++  return Math.max(0, Math.min(100, Math.round(x * 10) / 10));
++}
++
++function cleanText(s, max) {
++  if (typeof s !== 'string') return null;
++  const t = s.trim().slice(0, max || 80);
++  return t.length ? t : null;
++}
++
++module.exports = async (req, res) => {
++  if (req.method !== 'POST') {
++    return res.status(405).json({ error: 'POST only' });
++  }
++
++  const b = req.body || {};
++
++  // ── Validate / sanitise (drop anything unexpected) ──────────────
++  const overall = clampScore(b.overall_score);
++  if (overall === null) {
++    return res.status(400).json({ error: 'overall_score (0–100) is required' });
++  }
++  if (!BANDS.includes(b.band)) {
++    return res.status(400).json({ error: 'band must be one of ' + BANDS.join(', ') });
++  }
++  if (!CONSTRAINTS.includes(b.primary_constraint) || !CONSTRAINTS.includes(b.secondary_constraint)) {
++    return res.status(400).json({ error: 'primary/secondary_constraint must be a valid dimension name' });
++  }
++
++  const dimScores = {};
++  const src = b.dimension_scores || {};
++  DIMENSION_IDS.forEach(id => { dimScores[id] = clampScore(src[id]); });
++
++  const row = {
++    id: cleanText(b.assessment_id, 64) || ('DPI-' + new Date().toISOString().replace(/[:.]/g, '-')),
++    created_at: new Date().toISOString(),
++    version: cleanText(b.version, 16) || '1.0',
++    overall_score: overall,
++    band: b.band,
++    primary_constraint: b.primary_constraint,
++    secondary_constraint: b.secondary_constraint,
++    dimension_scores: dimScores,        // jsonb
++    industry: cleanText(b.industry, 64),
++    org_size: cleanText(b.org_size, 32),
++    geography: cleanText(b.geography, 64)
++  };
++
++  // ── Best-effort storage ─────────────────────────────────────────
++  if (!process.env.SUPABASE_SECRET_KEY) {
++    // Not configured yet — accept and acknowledge without persisting.
++    return res.status(200).json({ ok: true, stored: false, reason: 'storage not configured' });
++  }
++
++  try {
++    const sbRes = await fetch(SUPABASE_URL + '/rest/v1/dpi_results', {
++      method: 'POST',
++      headers: {
++        'apikey': process.env.SUPABASE_SECRET_KEY,
++        'Authorization': 'Bearer ' + process.env.SUPABASE_SECRET_KEY,
++        'Content-Type': 'application/json',
++        'Prefer': 'return=minimal'
++      },
++      body: JSON.stringify(row)
++    });
++
++    if (!sbRes.ok) {
++      const detail = await sbRes.text().catch(() => '');
++      return res.status(502).json({ ok: false, stored: false, status: sbRes.status, detail: detail.slice(0, 200) });
++    }
++    return res.status(200).json({ ok: true, stored: true, id: row.id });
++  } catch (e) {
++    return res.status(502).json({ ok: false, stored: false, error: 'storage request failed' });
++  }
++};
+diff --git a/docs/builds/dpi-mvp-build-notes.md b/docs/builds/dpi-mvp-build-notes.md
+new file mode 100644
+index 0000000..6924878
+--- /dev/null
++++ b/docs/builds/dpi-mvp-build-notes.md
+@@ -0,0 +1,137 @@
++# DPI MVP — Build Notes
++
++**Build:** Decision Performance Index (DPI) MVP v1.0
++**Branch:** `feature/decision-performance-index-mvp`
++**Date:** 2026-06-22
++**Methodology source of truth:** `docs/methodology/` (00, 01, 02, 03, 07)
++
++---
++
++## 1. Summary
++
++The Decision Performance Index is the flagship diagnostic for The AI Readyist. It does **not** measure AI maturity — it identifies the **primary organisational constraint** limiting Decision Performance across the six dimensions defined in the Decision Performance Framework (`02-decision-performance-framework.md`).
++
++The MVP is a single, self-contained static page (`dpi.html`) that matches the existing site design language and assessment pattern (modelled on `eu-ai-act.html`). It runs entirely client-side and produces a constraint-led executive report. An anonymous, benchmark-ready result is posted to an optional serverless endpoint on submission; the assessment completes successfully whether or not storage is configured.
++
++---
++
++## 2. Architecture
++
++| Concern | Decision |
++|---|---|
++| Page | `dpi.html` — single static HTML file, no build step, no new frameworks. Inline CSS + vanilla JS, identical token set to `eu-ai-act.html`. |
++| Hosting | Vercel static (`cleanUrls: true` → served at `/dpi`). No `vercel.json` change needed. |
++| Two views | One file, two views toggled in-place: **assessment** (`#assessment-view`) and **executive report** (`#report-view`). No navigation change. |
++| Scoring | Computed in the browser on submit only. No server round-trip required to see results. |
++| Storage | Optional `POST /api/dpi-submit` serverless function → Supabase `dpi_results`. Best-effort, fire-and-forget (`keepalive`), failure-silent. |
++| Design language | navy `#0D1B2A` / teal `#00C9A7` / amber `#E8A838`; Playfair Display (headings), DM Sans (body), DM Mono (labels). Reused nav + footer chrome. |
++
++### Flow
++
++```
++dpi.html (assessment view)
++   18 statements (6 dimensions × 3), 1–5 Likert
++   progress rail (X/18) — Generate button enabled at 18/18
++        │  submit (answers saved only on submission)
++        ▼
++compute results client-side  ──►  render report view (#report-view)
++        │                              Score · Band · Primary/Secondary
++        │                              Constraint · What This Means ·
++        │                              Next Step · Dimension Breakdown
++        ▼ (best-effort, async)
++POST /api/dpi-submit  ──►  Supabase dpi_results  (anonymous, benchmark-ready)
++```
++
++---
++
++## 3. Data Model
++
++### Client payload (POST `/api/dpi-submit`)
++```json
++{
++  "assessment_id": "DPI-2026-06-22T14-05-31-220Z",
++  "timestamp": "2026-06-22T14:05:31.220Z",
++  "version": "1.0",
++  "overall_score": 64.0,
++  "band": "Performing",
++  "primary_constraint": "Decision Accountability",
++  "secondary_constraint": "Decision Velocity",
++  "dimension_scores": {
++    "quality": 75, "velocity": 50, "accountability": 41.7,
++    "capability": 83.3, "value": 75, "resilience": 58.3
++  },
++  "industry": null, "org_size": null, "geography": null
++}
++```
++
++### Supabase table (`migration_build4.sql`)
++`dpi_results` — `id` (PK, `DPI-<iso>`), `created_at`, `version`, `overall_score numeric(5,1)`, `band`, `primary_constraint`, `secondary_constraint`, `dimension_scores jsonb`, and nullable `industry` / `org_size` / `geography`.
++
++- CHECK constraints enforce the four canonical bands, the six canonical dimension names, and `overall_score ∈ [0,100]`.
++- Indexes on `created_at`, `band`, `primary_constraint`, and the `(industry, org_size, geography)` cohort tuple.
++- **RLS enabled with no anon policies** — the anon (publishable) key cannot read or write. All writes are server-side via `SUPABASE_SECRET_KEY` (bypasses RLS), mirroring the existing `insights` endpoints.
++
++### Privacy
++No personal data is collected or stored. The API sanitises input and drops any unexpected fields. Optional benchmark dimensions are coarse and non-identifying, and are not collected by the MVP UI (the fields exist for a future demographics step).
++
++---
++
++## 4. Scoring Implementation
++
++Exactly as specified in the build instruction:
++
++- **Scale:** 1 Strongly Disagree · 2 Disagree · 3 Neutral · 4 Agree · 5 Strongly Agree.
++- **Dimension raw score** = sum of its 3 statements → range **3–15**.
++- **Dimension score (0–100)** = `((raw − 3) / 12) × 100`.
++- **Overall DPI** = arithmetic mean of the six dimension scores → range **0–100**.
++- **Bands:** 0–39 Reactive · 40–59 Developing · 60–79 Performing · 80–100 Adaptive. The band is selected from the **rounded** overall so the displayed number and the band label are always consistent (avoids the integer-range gap between e.g. 39 and 40).
++- **Primary constraint** = lowest-scoring dimension. **Secondary constraint** = second lowest.
++- **Tie-break:** deterministic — equal scores resolve by canonical dimension order (Quality → Velocity → Accountability → Capability → Value → Resilience) via a stable index sort.
++
++### Dimension → Pillar mapping (per `02`/`07`)
++| Dimension | Recommended focus pillar |
++|---|---|
++| Decision Quality | Decision Intelligence |
++| Decision Velocity | Executive Operating Models |
++| Decision Accountability | Agentic Governance |
++| Decision Capability | Human + AI Workforce |
++| Decision Value | AI Economics |
++| Decision Resilience | Sovereign AI |
++
++### Verification
++A standalone Node test reproduced the in-page logic and passed **19/19** assertions: formula endpoints (raw 3→0, 9→50, 15→100), all-1s (0 / Reactive), all-3s (50 / Developing), all-5s (100 / Adaptive), every band boundary (39/40/59/60/79/80), constraint ranking, and deterministic tie-breaking.
++
++---
++
++## 5. Outputs (Executive Report)
++
++Renders, in order: Decision Performance Score (0–100) + Performance Band + band description; Primary Constraint (with recommended focus pillar) and Secondary Constraint; **What This Means** (constraint-specific narrative derived from the framework's constraint indicators); **Recommended Next Step** (constraint-specific, pointing to the mapped pillar); and a Dimension Breakdown of all six dimensions with the primary/secondary flagged. Report is print-optimised (`@media print`) for "Print / Save as PDF".
++
++---
++
++## 6. Future Benchmark Hooks
++
++- `dpi_results` is designed for cohorting from day one: `band`, `primary_constraint`, per-dimension jsonb scores, and the `(industry, org_size, geography)` cohort index are all in place.
++- The client payload already carries `industry` / `org_size` / `geography` slots — wiring a short optional demographics step before submit is the only UI work needed to start populating benchmark cohorts.
++- Aggregate benchmark figures should be exposed later via a dedicated server endpoint or a `SECURITY DEFINER` view — **never** by opening `dpi_results` to the anon key.
++- `version` is stored on every row so future question/scoring revisions remain comparable or filterable.
++
++---
++
++## 7. UX / Acceptance
++
++- Completion target **under 7 minutes**; 18 statements; mobile + desktop responsive; sticky progress indicator; answers saved **only on submission**; clear final report; printable. ✅
++- Methodology docs remain internal — no public route added; `docs/` is not served as part of any rendered page. ✅
++- No new frameworks, no navigation redesign, no change to pillar definitions. ✅
++
++---
++
++## 8. Open Issues / Pre-release Recommendations
++
++1. **Run `migration_build4.sql`** in the Supabase SQL editor before relying on storage. Until then `/api/dpi-submit` returns `{ ok: true, stored: false }` and the UI still works.
++2. **Storage is currently anonymous-only and unauthenticated.** `/api/dpi-submit` has no rate limiting — add a basic rate limit / origin check (or a lightweight token) before public launch to prevent benchmark-data pollution.
++3. **Demographics step** (industry / size / geography) is not yet in the UI. Add it as an optional pre-submit step to begin building benchmark cohorts. Keep it optional and non-identifying.
++4. **Benchmark display** — the report currently shows absolute scores only. A "vs. peer cohort" comparison should follow once the dataset is meaningful (see `05-benchmark-methodology.md`).
++5. **Equal weighting** is used across dimensions (per spec). If sector/maturity weighting is later introduced (open design question 4 in `03`), bump `DPI_VERSION` and persist the weighting profile on each row.
++6. **Single respondent model.** The MVP assumes one respondent. Multi-respondent aggregation (open question 1 in `03`) is out of scope for v1.0.
++7. **Result link/export.** Results are not persisted to a shareable URL; "Retake" clears state. A shareable/exportable report link is a candidate enhancement.
+diff --git a/dpi.html b/dpi.html
+new file mode 100644
+index 0000000..e6212fe
+--- /dev/null
++++ b/dpi.html
+@@ -0,0 +1,1070 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="UTF-8">
++<meta name="viewport" content="width=device-width, initial-scale=1.0">
++<title>Decision Performance Index — The AI Readyist</title>
++<meta name="description" content="The flagship diagnostic from The AI Readyist. Identify the primary organisational constraint limiting your Decision Performance in 5–7 minutes.">
++<link rel="preconnect" href="https://fonts.googleapis.com">
++<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
++<style>
++  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
++
++  :root {
++    --navy:        #0D1B2A;
++    --deep:        #0C1118;
++    --teal:        #00C9A7;
++    --teal-border: rgba(0,201,167,0.20);
++    --teal-active: rgba(0,201,167,0.60);
++    --amber:       #E8A838;
++    --amber-border:rgba(232,168,56,0.35);
++    --off-white:   #F0F4F8;
++    --slate-70:    rgba(240,244,248,0.65);
++    --slate:       rgba(240,244,248,0.40);
++    --rule:        rgba(255,255,255,0.08);
++    --green:       #4caf7d;
++    --red:         #d95f5f;
++  }
++
++  html { scroll-behavior: smooth; }
++
++  body {
++    background: var(--navy);
++    color: var(--off-white);
++    font-family: 'DM Sans', sans-serif;
++    font-weight: 300;
++    line-height: 1.6;
++    min-height: 100vh;
++  }
++
++  /* ── NAV ── */
++  .site-nav {
++    position: sticky;
++    top: 0;
++    z-index: 100;
++    height: 56px;
++    background: rgba(13,27,42,0.92);
++    backdrop-filter: blur(12px);
++    border-bottom: 1px solid var(--rule);
++    display: flex;
++    align-items: center;
++    justify-content: space-between;
++    padding: 0 48px;
++  }
++
++  .nav-logo {
++    font-family: 'Playfair Display', serif;
++    font-size: 15px;
++    font-weight: 700;
++    color: var(--off-white);
++    text-decoration: none;
++    letter-spacing: -0.01em;
++  }
++
++  .nav-logo span { color: var(--teal); }
++
++  .nav-back {
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.16em;
++    text-transform: uppercase;
++    color: var(--slate);
++    text-decoration: none;
++    display: flex;
++    align-items: center;
++    gap: 8px;
++    transition: color 0.2s;
++  }
++
++  .nav-back:hover { color: var(--teal); }
++  .nav-back::before { content: '←'; }
++
++  /* ── HERO ── */
++  .hero {
++    max-width: 1100px;
++    margin: 0 auto;
++    padding: 64px 48px 40px;
++    border-bottom: 1px solid var(--rule);
++  }
++
++  .hero-kicker {
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.18em;
++    text-transform: uppercase;
++    color: var(--teal);
++    margin-bottom: 20px;
++  }
++
++  .hero-title {
++    font-family: 'Playfair Display', serif;
++    font-size: clamp(34px, 4.4vw, 50px);
++    font-weight: 700;
++    line-height: 1.1;
++    color: var(--off-white);
++    margin-bottom: 20px;
++  }
++
++  .hero-title em { font-style: italic; color: var(--teal); }
++
++  .hero-desc {
++    font-family: 'DM Sans', sans-serif;
++    font-size: 16px;
++    font-weight: 300;
++    color: var(--slate-70);
++    max-width: 660px;
++    line-height: 1.7;
++  }
++
++  .hero-meta {
++    margin-top: 22px;
++    display: flex;
++    flex-wrap: wrap;
++    gap: 20px;
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.13em;
++    text-transform: uppercase;
++    color: var(--slate);
++  }
++  .hero-meta span strong { color: var(--slate-70); font-weight: 500; }
++
++  /* ── PROGRESS BAR (sticky) ── */
++  .progress-rail {
++    position: sticky;
++    top: 56px;
++    z-index: 90;
++    background: rgba(13,27,42,0.92);
++    backdrop-filter: blur(12px);
++    border-bottom: 1px solid var(--rule);
++  }
++  .progress-inner {
++    max-width: 1100px;
++    margin: 0 auto;
++    padding: 14px 48px;
++    display: flex;
++    align-items: center;
++    gap: 20px;
++  }
++  .progress-count {
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    letter-spacing: 0.1em;
++    text-transform: uppercase;
++    color: var(--slate);
++    white-space: nowrap;
++  }
++  .progress-count b { color: var(--teal); font-weight: 500; }
++  .progress-track {
++    flex: 1;
++    height: 2px;
++    background: var(--rule);
++    overflow: hidden;
++  }
++  .progress-fill {
++    height: 100%;
++    width: 0%;
++    background: var(--teal);
++    transition: width 0.4s ease;
++  }
++  .legend {
++    font-family: 'DM Mono', monospace;
++    font-size: 8.5px;
++    letter-spacing: 0.08em;
++    text-transform: uppercase;
++    color: var(--slate);
++    white-space: nowrap;
++  }
++  @media (max-width: 820px) { .legend { display: none; } }
++
++  /* ── LAYOUT ── */
++  .wrap {
++    max-width: 1100px;
++    margin: 0 auto;
++    padding: 8px 48px 64px;
++  }
++
++  /* ── DIMENSIONS ── */
++  .dimension {
++    border-top: 1px solid var(--rule);
++    padding: 40px 0 8px;
++    opacity: 0;
++    transform: translateY(8px);
++    animation: fadeUp 0.4s ease forwards;
++  }
++  .dimension:nth-child(1){animation-delay:.04s}
++  .dimension:nth-child(2){animation-delay:.09s}
++  .dimension:nth-child(3){animation-delay:.14s}
++  .dimension:nth-child(4){animation-delay:.19s}
++  .dimension:nth-child(5){animation-delay:.24s}
++  .dimension:nth-child(6){animation-delay:.29s}
++
++  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
++
++  .dim-header {
++    display: grid;
++    grid-template-columns: 56px 1fr;
++    gap: 0 20px;
++    align-items: start;
++    margin-bottom: 28px;
++  }
++  .dim-num {
++    font-family: 'DM Mono', monospace;
++    font-size: 28px;
++    font-weight: 500;
++    color: rgba(240,244,248,0.15);
++    line-height: 1;
++    padding-top: 2px;
++    letter-spacing: -0.03em;
++  }
++  .dim-title {
++    font-family: 'Playfair Display', serif;
++    font-size: 22px;
++    font-weight: 700;
++    color: var(--off-white);
++    margin-bottom: 5px;
++    line-height: 1.2;
++  }
++  .dim-purpose {
++    font-family: 'DM Sans', sans-serif;
++    font-size: 13.5px;
++    font-weight: 300;
++    color: var(--slate-70);
++    line-height: 1.6;
++    max-width: 640px;
++  }
++  .dim-pillar {
++    font-family: 'DM Mono', monospace;
++    font-size: 8.5px;
++    letter-spacing: 0.13em;
++    text-transform: uppercase;
++    color: var(--slate);
++    margin-top: 8px;
++  }
++  .dim-pillar b { color: rgba(0,201,167,0.7); font-weight: 500; }
++
++  /* ── STATEMENTS ── */
++  .statements { display: flex; flex-direction: column; gap: 26px; }
++
++  .stmt {
++    display: grid;
++    grid-template-columns: 56px 1fr;
++    gap: 0 20px;
++    align-items: start;
++  }
++  .stmt-idx {
++    font-family: 'DM Mono', monospace;
++    font-size: 11px;
++    color: var(--slate);
++    padding-top: 4px;
++    text-align: right;
++    padding-right: 4px;
++  }
++  .stmt-text {
++    font-family: 'DM Sans', sans-serif;
++    font-size: 15px;
++    font-weight: 300;
++    color: var(--off-white);
++    line-height: 1.6;
++    margin-bottom: 14px;
++  }
++
++  /* Likert 1–5 */
++  .likert {
++    display: grid;
++    grid-template-columns: repeat(5, 1fr);
++    gap: 8px;
++    max-width: 560px;
++  }
++  .likert-cell {
++    border: 1px solid var(--rule);
++    background: transparent;
++    color: var(--slate-70);
++    font-family: 'DM Sans', sans-serif;
++    font-size: 12px;
++    font-weight: 300;
++    padding: 12px 6px;
++    cursor: pointer;
++    text-align: center;
++    transition: border-color 0.15s, background 0.15s, color 0.15s;
++    line-height: 1.3;
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    gap: 4px;
++  }
++  .likert-cell:hover { border-color: var(--teal-border); color: var(--off-white); }
++  .likert-cell:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
++  .likert-num {
++    font-family: 'DM Mono', monospace;
++    font-size: 15px;
++    font-weight: 500;
++    color: rgba(240,244,248,0.30);
++    transition: color 0.15s;
++  }
++  .likert-lab {
++    font-family: 'DM Mono', monospace;
++    font-size: 7.5px;
++    letter-spacing: 0.06em;
++    text-transform: uppercase;
++    color: var(--slate);
++  }
++  .likert-cell.selected {
++    border-color: var(--teal-active);
++    background: rgba(0,201,167,0.10);
++    color: var(--off-white);
++  }
++  .likert-cell.selected .likert-num { color: var(--teal); }
++  .likert-cell.selected .likert-lab { color: rgba(0,201,167,0.75); }
++
++  @media (max-width: 620px) {
++    .likert-lab { display: none; }
++    .likert { gap: 6px; }
++    .likert-cell { padding: 14px 4px; }
++  }
++
++  /* ── SUBMIT BAR ── */
++  .submit-bar {
++    border-top: 1px solid var(--rule);
++    margin-top: 36px;
++    padding-top: 32px;
++    display: flex;
++    flex-direction: column;
++    align-items: flex-start;
++    gap: 14px;
++  }
++  .btn-primary {
++    background: var(--teal);
++    color: var(--navy);
++    font-family: 'DM Mono', monospace;
++    font-size: 12px;
++    letter-spacing: 0.12em;
++    text-transform: uppercase;
++    font-weight: 500;
++    border: none;
++    padding: 16px 36px;
++    cursor: pointer;
++    transition: opacity 0.15s;
++  }
++  .btn-primary:hover { opacity: 0.88; }
++  .btn-primary:disabled { opacity: 0.25; cursor: not-allowed; }
++  .submit-note {
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    letter-spacing: 0.06em;
++    color: var(--slate);
++  }
++  .submit-note.warn { color: var(--amber); }
++
++  /* ── REPORT ── */
++  .report { display: none; max-width: 1100px; margin: 0 auto; padding: 48px; }
++  .report.visible { display: block; }
++
++  .report-kicker {
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.18em;
++    text-transform: uppercase;
++    color: var(--teal);
++    margin-bottom: 14px;
++  }
++  .report-h1 {
++    font-family: 'Playfair Display', serif;
++    font-size: clamp(28px, 3.6vw, 40px);
++    font-weight: 700;
++    line-height: 1.15;
++    margin-bottom: 8px;
++  }
++  .report-sub {
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    letter-spacing: 0.08em;
++    color: var(--slate);
++    margin-bottom: 40px;
++  }
++
++  /* score hero */
++  .score-hero {
++    display: grid;
++    grid-template-columns: 280px 1fr;
++    gap: 0;
++    border: 1px solid var(--teal-border);
++    margin-bottom: 2px;
++  }
++  @media (max-width: 760px) { .score-hero { grid-template-columns: 1fr; } }
++
++  .score-left {
++    padding: 36px 32px;
++    border-right: 1px solid var(--rule);
++  }
++  @media (max-width: 760px) { .score-left { border-right: none; border-bottom: 1px solid var(--rule); } }
++
++  .score-label {
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.16em;
++    text-transform: uppercase;
++    color: var(--slate);
++    margin-bottom: 16px;
++  }
++  .score-big {
++    font-family: 'DM Mono', monospace;
++    font-size: 84px;
++    font-weight: 500;
++    line-height: 0.95;
++    letter-spacing: -0.04em;
++  }
++  .score-big.teal { color: var(--teal); }
++  .score-big.amber { color: var(--amber); }
++  .score-big.red { color: var(--red); }
++  .score-outof {
++    font-family: 'DM Mono', monospace;
++    font-size: 12px;
++    color: var(--slate);
++    margin-top: 4px;
++  }
++  .band-chip {
++    display: inline-block;
++    margin-top: 20px;
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    letter-spacing: 0.12em;
++    text-transform: uppercase;
++    padding: 6px 12px;
++    border: 1px solid var(--rule);
++  }
++  .band-chip.teal { color: var(--teal); border-color: var(--teal-border); }
++  .band-chip.amber { color: var(--amber); border-color: var(--amber-border); }
++  .band-chip.red { color: var(--red); border-color: rgba(217,95,95,0.3); }
++  .band-chip.green { color: var(--green); border-color: rgba(76,175,125,0.35); }
++
++  .score-right { padding: 36px 32px; }
++  .band-desc {
++    font-family: 'DM Sans', sans-serif;
++    font-size: 15px;
++    font-weight: 300;
++    color: var(--slate-70);
++    line-height: 1.7;
++    max-width: 560px;
++  }
++
++  /* constraint cards */
++  .constraint-grid {
++    display: grid;
++    grid-template-columns: 1fr 1fr;
++    gap: 2px;
++    margin-bottom: 2px;
++  }
++  @media (max-width: 620px) { .constraint-grid { grid-template-columns: 1fr; } }
++
++  .constraint-card { border: 1px solid var(--rule); padding: 28px 28px; }
++  .constraint-card.primary { border-color: var(--amber-border); }
++  .cc-label {
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.14em;
++    text-transform: uppercase;
++    color: var(--slate);
++    margin-bottom: 12px;
++  }
++  .constraint-card.primary .cc-label { color: var(--amber); }
++  .cc-dim {
++    font-family: 'Playfair Display', serif;
++    font-size: 22px;
++    font-weight: 700;
++    margin-bottom: 6px;
++  }
++  .cc-map {
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    letter-spacing: 0.06em;
++    color: var(--slate);
++  }
++  .cc-map b { color: rgba(0,201,167,0.75); font-weight: 500; }
++  .cc-score {
++    font-family: 'DM Mono', monospace;
++    font-size: 11px;
++    color: var(--slate);
++    margin-top: 10px;
++  }
++
++  /* narrative blocks */
++  .block { border: 1px solid var(--rule); padding: 28px 32px; margin-bottom: 2px; }
++  .block-label {
++    font-family: 'DM Mono', monospace;
++    font-size: 9px;
++    letter-spacing: 0.16em;
++    text-transform: uppercase;
++    color: var(--teal);
++    margin-bottom: 14px;
++  }
++  .block-body {
++    font-family: 'DM Sans', sans-serif;
++    font-size: 15px;
++    font-weight: 300;
++    color: var(--slate-70);
++    line-height: 1.75;
++    max-width: 720px;
++  }
++  .block-body strong { color: var(--off-white); font-weight: 500; }
++
++  /* breakdown */
++  .breakdown { border: 1px solid var(--rule); padding: 28px 32px; margin-bottom: 2px; }
++  .bk-row {
++    display: grid;
++    grid-template-columns: 200px 1fr 52px;
++    align-items: center;
++    gap: 16px;
++    padding: 12px 0;
++    border-bottom: 1px solid var(--rule);
++  }
++  .bk-row:last-child { border-bottom: none; }
++  .bk-name {
++    font-family: 'DM Sans', sans-serif;
++    font-size: 13.5px;
++    font-weight: 300;
++    color: var(--slate-70);
++  }
++  .bk-row.is-primary .bk-name { color: var(--amber); }
++  .bk-row.is-secondary .bk-name { color: var(--off-white); }
++  .bk-flag {
++    font-family: 'DM Mono', monospace;
++    font-size: 8px;
++    letter-spacing: 0.1em;
++    text-transform: uppercase;
++    margin-left: 8px;
++    color: var(--slate);
++  }
++  .bk-bar { height: 2px; background: var(--rule); overflow: hidden; position: relative; }
++  .bk-fill { height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.34,1.4,0.64,1); }
++  .bk-score {
++    font-family: 'DM Mono', monospace;
++    font-size: 15px;
++    text-align: right;
++    letter-spacing: -0.02em;
++  }
++  @media (max-width: 620px) {
++    .bk-row { grid-template-columns: 1fr 44px; }
++    .bk-bar { display: none; }
++  }
++
++  /* report actions */
++  .report-actions {
++    margin-top: 32px;
++    display: flex;
++    gap: 12px;
++    flex-wrap: wrap;
++  }
++  .btn-ghost {
++    background: transparent;
++    border: 1px solid var(--rule);
++    color: var(--slate-70);
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    letter-spacing: 0.14em;
++    text-transform: uppercase;
++    padding: 13px 26px;
++    cursor: pointer;
++    transition: border-color 0.2s, color 0.2s;
++  }
++  .btn-ghost:hover { border-color: var(--teal-border); color: var(--teal); }
++
++  .report-foot {
++    margin-top: 36px;
++    padding-top: 20px;
++    border-top: 1px solid var(--rule);
++    font-family: 'DM Mono', monospace;
++    font-size: 9.5px;
++    letter-spacing: 0.06em;
++    color: var(--slate);
++    line-height: 1.8;
++  }
++
++  /* ── FOOTER ── */
++  .site-footer {
++    border-top: 1px solid var(--rule);
++    padding: 24px 48px;
++    display: flex;
++    justify-content: space-between;
++    align-items: center;
++  }
++  .footer-note, .footer-reg {
++    font-family: 'DM Mono', monospace;
++    font-size: 10px;
++    color: var(--slate);
++    letter-spacing: 0.06em;
++    line-height: 1.9;
++  }
++  .footer-reg { text-align: right; }
++
++  @media (max-width: 760px) {
++    .site-nav, .hero, .wrap, .report, .progress-inner, .site-footer { padding-left: 24px; padding-right: 24px; }
++    .hero { padding-top: 44px; }
++    .report { padding: 32px 24px; }
++  }
++
++  /* ── PRINT ── */
++  @media print {
++    body { background: #fff; color: #0D1B2A; }
++    .site-nav, .progress-rail, .wrap, .site-footer, .report-actions { display: none !important; }
++    .report { display: block !important; padding: 0; max-width: none; color: #0D1B2A; }
++    .report-h1, .cc-dim { color: #0D1B2A; }
++    .score-hero, .constraint-card, .block, .breakdown { border-color: #ccc; }
++    .block-body, .band-desc, .bk-name { color: #333; }
++    .block-body strong { color: #000; }
++    .score-big.teal, .band-chip.teal, .block-label, .cc-map b { color: #0a7d68; }
++    .bk-row { border-color: #ddd; }
++  }
++</style>
++</head>
++<body>
++
++<nav class="site-nav">
++  <a class="nav-logo" href="/">the<span>AI</span>Readyist</a>
++  <a class="nav-back" href="/">All Tools</a>
++</nav>
++
++<!-- ============ ASSESSMENT VIEW ============ -->
++<div id="assessment-view">
++
++  <div class="hero">
++    <div class="hero-kicker">Decision Performance Index &middot; Flagship Diagnostic</div>
++    <h1 class="hero-title">What is constraining your<br>organisation&rsquo;s <em>Decision Performance</em>?</h1>
++    <p class="hero-desc">The Decision Performance Index measures six dimensions of how your organisation makes decisions — quality, velocity, accountability, capability, value, and resilience. It does not measure AI maturity. It identifies the single dimension most limiting your ability to make high-value decisions, consistently and at pace. Rate your level of agreement with 18 statements.</p>
++    <div class="hero-meta">
++      <span><strong>5–7 minutes</strong> &middot; 18 statements</span>
++      <span>For the <strong>CEO, COO, CIO, CTO, CFO</strong> &amp; senior transformation leaders</span>
++      <span>No personal data collected</span>
++    </div>
++  </div>
++
++  <div class="progress-rail">
++    <div class="progress-inner">
++      <div class="progress-count"><b id="prog-n">0</b> / 18 rated</div>
++      <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
++      <div class="legend">1 Strongly Disagree &nbsp;→&nbsp; 5 Strongly Agree</div>
++    </div>
++  </div>
++
++  <div class="wrap">
++    <div id="dimensions"></div>
++
++    <div class="submit-bar">
++      <button class="btn-primary" id="submit-btn" disabled onclick="submitAssessment()">Generate Decision Performance Report</button>
++      <div class="submit-note" id="submit-note">Rate all 18 statements to generate your report.</div>
++    </div>
++  </div>
++
++</div>
++
++<!-- ============ REPORT VIEW ============ -->
++<div class="report" id="report-view">
++  <div class="report-kicker">Decision Performance Index &middot; Executive Report</div>
++  <h1 class="report-h1">Your Decision Performance</h1>
++  <div class="report-sub" id="report-meta"></div>
++
++  <div class="score-hero">
++    <div class="score-left">
++      <div class="score-label">Decision Performance Score</div>
++      <div class="score-big" id="r-score">—</div>
++      <div class="score-outof">out of 100</div>
++      <div class="band-chip" id="r-band">—</div>
++    </div>
++    <div class="score-right">
++      <div class="score-label">Performance Band</div>
++      <div class="band-desc" id="r-band-desc"></div>
++    </div>
++  </div>
++
++  <div class="constraint-grid">
++    <div class="constraint-card primary">
++      <div class="cc-label">Primary Constraint</div>
++      <div class="cc-dim" id="r-pc-dim">—</div>
++      <div class="cc-map">Recommended focus area: <b id="r-pc-pillar">—</b></div>
++      <div class="cc-score" id="r-pc-score"></div>
++    </div>
++    <div class="constraint-card">
++      <div class="cc-label">Secondary Constraint</div>
++      <div class="cc-dim" id="r-sc-dim">—</div>
++      <div class="cc-map">Supporting pillar: <b id="r-sc-pillar">—</b></div>
++      <div class="cc-score" id="r-sc-score"></div>
++    </div>
++  </div>
++
++  <div class="block">
++    <div class="block-label">What This Means</div>
++    <div class="block-body" id="r-meaning"></div>
++  </div>
++
++  <div class="block">
++    <div class="block-label">Recommended Next Step</div>
++    <div class="block-body" id="r-nextstep"></div>
++  </div>
++
++  <div class="breakdown">
++    <div class="block-label">Dimension Breakdown</div>
++    <div id="r-breakdown"></div>
++  </div>
++
++  <div class="report-actions">
++    <button class="btn-ghost" onclick="window.print()">⎙ &nbsp;Print / Save as PDF</button>
++    <button class="btn-ghost" onclick="retake()">↺ &nbsp;Retake assessment</button>
++  </div>
++
++  <div class="report-foot" id="report-foot"></div>
++</div>
++
++<footer class="site-footer">
++  <div class="footer-note">
++    The AI Readyist &middot; Decision Performance Index v1.0<br>
++    Constraint-led diagnostic &middot; Six dimensions of Decision Performance
++  </div>
++  <div class="footer-reg">
++    Methodology: Decision Performance Framework<br>
++    Helping leaders build AI-ready organisations through better decisions
++  </div>
++</footer>
++
++<script>
++/* ============================================================
++   Decision Performance Index (DPI) — MVP v1.0
++   Source of truth: docs/methodology (02-decision-performance-framework,
++   03-decision-performance-index, 07-pillar-definitions)
++   Scale: 1 Strongly Disagree → 5 Strongly Agree
++   Dimension raw = sum of 3 statements (min 3, max 15)
++   Dimension score (0–100) = ((raw - 3) / 12) * 100
++   Overall DPI = mean of six dimension scores
++   ============================================================ */
++
++const DPI_VERSION = '1.0';
++
++const SCALE = [
++  { v: 1, lab: 'Strongly Disagree' },
++  { v: 2, lab: 'Disagree' },
++  { v: 3, lab: 'Neutral' },
++  { v: 4, lab: 'Agree' },
++  { v: 5, lab: 'Strongly Agree' }
++];
++
++const DIMENSIONS = [
++  {
++    id: 'quality',
++    num: '01',
++    title: 'Decision Quality',
++    purpose: 'Whether decision-makers have access to reliable information, context and evidence.',
++    pillar: 'Decision Intelligence',
++    questions: [
++      'Important decisions are supported by reliable and timely data.',
++      'Decision-makers have access to sufficient context before major decisions are made.',
++      'We consistently review outcomes to learn from previous decisions.'
++    ],
++    meaning: 'Decision Quality is the degree to which your decisions are well-informed and contextually sound before they are executed. A constraint here means the inputs to your most important decisions — data, context, and the discipline of learning from outcomes — are not yet reliable enough. As AI is embedded into decision support, weak inputs are amplified rather than corrected: the organisation makes confident decisions on incomplete evidence.',
++    nextStep: 'Map how your highest-stakes decisions are actually made — what information feeds them, who provides it, and how outcomes are reviewed. Establish an explicit decision-quality feedback loop so the organisation learns systematically from both good and bad decisions. This is the focus of the Decision Intelligence pillar.'
++  },
++  {
++    id: 'velocity',
++    num: '02',
++    title: 'Decision Velocity',
++    purpose: 'How efficiently decisions move through the organisation.',
++    pillar: 'Executive Operating Models',
++    questions: [
++      'Decisions are made quickly enough to meet business needs.',
++      'Escalation paths are clear when decisions require senior involvement.',
++      'Approval processes rarely create unnecessary delays.'
++    ],
++    meaning: 'Decision Velocity is your ability to move at the pace the context requires — without sacrificing quality or accountability. A constraint here usually points to the operating model rather than the people: concentrated decision rights, unclear escalation paths, or approval chains that add time without adding judgment. AI accelerates the volume of decisions but not their resolution when the operating model is the bottleneck.',
++    nextStep: 'Identify where decisions stall and why. Clarify decision rights and escalation thresholds so routine decisions resolve without senior involvement and only genuinely consequential ones escalate. This is the focus of the Executive Operating Models pillar.'
++  },
++  {
++    id: 'accountability',
++    num: '03',
++    title: 'Decision Accountability',
++    purpose: 'Ownership, governance and decision rights.',
++    pillar: 'Agentic Governance',
++    questions: [
++      'Accountability for important decisions is clearly defined.',
++      'We can explain how significant decisions were reached.',
++      'Governance processes are appropriate for the risks involved.'
++    ],
++    meaning: 'Decision Accountability is the clarity with which responsibility for decisions — and their consequences — is assigned and upheld. A constraint here is a governance gap: when no individual or function clearly owns an outcome, especially where AI or automated systems were involved, the organisation cannot explain how decisions were reached or learn from them. As AI takes a larger role in decisions, these accountability gaps become a material risk.',
++    nextStep: 'Review decision rights, governance structures and accountability mechanisms for high-impact decisions — including those influenced by AI. Ensure every consequential decision has a named owner and an audit trail that captures reasoning, not just process. This is the focus of the Agentic Governance pillar.'
++  },
++  {
++    id: 'capability',
++    num: '04',
++    title: 'Decision Capability',
++    purpose: 'Workforce readiness and effective use of AI.',
++    pillar: 'Human + AI Workforce',
++    questions: [
++      'Employees have the skills needed to make effective decisions.',
++      'AI tools and automation improve decision-making where appropriate.',
++      'People are confident challenging recommendations from AI systems when necessary.'
++    ],
++    meaning: 'Decision Capability is whether the people making decisions — at all levels — have the skills, judgment and confidence to make them well, including in partnership with AI. A constraint here is the most common reason AI investment fails to produce value: tools are deployed without the capability to use them critically. The signal to watch is whether people can challenge an AI recommendation when their judgment says otherwise.',
++    nextStep: 'Assess decision-making capability across your workforce, not just among AI specialists. Invest in the judgment to evaluate and challenge AI outputs, and redesign roles to integrate AI rather than bolting it onto existing job descriptions. This is the focus of the Human + AI Workforce pillar.'
++  },
++  {
++    id: 'value',
++    num: '05',
++    title: 'Decision Value',
++    purpose: 'Whether decisions generate measurable outcomes.',
++    pillar: 'AI Economics',
++    questions: [
++      'Major decisions are linked to clear business objectives.',
++      'We measure whether decisions deliver the expected value.',
++      'Resources are allocated based on evidence rather than assumptions.'
++    ],
++    meaning: 'Decision Value is the degree to which decisions produce measurable, attributable business value — and the degree to which you can demonstrate it. A constraint here means the organisation cannot reliably trace outcomes back to the decisions that produced them, which makes it impossible to learn from successes or failures or to show that AI investment is paying off. Value attribution is itself a decision-quality problem.',
++    nextStep: 'Hold major decisions — including AI investments — to a defined, measurable, time-bound value case, and build the mechanism to measure realised value against it. Embed finance early in decisions rather than auditing them after commitment. This is the focus of the AI Economics pillar.'
++  },
++  {
++    id: 'resilience',
++    num: '06',
++    title: 'Decision Resilience',
++    purpose: 'Whether decision systems remain effective during disruption.',
++    pillar: 'Sovereign AI',
++    questions: [
++      'Critical decisions can still be made effectively during disruption.',
++      'Regulatory and compliance obligations are considered during decision-making.',
++      'We understand key dependencies that could affect decision outcomes.'
++    ],
++    meaning: 'Decision Resilience is whether your decision system holds up under stress — regulatory change, geopolitical disruption, technology or AI-system failure. A constraint here means the organisation performs well in normal conditions but is exposed when conditions deteriorate: single-provider dependencies, reactive compliance, or untested continuity plans. As decisions become more dependent on AI, the resilience of those systems becomes a material operational risk.',
++    nextStep: 'Map the critical dependencies — providers, data sources, regulatory obligations — that your most important decisions rely on, and stress-test decision continuity against adverse scenarios. Build compliance into decision design rather than responding after enforcement. This is the focus of the Sovereign AI pillar.'
++  }
++];
++
++const BANDS = [
++  { min: 0,  max: 39,  name: 'Reactive',   cls: 'red',
++    desc: 'Decision-making is fragmented and inconsistent. Foundational elements of the decision system are missing or work only in isolation. The priority is to establish reliable basics in the constrained dimension before scaling AI further.' },
++  { min: 40, max: 59,  name: 'Developing', cls: 'amber',
++    desc: 'Foundations exist but remain uneven. Some dimensions of the decision system are working while others lag, creating constraints that limit overall performance. Targeted investment in the primary constraint will produce the greatest return.' },
++  { min: 60, max: 79,  name: 'Performing', cls: 'teal',
++    desc: 'Decision processes are structured and measurable. The decision system works reliably across most dimensions. Addressing the remaining constraint will move the organisation toward continuous, self-improving decision performance.' },
++  { min: 80, max: 100, name: 'Adaptive',   cls: 'green',
++    desc: 'Decision systems continuously improve through learning, governance and intelligence. The organisation makes high-value decisions at pace, with clear accountability, and adapts well under stress. Focus shifts to sustaining the advantage and closing marginal gaps.' }
++];
++
++/* ── state ── */
++const state = {};
++DIMENSIONS.forEach(d => d.questions.forEach((q, qi) => { state[d.id + '_q' + qi] = null; }));
++
++const TOTAL_Q = DIMENSIONS.reduce((a, d) => a + d.questions.length, 0);
++
++/* ── render assessment ── */
++function renderAssessment() {
++  const container = document.getElementById('dimensions');
++  let globalIdx = 0;
++  container.innerHTML = DIMENSIONS.map(d => {
++    const stmts = d.questions.map((q, qi) => {
++      globalIdx++;
++      const key = d.id + '_q' + qi;
++      const cells = SCALE.map(s =>
++        `<button type="button" class="likert-cell" role="radio" aria-checked="false"
++           data-key="${key}" data-val="${s.v}"
++           aria-label="${s.lab}"
++           onclick="rate('${key}', ${s.v})">
++           <span class="likert-num">${s.v}</span>
++           <span class="likert-lab">${s.lab}</span>
++         </button>`).join('');
++      return `
++        <div class="stmt">
++          <div class="stmt-idx">${String(globalIdx).padStart(2,'0')}</div>
++          <div>
++            <div class="stmt-text">${q}</div>
++            <div class="likert" role="radiogroup" aria-label="${q}" id="lk-${key}">${cells}</div>
++          </div>
++        </div>`;
++    }).join('');
++
++    return `
++      <section class="dimension">
++        <div class="dim-header">
++          <div class="dim-num">${d.num}</div>
++          <div>
++            <div class="dim-title">${d.title}</div>
++            <div class="dim-purpose">${d.purpose}</div>
++            <div class="dim-pillar">Mapped pillar: <b>${d.pillar}</b></div>
++          </div>
++        </div>
++        <div class="statements">${stmts}</div>
++      </section>`;
++  }).join('');
++}
++
++function rate(key, val) {
++  state[key] = val;
++  const group = document.getElementById('lk-' + key);
++  group.querySelectorAll('.likert-cell').forEach(c => {
++    const sel = parseInt(c.dataset.val, 10) === val;
++    c.classList.toggle('selected', sel);
++    c.setAttribute('aria-checked', sel ? 'true' : 'false');
++  });
++  updateProgress();
++}
++
++function answeredCount() {
++  return Object.values(state).filter(v => v !== null).length;
++}
++
++function updateProgress() {
++  const n = answeredCount();
++  document.getElementById('prog-n').textContent = n;
++  document.getElementById('prog-fill').style.width = (n / TOTAL_Q * 100) + '%';
++  const btn = document.getElementById('submit-btn');
++  const note = document.getElementById('submit-note');
++  if (n === TOTAL_Q) {
++    btn.disabled = false;
++    note.textContent = 'All statements rated — ready to generate your report.';
++    note.className = 'submit-note';
++  } else {
++    btn.disabled = true;
++    note.textContent = (TOTAL_Q - n) + ' statement' + (TOTAL_Q - n === 1 ? '' : 's') + ' remaining.';
++    note.className = 'submit-note warn';
++  }
++}
++
++/* ── scoring ── */
++function computeResults() {
++  const dims = DIMENSIONS.map(d => {
++    const raw = d.questions.reduce((a, q, qi) => a + state[d.id + '_q' + qi], 0); // 3..15
++    const score = ((raw - 3) / 12) * 100;                                         // 0..100
++    return { id: d.id, title: d.title, pillar: d.pillar, raw, score,
++             meaning: d.meaning, nextStep: d.nextStep, num: d.num };
++  });
++
++  const overall = dims.reduce((a, d) => a + d.score, 0) / dims.length;
++
++  // Constraint identification: lowest score = primary, second lowest = secondary.
++  // Tie-break is deterministic by dimension order (stable sort preserves index order).
++  const ranked = dims.map((d, i) => ({ d, i }))
++    .sort((a, b) => (a.d.score - b.d.score) || (a.i - b.i))
++    .map(x => x.d);
++
++  // Band is derived from the rounded score shown to the user, so the displayed
++  // number and band label are always consistent (bands are integer ranges).
++  const band = BANDS.find(b => Math.round(overall) >= b.min && Math.round(overall) <= b.max) || BANDS[0];
++
++  return { dims, overall, primary: ranked[0], secondary: ranked[1], band };
++}
++
++function colorClass(score) {
++  if (score >= 80) return 'green';
++  if (score >= 60) return 'teal';
++  if (score >= 40) return 'amber';
++  return 'red';
++}
++function fillColor(score) {
++  if (score >= 80) return 'var(--green)';
++  if (score >= 60) return 'var(--teal)';
++  if (score >= 40) return 'var(--amber)';
++  return 'var(--red)';
++}
++
++/* ── submit → report (save answers only on submission) ── */
++function submitAssessment() {
++  if (answeredCount() !== TOTAL_Q) return;
++  const r = computeResults();
++  const assessmentId = 'DPI-' + new Date().toISOString().replace(/[:.]/g, '-');
++  const timestamp = new Date().toISOString();
++
++  renderReport(r, assessmentId, timestamp);
++
++  document.getElementById('assessment-view').style.display = 'none';
++  document.getElementById('report-view').classList.add('visible');
++  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
++
++  // Designed-in storage hook — anonymous, benchmark-ready. Fails silently if
++  // the endpoint is not yet configured, so the assessment always completes.
++  persistResult(r, assessmentId, timestamp);
++}
++
++function renderReport(r, assessmentId, timestamp) {
++  const overall = Math.round(r.overall);
++  const sEl = document.getElementById('r-score');
++  sEl.textContent = overall;
++  sEl.className = 'score-big ' + colorClass(r.overall);
++
++  const bandEl = document.getElementById('r-band');
++  bandEl.textContent = r.band.name;
++  bandEl.className = 'band-chip ' + r.band.cls;
++  document.getElementById('r-band-desc').textContent = r.band.desc;
++
++  document.getElementById('report-meta').textContent =
++    assessmentId + ' · ' + new Date(timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
++
++  // primary
++  document.getElementById('r-pc-dim').textContent = r.primary.title;
++  document.getElementById('r-pc-pillar').textContent = r.primary.pillar;
++  document.getElementById('r-pc-score').textContent = 'Dimension score: ' + Math.round(r.primary.score) + ' / 100';
++  // secondary
++  document.getElementById('r-sc-dim').textContent = r.secondary.title;
++  document.getElementById('r-sc-pillar').textContent = r.secondary.pillar;
++  document.getElementById('r-sc-score').textContent = 'Dimension score: ' + Math.round(r.secondary.score) + ' / 100';
++
++  document.getElementById('r-meaning').innerHTML =
++    'Your primary constraint is <strong>' + r.primary.title + '</strong>. ' + r.primary.meaning;
++  document.getElementById('r-nextstep').textContent = r.primary.nextStep;
++
++  // breakdown — in canonical dimension order
++  document.getElementById('r-breakdown').innerHTML = r.dims.map(d => {
++    let flagCls = '', flag = '';
++    if (d.id === r.primary.id) { flagCls = 'is-primary'; flag = '<span class="bk-flag">Primary constraint</span>'; }
++    else if (d.id === r.secondary.id) { flagCls = 'is-secondary'; flag = '<span class="bk-flag">Secondary</span>'; }
++    const sc = Math.round(d.score);
++    return `
++      <div class="bk-row ${flagCls}">
++        <div class="bk-name">${d.title}${flag}</div>
++        <div class="bk-bar"><div class="bk-fill" style="width:${sc}%;background:${fillColor(d.score)}"></div></div>
++        <div class="bk-score" style="color:${fillColor(d.score)}">${sc}</div>
++      </div>`;
++  }).join('');
++
++  document.getElementById('report-foot').innerHTML =
++    'Decision Performance Index v' + DPI_VERSION + ' · The AI Readyist<br>' +
++    'Each dimension is scored 0–100 from three statements rated 1 (Strongly Disagree) to 5 (Strongly Agree). ' +
++    'The overall score is the mean of the six dimension scores. The primary constraint is the lowest-scoring dimension — ' +
++    'the point at which improvement will most lift overall Decision Performance.';
++}
++
++function retake() {
++  Object.keys(state).forEach(k => state[k] = null);
++  renderAssessment();
++  updateProgress();
++  document.getElementById('report-view').classList.remove('visible');
++  document.getElementById('assessment-view').style.display = '';
++  window.scrollTo({ top: 0 });
++}
++
++/* ── storage hook (no personal data; benchmark-ready) ── */
++function persistResult(r, assessmentId, timestamp) {
++  const payload = {
++    assessment_id: assessmentId,
++    timestamp: timestamp,
++    version: DPI_VERSION,
++    overall_score: Math.round(r.overall * 10) / 10,
++    band: r.band.name,
++    primary_constraint: r.primary.title,
++    secondary_constraint: r.secondary.title,
++    dimension_scores: r.dims.reduce((o, d) => { o[d.id] = Math.round(d.score * 10) / 10; return o; }, {}),
++    // optional benchmark dimensions — populated only if a future demographics
++    // step collects them. Never personal data.
++    industry: null,
++    org_size: null,
++    geography: null
++  };
++  try {
++    fetch('/api/dpi-submit', {
++      method: 'POST',
++      headers: { 'Content-Type': 'application/json' },
++      body: JSON.stringify(payload),
++      keepalive: true
++    }).catch(function () { /* endpoint optional in MVP — ignore */ });
++  } catch (e) { /* no-op */ }
++}
++
++/* ── init ── */
++renderAssessment();
++updateProgress();
++</script>
++</body>
++</html>
+diff --git a/index.html b/index.html
+index 518583b..93ae1f0 100644
+--- a/index.html
++++ b/index.html
+@@ -1855,6 +1855,49 @@
+ 
+     <div class="section-label">Readiness Instruments</div>
+ 
++    <!-- Featured: Decision Performance Index — flagship diagnostic -->
++    <a class="instrument-featured" href="/dpi">
++      <div class="instrument-featured-body">
++        <div class="instrument-status live">&#9679;&nbsp; Live</div>
++        <div class="instrument-name">Decision Performance Index</div>
++        <p class="instrument-desc">The flagship diagnostic. Rate your organisation across the six dimensions of Decision Performance to identify the single constraint most limiting high-value decisions. Constraint-led executive report. Takes 5&ndash;7 minutes.</p>
++        <div class="instrument-meta">
++          <span class="instrument-aud">CEO &middot; COO &middot; CIO &middot; CTO &middot; CFO &middot; 7 Min</span>
++          <span class="instrument-cta">Find your primary constraint</span>
++        </div>
++      </div>
++      <div class="instrument-featured-panel">
++        <div class="panel-label">Decision Performance dimensions</div>
++        <div class="panel-dimensions">
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Quality</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:62%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Velocity</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:48%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Accountability</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:38%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Capability</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:66%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Value</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill amber" style="width:54%"></div></div>
++          </div>
++          <div class="panel-dim-row">
++            <span class="panel-dim-label">Decision Resilience</span>
++            <div class="panel-bar-track"><div class="panel-bar-fill teal" style="width:60%"></div></div>
++          </div>
++        </div>
++        <div class="panel-cta">Your primary constraint</div>
++      </div>
++    </a>
++
+     <!-- Featured: EU AI Act Assessment — full width with teaser bars -->
+     <a class="instrument-featured" href="/eu-ai-act">
+       <div class="instrument-featured-body">
+diff --git a/migration_build4.sql b/migration_build4.sql
+new file mode 100644
+index 0000000..9c75e9f
+--- /dev/null
++++ b/migration_build4.sql
+@@ -0,0 +1,68 @@
++-- ============================================================
++-- Build 4 Migration — theAIReadyist
++-- Feature: Decision Performance Index MVP (feature/decision-performance-index-mvp)
++-- Run in: Supabase → SQL Editor
++-- ============================================================
++--
++-- Stores anonymous DPI assessment results to support future benchmarking.
++-- NO personal data is collected. Writes are server-side only, via the
++-- /api/dpi-submit serverless function using the Supabase secret key.
++-- The public (anon) key has no access to this table.
++
++-- 1. Results table
++CREATE TABLE IF NOT EXISTS dpi_results (
++  id                   text PRIMARY KEY,          -- DPI-<iso-timestamp>
++  created_at           timestamptz NOT NULL DEFAULT now(),
++  version              text NOT NULL DEFAULT '1.0',
++  overall_score        numeric(5,1) NOT NULL,     -- 0.0 .. 100.0
++  band                 text NOT NULL,             -- Reactive|Developing|Performing|Adaptive
++  primary_constraint   text NOT NULL,             -- dimension name
++  secondary_constraint text NOT NULL,             -- dimension name
++  dimension_scores     jsonb NOT NULL DEFAULT '{}'::jsonb,
++                        -- { "quality":75, "velocity":50, "accountability":..., ... }
++  -- Optional, coarse benchmark dimensions. Nullable. Never personal data.
++  industry             text,
++  org_size             text,
++  geography            text
++);
++
++-- 2. Constrain band to the four canonical performance bands
++ALTER TABLE dpi_results ADD CONSTRAINT dpi_band_check CHECK (
++  band IN ('Reactive', 'Developing', 'Performing', 'Adaptive')
++);
++
++-- 3. Constrain overall_score to the valid range
++ALTER TABLE dpi_results ADD CONSTRAINT dpi_overall_range_check CHECK (
++  overall_score >= 0 AND overall_score <= 100
++);
++
++-- 4. Constrain constraints to the six canonical dimension names
++ALTER TABLE dpi_results ADD CONSTRAINT dpi_primary_constraint_check CHECK (
++  primary_constraint IN (
++    'Decision Quality', 'Decision Velocity', 'Decision Accountability',
++    'Decision Capability', 'Decision Value', 'Decision Resilience'
++  )
++);
++ALTER TABLE dpi_results ADD CONSTRAINT dpi_secondary_constraint_check CHECK (
++  secondary_constraint IN (
++    'Decision Quality', 'Decision Velocity', 'Decision Accountability',
++    'Decision Capability', 'Decision Value', 'Decision Resilience'
++  )
++);
++
++-- 5. Indexes for future benchmark queries
++CREATE INDEX IF NOT EXISTS dpi_results_created_idx ON dpi_results (created_at DESC);
++CREATE INDEX IF NOT EXISTS dpi_results_band_idx    ON dpi_results (band);
++CREATE INDEX IF NOT EXISTS dpi_results_primary_idx ON dpi_results (primary_constraint);
++-- Benchmark cohort lookups (industry / size / geography), nulls excluded
++CREATE INDEX IF NOT EXISTS dpi_results_cohort_idx  ON dpi_results (industry, org_size, geography);
++
++-- 6. RLS — lock the table down. All writes go through the server (secret key,
++--    which bypasses RLS). No anon read or write. Aggregated benchmark figures
++--    will be exposed later via a dedicated server endpoint or a SECURITY DEFINER
++--    view, never by opening this table to the anon key.
++ALTER TABLE dpi_results ENABLE ROW LEVEL SECURITY;
++-- (No anon policies created on purpose — anon has no access.)
++
++-- Done.
++-- Note: existing builds (1–3) are unaffected. This table is additive.
+-- 
+2.34.1
+

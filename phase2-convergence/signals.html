@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Signals — The AI Readyist</title>
+<meta name="description" content="Pillar-classified executive signals for AI-native leadership: operating models, decision intelligence, agentic governance, AI economics, human agency and sovereign AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: var(--color-bg); --deep: var(--color-bg-deep); --surface: #0F2233; --raised: #122739;
+    --teal: var(--color-accent); --teal-border: rgba(0,184,162,0.20); --teal-active: rgba(0,184,162,0.60);
+    --amber: var(--color-warning); --amber-border: rgba(232,168,56,0.35);
+    --off-white: var(--color-text-primary); --slate-70: rgba(245,242,236,0.65); --slate: rgba(245,242,236,0.40);
+    --rule: rgba(255,255,255,0.08);
+  }
+  html { scroll-behavior: smooth; font-size: 17px; }
+  body { background: var(--navy); color: var(--off-white); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.6; min-height: 100vh; }
+  a { color: inherit; }
+
+  .site-nav { position: sticky; top: 0; z-index: 100; height: 56px; background: rgba(13, 31, 60,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: var(--type-body-sm); font-weight: 700; color: var(--off-white); text-decoration: none; }
+  .nav-logo em { color: var(--teal); font-style: italic; }
+  .nav-links { display: flex; gap: 26px; }
+  .nav-links a { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; color: var(--slate-70); }
+  .nav-links a:hover { color: var(--teal); }
+
+  .hero { max-width: 1080px; margin: 0 auto; padding: 72px 48px 32px; }
+  .eyebrow { display: inline-block; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--teal); letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--teal-border); padding: 4px 10px; margin-bottom: 20px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5vw, 56px); font-weight: 700; line-height: 1.08; margin-bottom: 16px; }
+  h1 em { color: var(--teal); font-style: italic; }
+  .lede { font-size: var(--type-h3); color: var(--slate-70); max-width: 680px; }
+
+  .filters { max-width: 1080px; margin: 0 auto; padding: 16px 48px 8px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--slate-70); background: none; border: 1px solid var(--rule); padding: 7px 13px; cursor: pointer; }
+  .chip:hover { border-color: var(--teal-border); color: var(--off-white); }
+  .chip.active { color: var(--teal); border-color: var(--teal-active); background: rgba(0,184,162,0.08); }
+
+  .grid { max-width: 1080px; margin: 0 auto; padding: 24px 48px 96px; display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 22px; }
+
+  .card { background: transparent; border: 1px solid var(--teal-border); border-top: 2px solid var(--teal); padding: 26px 26px 24px; display: flex; flex-direction: column; }
+  .card-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-family: 'DM Mono', monospace; font-size: 10.5px; color: var(--slate); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+  .card-pillar { color: var(--teal); }
+  .card-score { color: var(--amber); border: 1px solid var(--amber-border); padding: 1px 7px; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: var(--type-h2); font-weight: 700; line-height: 1.22; margin-bottom: 12px; }
+  .card-why { font-size: 14.5px; color: var(--slate-70); margin-bottom: 16px; }
+  .card-dq { font-size: 13.5px; color: var(--off-white); border-left: 2px solid var(--amber); padding-left: 12px; margin-bottom: 16px; font-style: italic; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--slate-70); border: 1px solid var(--rule); padding: 2px 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .card-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--slate); }
+  .card-foot a { color: var(--slate-70); text-decoration: none; }
+  .card-foot a:hover { color: var(--teal); }
+
+  .state { max-width: 1080px; margin: 0 auto; padding: 40px 48px 120px; }
+  .empty { border: 1px dashed var(--teal-border); padding: 64px 32px; text-align: center; color: var(--slate); }
+  .empty-icon { font-family: 'Playfair Display', serif; font-size: 48px; color: var(--teal-active); display: block; margin-bottom: 14px; }
+  .foot-note { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--slate); text-align: center; padding: 0 48px 60px; letter-spacing: 0.04em; }
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body class="tmpl tmpl-index">
+  <nav class="site-nav">
+    <a class="nav-logo" href="/">the<span style="color:var(--teal)">AI</span>Readyist</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/signals.html">Signals</a>
+      <a href="/dpi-mvp-deliverables/dpi.html">DPI</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <span class="eyebrow">Executive Signals</span>
+    <h1>Signals that <em>change decisions</em></h1>
+    <p class="lede">Curated, pillar-classified intelligence for AI-native leadership. Each signal is reviewed and approved by a human before it appears here — no automated publishing.</p>
+  </section>
+
+  <div class="filters" id="filters">
+    <button class="chip active" data-pillar="">All</button>
+    <button class="chip" data-pillar="Executive Operating Models">Operating Models</button>
+    <button class="chip" data-pillar="Decision Intelligence">Decision Intelligence</button>
+    <button class="chip" data-pillar="Agentic Governance">Agentic Governance</button>
+    <button class="chip" data-pillar="AI Economics">AI Economics</button>
+    <button class="chip" data-pillar="Human Agency">Human Agency</button>
+    <button class="chip" data-pillar="Sovereign AI">Sovereign AI</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="state" id="state"></div>
+  <p class="foot-note">Signals are produced by the Executive Signal Agent and published only after human approval. Source links open the original publication.</p>
+
+<script>
+(function () {
+  // Public (anon) Supabase key — RLS permits reading only approval_status = 'published'.
+  var SB_URL = 'https://mydxofjvpuurwwaohqys.supabase.co';
+  var SB_KEY = 'sb_publishable_gAIR6BSI1ZwMNSzafJCAdQ_hAb6jtAR';
+  var ENDPOINT = SB_URL + '/rest/v1/executive_signals'
+    + '?select=signal_title,why_it_matters,decision_question,suggested_tags,primary_pillar,secondary_pillar,executive_relevance_score,source_name,source_url,published_at'
+    + '&approval_status=eq.published'
+    + '&order=executive_relevance_score.desc,published_at.desc'
+    + '&limit=120';
+
+  var grid = document.getElementById('grid');
+  var state = document.getElementById('state');
+  var all = [];
+  var activePillar = '';
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function card(d) {
+    var pub = d.published_at ? new Date(d.published_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
+    var tags = (Array.isArray(d.suggested_tags) ? d.suggested_tags : [])
+      .map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+    return ''
+      + '<article class="card">'
+      +   '<div class="card-meta">'
+      +     '<span class="card-pillar">' + esc(d.primary_pillar || '') + '</span>'
+      +     (d.executive_relevance_score ? '<span class="card-score">Score ' + esc(d.executive_relevance_score) + '</span>' : '')
+      +   '</div>'
+      +   '<h2 class="card-title">' + esc(d.signal_title || '') + '</h2>'
+      +   (d.why_it_matters ? '<p class="card-why">' + esc(d.why_it_matters) + '</p>' : '')
+      +   (d.decision_question ? '<p class="card-dq">' + esc(d.decision_question) + '</p>' : '')
+      +   (tags ? '<div class="card-tags">' + tags + '</div>' : '')
+      +   '<div class="card-foot">'
+      +     '<span>' + esc(d.source_name || '') + (pub ? ' · ' + esc(pub) : '') + '</span>'
+      +     (d.source_url ? '<a href="' + esc(d.source_url) + '" target="_blank" rel="noopener noreferrer">source ↗</a>' : '')
+      +   '</div>'
+      + '</article>';
+  }
+
+  function render() {
+    var items = activePillar ? all.filter(function(d){ return d.primary_pillar === activePillar; }) : all;
+    if (!all.length) {
+      grid.innerHTML = '';
+      state.innerHTML = '<div class="empty"><span class="empty-icon">◎</span>No published signals yet. Approved signals will appear here once the editorial team publishes them.</div>';
+      return;
+    }
+    state.innerHTML = '';
+    grid.innerHTML = items.length
+      ? items.map(card).join('')
+      : '<div class="empty" style="grid-column:1/-1;"><span class="empty-icon">◎</span>No published signals in this pillar yet.</div>';
+  }
+
+  document.getElementById('filters').addEventListener('click', function(e){
+    var btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+    btn.classList.add('active');
+    activePillar = btn.getAttribute('data-pillar') || '';
+    render();
+  });
+
+  fetch(ENDPOINT, { headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY } })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){ all = Array.isArray(rows) ? rows : []; render(); })
+    .catch(function(){ state.innerHTML = '<div class="empty"><span class="empty-icon">◎</span>Could not load signals right now.</div>'; });
+})();
+</script>
+</body>
+</html>

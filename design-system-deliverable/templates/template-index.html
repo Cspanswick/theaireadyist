@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index / Listing Template — theAIReadyist</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/tokens.css" />
+  <link rel="stylesheet" href="/styles/typography.css" />
+  <link rel="stylesheet" href="/styles/layout.css" />
+  <link rel="stylesheet" href="/styles/brand.css" />
+  <link rel="stylesheet" href="/styles/templates.css" />
+</head>
+<body class="tmpl tmpl-index">
+  <!-- Index / Listing = a filterable, classified grid of content cards (Signals, research archive…). -->
+  <main class="layout section">
+    <!-- arrival + orientation -->
+    <header class="masthead mb-5">
+      <span class="masthead__brand wordmark">the<span class="wordmark__ai">AI</span>Readyist</span>
+      <span class="masthead__product">Executive Signals</span>
+    </header>
+    <p class="t-label tmpl__eyebrow">Executive Signals</p>
+    <h1 class="t-display tmpl__headline">Signals that <span class="t-accent">change decisions</span></h1>
+    <p class="t-body-lg">Curated, pillar-classified intelligence. Each item is human-reviewed before it appears here.</p>
+
+    <!-- filter bar (one per classification axis; aria-pressed for state + a11y) -->
+    <div class="tmpl-index__filters" role="group" aria-label="Filter by pillar">
+      <button class="tmpl-index__chip active" aria-pressed="true">All</button>
+      <button class="tmpl-index__chip" aria-pressed="false">Executive Operating Models</button>
+      <button class="tmpl-index__chip" aria-pressed="false">Decision Intelligence</button>
+      <button class="tmpl-index__chip" aria-pressed="false">Agentic Governance</button>
+      <button class="tmpl-index__chip" aria-pressed="false">AI Economics</button>
+      <button class="tmpl-index__chip" aria-pressed="false">Human Agency</button>
+      <button class="tmpl-index__chip" aria-pressed="false">Sovereign AI</button>
+    </div>
+
+    <!-- card grid — border-only content cards (§1.3), responsive to 1-col below md -->
+    <div class="tmpl-index__grid">
+      <a class="card" href="#" style="text-decoration:none;display:flex;flex-direction:column;">
+        <p class="t-meta">Sovereign AI · 23 Jun 2026 · Score 5</p>
+        <h3 class="t-h3 mt-3">Federal quantum deadlines make post-quantum crypto a board-level risk</h3>
+        <p class="t-body-sm mt-3">One-line decision-relevant summary of the signal…</p>
+        <p class="t-meta mt-3" style="margin-top:auto;color:var(--color-accent)">Read signal →</p>
+      </a>
+      <!-- repeat .card per item -->
+    </div>
+  </main>
+</body>
+</html>

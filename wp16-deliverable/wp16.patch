@@ -1,0 +1,194 @@
+diff --git a/index.html b/index.html
+index 0228299..07be9de 100644
+--- a/index.html
++++ b/index.html
+@@ -1763,10 +1763,11 @@
+ 
+     <!-- Tab bar -->
+     <div class="lenses-tabs" role="tablist">
+-      <button class="lenses-tab active" onclick="setLens('cfo')" role="tab" aria-selected="true">CFO</button>
++      <button class="lenses-tab active" onclick="setLens('ceo')" role="tab" aria-selected="true">CEO</button>
++      <button class="lenses-tab" onclick="setLens('cfo')" role="tab" aria-selected="false">CFO</button>
++      <button class="lenses-tab" onclick="setLens('coo')" role="tab" aria-selected="false">COO</button>
++      <button class="lenses-tab" onclick="setLens('tech')" role="tab" aria-selected="false">Tech Executive</button>
+       <button class="lenses-tab" onclick="setLens('chro')" role="tab" aria-selected="false">CHRO</button>
+-      <button class="lenses-tab" onclick="setLens('cio')" role="tab" aria-selected="false">CIO</button>
+-      <button class="lenses-tab" onclick="setLens('cto')" role="tab" aria-selected="false">CTO</button>
+       <button class="lenses-tab" onclick="setLens('board')" role="tab" aria-selected="false">Board</button>
+     </div>
+ 
+@@ -2107,84 +2108,101 @@
+ 
+ <script>
+ const LENSES = {
++  ceo: {
++    label: "CEO Lens",
++    thesis: "Are we becoming an AI-ready enterprise?",
++    sub: "Competitive advantage, growth and transformation now turn on AI readiness. The CEO owns whether the organisation is positioning to lead the category or follow it.",
++    pillars: [
++      { num: "02", name: "Decision Intelligence", priority: "high" },
++      { num: "01", name: "Executive Operating Models", priority: "high" },
++      { num: "04", name: "AI Economics", priority: "watch" },
++      { num: "05", name: "Human Agency", priority: "watch" },
++    ],
++    articles: [
++      { tag: "Executive Operating Models", title: "The Operating Model Is the Strategy", href: "https://cspanswick.substack.com" },
++      { tag: "Executive Operating Models", title: "What AI-Native Actually Looks Like at Scale", href: "https://cspanswick.substack.com" },
++      { tag: "AI Economics", title: "The AI Bill Shock Nobody Is Budgeting For", href: "https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" },
++    ]
++  },
+   cfo: {
+-    label: 'CFO Lens',
+-    thesis: 'AI readiness is a capital allocation problem before it is a technology one.',
+-    sub: 'The financial risk of moving too slowly is now larger than the risk of moving too fast. CFOs who treat AI as an IT budget line are already behind.',
++    label: "CFO Lens",
++    thesis: "Are we investing wisely and creating measurable value?",
++    sub: "AI is a capital-allocation decision before it is a technology one. The CFO owns investment discipline, ROI and value realisation across the AI portfolio.",
+     pillars: [
+-      { num: '01', name: 'AI Cost Intelligence', priority: 'high' },
+-      { num: '02', name: 'Governance, Trust & Risk', priority: 'high' },
+-      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
+-      { num: '05', name: 'PoC Purgatory', priority: 'watch' },
++      { num: "04", name: "AI Economics", priority: "high" },
++      { num: "01", name: "Executive Operating Models", priority: "watch" },
++      { num: "03", name: "Agentic Governance", priority: "watch" },
++      { num: "02", name: "Decision Intelligence", priority: "watch" },
+     ],
+     articles: [
+-      { tag: 'AI Cost Intelligence', title: 'The AI Bill Shock Nobody Is Budgeting For', href: 'https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting' },
+-      { tag: 'Governance & Risk', title: 'Who Owns the Model When It Gets It Wrong?', href: 'https://cspanswick.substack.com' },
+-      { tag: 'Operating Model', title: 'The Operating Model Is the Strategy', href: 'https://cspanswick.substack.com' },
++      { tag: "AI Economics", title: "The AI Bill Shock Nobody Is Budgeting For", href: "https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting" },
++      { tag: "AI Economics", title: "When Agents Talk to Agents, Who Pays?", href: "https://cspanswick.substack.com" },
++      { tag: "Agentic Governance", title: "Who Owns the Model When It Gets It Wrong?", href: "https://cspanswick.substack.com" },
+     ]
+   },
+-  chro: {
+-    label: 'CHRO Lens',
+-    thesis: 'AI readiness is a workforce and culture problem before it is a technology one.',
+-    sub: 'The organisations stalling on AI are not stalling because of the models — they are stalling because of the people. Change management is the critical path.',
++  coo: {
++    label: "COO Lens",
++    thesis: "Can the organisation operationalise AI safely and repeatably?",
++    sub: "Operating model, execution and decision velocity. The COO owns the gap between an AI that demos and an AI that runs the business every day.",
+     pillars: [
+-      { num: '03', name: 'The Human & Culture Layer', priority: 'high' },
+-      { num: '04', name: 'AI-Native Operating Model', priority: 'high' },
+-      { num: '05', name: 'PoC Purgatory', priority: 'watch' },
+-      { num: '02', name: 'Governance, Trust & Risk', priority: 'watch' },
++      { num: "01", name: "Executive Operating Models", priority: "high" },
++      { num: "02", name: "Decision Intelligence", priority: "high" },
++      { num: "05", name: "Human Agency", priority: "watch" },
++      { num: "03", name: "Agentic Governance", priority: "watch" },
+     ],
+     articles: [
+-      { tag: "Human & Culture Layer", title: "Can You Prove This Role Can't Be Done by AI?", href: "https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" },
+-      { tag: 'Human & Culture Layer', title: 'Why AI Champions Burn Out', href: 'https://cspanswick.substack.com' },
+-      { tag: 'Operating Model', title: 'What AI-Native Actually Looks Like at Scale', href: 'https://cspanswick.substack.com' },
++      { tag: "Executive Operating Models", title: "The Operating Model Is the Strategy", href: "https://cspanswick.substack.com" },
++      { tag: "Executive Operating Models", title: "Production Readiness Is Not a Technical Problem", href: "https://cspanswick.substack.com" },
++      { tag: "Decision Intelligence", title: "What AI-Native Actually Looks Like at Scale", href: "https://cspanswick.substack.com" },
+     ]
+   },
+-  cio: {
+-    label: 'CIO Lens',
+-    thesis: 'AI readiness is an infrastructure and governance problem before it is a capability one.',
+-    sub: 'CIOs are caught between the demand for AI speed and the reality of data architecture debt. The platforms that will enable AI are not the ones being bought today.',
++  tech: {
++    label: "Tech Executive Lens",
++    serving: "CIO \u2022 CTO \u2022 CAIO \u2022 CDAO \u2022 CISO",
++    thesis: "Can we build, govern and operate AI at enterprise scale?",
++    sub: "Enterprise architecture, data and production readiness, AI platforms and operations, governance implementation, cyber resilience and trust \u2014 the collective technology leadership accountable for making AI real.",
+     pillars: [
+-      { num: '02', name: 'Governance, Trust & Risk', priority: 'high' },
+-      { num: '01', name: 'AI Cost Intelligence', priority: 'high' },
+-      { num: '05', name: 'PoC Purgatory', priority: 'high' },
+-      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
++      { num: "03", name: "Agentic Governance", priority: "high" },
++      { num: "06", name: "Sovereign AI", priority: "high" },
++      { num: "02", name: "Decision Intelligence", priority: "watch" },
++      { num: "01", name: "Executive Operating Models", priority: "watch" },
+     ],
+     articles: [
+-      { tag: 'PoC Purgatory', title: 'Vibe Coding Has a Stop Sign', href: 'https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign' },
+-      { tag: 'Governance & Risk', title: 'The EU AI Act Is Not an IT Problem', href: 'https://cspanswick.substack.com' },
+-      { tag: 'AI Cost Intelligence', title: 'When Agents Talk to Agents, Who Pays?', href: 'https://cspanswick.substack.com' },
++      { tag: "Agentic Governance", title: "Vibe Coding Has a Stop Sign", href: "https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign" },
++      { tag: "Sovereign AI", title: "The EU AI Act Is Not an IT Problem", href: "https://cspanswick.substack.com" },
++      { tag: "Executive Operating Models", title: "Production Readiness Is Not a Technical Problem", href: "https://cspanswick.substack.com" },
+     ]
+   },
+-  cto: {
+-    label: 'CTO Lens',
+-    thesis: 'AI readiness is an architecture and production-readiness problem before it is a vision one.',
+-    sub: 'Most organisations can demo AI. Very few can deploy it safely and repeatably. The gap between PoC and production is where technical leadership is tested.',
++  chro: {
++    label: "CHRO Lens",
++    thesis: "Can our people adapt successfully?",
++    sub: "Workforce transformation, skills, leadership and human agency. The CHRO owns whether the organisation's people thrive alongside AI rather than merely survive it.",
+     pillars: [
+-      { num: '05', name: 'PoC Purgatory', priority: 'high' },
+-      { num: '01', name: 'AI Cost Intelligence', priority: 'high' },
+-      { num: '02', name: 'Governance, Trust & Risk', priority: 'watch' },
+-      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
++      { num: "05", name: "Human Agency", priority: "high" },
++      { num: "01", name: "Executive Operating Models", priority: "watch" },
++      { num: "02", name: "Decision Intelligence", priority: "watch" },
++      { num: "03", name: "Agentic Governance", priority: "watch" },
+     ],
+     articles: [
+-      { tag: 'PoC Purgatory', title: 'Vibe Coding Has a Stop Sign', href: 'https://cspanswick.substack.com/p/vibe-coding-has-a-stop-sign' },
+-      { tag: 'AI Cost Intelligence', title: 'The Hidden Cost of the Wrong Model', href: 'https://cspanswick.substack.com' },
+-      { tag: 'PoC Purgatory', title: 'Production Readiness Is Not a Technical Problem', href: 'https://cspanswick.substack.com' },
++      { tag: "Human Agency", title: "Can You Prove This Role Can't Be Done by AI?", href: "https://cspanswick.substack.com/p/can-you-prove-this-role-cant-be-done" },
++      { tag: "Human Agency", title: "Why AI Champions Burn Out", href: "https://cspanswick.substack.com" },
++      { tag: "Executive Operating Models", title: "What AI-Native Actually Looks Like at Scale", href: "https://cspanswick.substack.com" },
+     ]
+   },
+   board: {
+-    label: 'Board Lens',
+-    thesis: 'AI readiness is a governance and accountability question before it is an opportunity one.',
+-    sub: 'Boards that only hear about AI as upside are being poorly served. The liability exposure, the regulatory timeline, and the talent risk all require board-level framing.',
++    label: "Board Lens",
++    thesis: "Are we governing AI responsibly?",
++    sub: "Governance, oversight, fiduciary responsibility, strategic risk and resilience. The board owns whether AI is being adopted with appropriate accountability.",
+     pillars: [
+-      { num: '02', name: 'Governance, Trust & Risk', priority: 'high' },
+-      { num: '01', name: 'AI Cost Intelligence', priority: 'watch' },
+-      { num: '03', name: 'The Human & Culture Layer', priority: 'watch' },
+-      { num: '04', name: 'AI-Native Operating Model', priority: 'watch' },
++      { num: "03", name: "Agentic Governance", priority: "high" },
++      { num: "06", name: "Sovereign AI", priority: "high" },
++      { num: "04", name: "AI Economics", priority: "watch" },
++      { num: "05", name: "Human Agency", priority: "watch" },
+     ],
+     articles: [
+-      { tag: 'Governance & Risk', title: 'Governance Without Theatre', href: 'https://cspanswick.substack.com' },
+-      { tag: 'Governance & Risk', title: 'Who Owns the Decision When the AI Gets It Wrong?', href: 'https://cspanswick.substack.com' },
+-      { tag: 'AI Cost Intelligence', title: 'The AI Bill Shock Nobody Is Budgeting For', href: 'https://cspanswick.substack.com/p/the-ai-bill-shock-nobody-is-budgeting' },
++      { tag: "Agentic Governance", title: "Governance Without Theatre", href: "https://cspanswick.substack.com" },
++      { tag: "Agentic Governance", title: "Who Owns the Model When It Gets It Wrong?", href: "https://cspanswick.substack.com" },
++      { tag: "Sovereign AI", title: "The EU AI Act Is Not an IT Problem", href: "https://cspanswick.substack.com" },
+     ]
+   }
+ };
+@@ -2209,7 +2227,7 @@ function renderLens(key) {
+   panel.innerHTML = `
+     <div class="lenses-thesis">
+       <div>
+-        <div class="lenses-function-label">${d.label}</div>
++        <div class="lenses-function-label">${d.label}</div>${d.serving ? `<div class="lenses-serving" style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(240,244,248,.5);margin-top:6px;">Serving: ${d.serving}</div>` : ""}
+         <div class="lenses-thesis-text">${d.thesis}</div>
+         <div class="lenses-thesis-sub">${d.sub}</div>
+       </div>
+@@ -2233,8 +2251,8 @@ function setLens(key) {
+   renderLens(key);
+ }
+ 
+-// Initialise on CFO
+-renderLens('cfo');
++// Initialise on CEO
++renderLens('ceo');
+ </script>
+ 
+ 

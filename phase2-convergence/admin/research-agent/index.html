@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research News Agent Control Centre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/research-agent/styles.css" />
+  <link rel="stylesheet" href="/styles/tokens.css">
+<link rel="stylesheet" href="/styles/typography.css">
+<link rel="stylesheet" href="/styles/layout.css">
+  <style>
+    /* ââ Approval tracking additions âââââââââââââââââââââ */
+    .btn-approvals {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-approvals:hover {
+      background: var(--color-accent);
+      color: var(--color-bg);
+    }
+    .register-cell-approval {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 96px;
+    }
+    .approval-check-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .approval-check-wrap input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #3a4d60;
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .approval-check-wrap input[type="checkbox"]:checked {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    .approval-check-wrap input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid var(--color-bg);
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .approval-check-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: #3a4d60;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+    .approval-check-wrap:has(input:checked) .approval-check-label {
+      color: var(--color-accent);
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+</head>
+<body class="tmpl tmpl-product">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-badge">AGENT v1.0</span>
+        <h1 class="header-title">Research News Agent<br><span class="header-title-accent">Control Centre</span></h1>
+        <p class="header-desc">Configure, schedule and govern a structured market research agent. Outputs are evidence-led, cited and require human approval before any external distribution.</p>
+      </div>
+      <div class="header-status">
+        <div class="status-dot"></div>
+        <span class="status-label">READY TO CONFIGURE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <main class="main-layout">
+
+    <!-- LEFT COLUMN: FORM -->
+    <section class="form-panel" aria-label="Agent Configuration">
+
+      <!-- SECTION 1: BRIEF TITLE -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-title">Brief Title</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="brief-title">Title</label>
+          <input type="text" id="brief-title" class="field-input" maxlength="120" placeholder="e.g. Weekly BFSI agentic AI briefing" />
+          <p class="field-hint">A short name for this brief â shown in the schedule register</p>
+        </div>
+      </div>
+
+      <!-- SECTION 2: SCHEDULER -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Scheduler</h2>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Schedule Mode</label>
+          <div class="schedule-mode-row">
+            <div class="toggle-group" role="radiogroup" aria-label="Schedule mode">
+              <button type="button" class="toggle-btn active" id="btn-frequency" aria-pressed="true" onclick="setScheduleMode('frequency')">Frequency</button>
+              <button type="button" class="toggle-btn" id="btn-specific" aria-pressed="false" onclick="setScheduleMode('specific')">Specific Date</button>
+            </div>
+            <button type="button" class="btn-run-now" id="btn-run-now" onclick="runAgentNow()">&#9654; Run Agent Now</button>
+          </div>
+          <p class="field-hint">Run Agent Now triggers an immediate run with the current repo config â the draft lands in <a class="hint-link" href="/admin/approvals">Approvals</a></p>
+        </div>
+
+        <!-- Frequency Options -->
+        <div id="frequency-options" class="conditional-block">
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label" for="freq-unit">Frequency</label>
+              <select id="freq-unit" class="field-select">
+                <option value="day">Once per day</option>
+                <option value="week" selected>Once per week</option>
+                <option value="month">Once per month</option>
+              </select>
+            </div>
+          </div>
+          <p class="field-hint" style="font-family:var(--mono);font-size:11px;color:var(--text-mut);margin-top:8px;">Each brief runs at most once per day. For more coverage, add another brief.</p>
+        </div>
+
+        <!-- Specific Date Options -->
+        <div id="specific-options" class="conditional-block hidden">
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label" for="run-date">Run Date</label>
+              <input type="date" id="run-date" class="field-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="run-time">Preferred Run Time</label>
+          <input type="time" id="run-time" class="field-input" value="08:00" />
+        </div>
+      </div>
+
+      <!-- SECTION 2: DOCUMENT FORMAT -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Document Format</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="doc-length">Output Length</label>
+          <select id="doc-length" class="field-select">
+            <option value="250">250 words</option>
+            <option value="500">500 words</option>
+            <option value="1000" selected>1000 words</option>
+            <option value="2000">2000 words</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 3: MARKET FOCUS -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-title">Market Focus / Vertical Sector</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Select Sector(s)</label>
+          <div class="checkbox-grid" id="market-focus" role="group" aria-label="Market focus sectors">
+            <label class="checkbox-label"><input type="checkbox" value="BFSI" /><span class="checkbox-custom"></span>BFSI â Banking, Financial Services, Insurance</label>
+            <label class="checkbox-label"><input type="checkbox" value="Energy" /><span class="checkbox-custom"></span>Energy &amp; Utilities</label>
+            <label class="checkbox-label"><input type="checkbox" value="Retail" /><span class="checkbox-custom"></span>Retail</label>
+            <label class="checkbox-label"><input type="checkbox" value="CMT" /><span class="checkbox-custom"></span>Comms, Media and Telecoms</label>
+            <label class="checkbox-label"><input type="checkbox" value="Technology" /><span class="checkbox-custom"></span>Technology providers / vendors</label>
+            <label class="checkbox-label"><input type="checkbox" value="FMCG" /><span class="checkbox-custom"></span>FMCG</label>
+            <label class="checkbox-label"><input type="checkbox" value="Manufacturing" /><span class="checkbox-custom"></span>Manufacturing</label>
+            <label class="checkbox-label"><input type="checkbox" value="Pharma" /><span class="checkbox-custom"></span>Pharmaceuticals</label>
+            <label class="checkbox-label"><input type="checkbox" value="Petrochem" /><span class="checkbox-custom"></span>Petrochemicals</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="PublicSector" /><span class="checkbox-custom"></span>Public Sector</label>
+            <label class="checkbox-label"><input type="checkbox" value="Transport" /><span class="checkbox-custom"></span>Transport and travel</label>
+          </div>
+          <p class="field-hint">Tick all sectors that apply</p>
+        </div>
+      </div>
+
+      <!-- SECTION 4: REGION -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <h2 class="section-title">Region</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Select Region(s)</label>
+          <div class="checkbox-grid" id="region" role="group" aria-label="Regions">
+            <label class="checkbox-label"><input type="checkbox" value="UK&amp;Ireland" /><span class="checkbox-custom"></span>UK &amp; Ireland</label>
+            <label class="checkbox-label"><input type="checkbox" value="Europe" /><span class="checkbox-custom"></span>Europe</label>
+            <label class="checkbox-label"><input type="checkbox" value="MiddleEast" /><span class="checkbox-custom"></span>Middle East</label>
+            <label class="checkbox-label"><input type="checkbox" value="Africa" /><span class="checkbox-custom"></span>Africa</label>
+            <label class="checkbox-label"><input type="checkbox" value="India" /><span class="checkbox-custom"></span>India</label>
+            <label class="checkbox-label"><input type="checkbox" value="APAC" /><span class="checkbox-custom"></span>APACÂ¼</label>
+            <label class="checkbox-label"><input type="checkbox" value="NorthAmerica" /><span class="checkbox-custom"></span>North America</label>
+            <label class="checkbox-label"><input type="checkbox" value="SouthAmerica" /><span class="checkbox-custom"></span>South America</label>
+          </div>
+          <p class="field-hint">Tick all regions that apply</p>
+        </div>
+      </div>
+
+      <!-- SECTION 5: TOPIC -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">06</span>
+          <h2 class="section-title">Research Topic</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="topic">Topic</label>
+          <textarea id="topic" class="field-textarea" rows="4" placeholder="e.g. Agentic AI adoption in UK financial services&#10;e.g. Cybersecurity regulation in European banking&#10;e.g. Energy transition technology in the Middle East"></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 6: SOURCE PREFERENCES -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">07</span>
+          <h2 class="section-title">Source Preferences</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Preferred Source Types</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-official" value="Official announcements" />
+              <span class="checkbox-custom"></span>
+              Official announcements
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-regulators" value="Regulators and public bodies" />
+              <span class="checkbox-custom"></span>
+              Regulators and public bodies
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-analysts" value="Analyst firms and consultancies" />
+              <span class="checkbox-custom"></span>
+              Analyst firms and consultancies
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-trade" value="Trade press and specialist media" />
+              <span class="checkbox-custom"></span>
+              Trade press and specialist media
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-vendor" value="Vendor blogs and reports" />
+              <span class="checkbox-custom"></span>
+              Vendor blogs and reports
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="src-academic" value="Academic or research papers" />
+              <span class="checkbox-custom"></span>
+              Academic or research papers
+            </label>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="excluded-sources">Excluded Sources or Domains</label>
+          <textarea id="excluded-sources" class="field-textarea" rows="3" placeholder="e.g. example-domain.com, specific-vendor.com"></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION 7: OUTPUT FORMAT -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">08</span>
+          <h2 class="section-title">Output Format</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="output-format">Format</label>
+          <select id="output-format" class="field-select">
+            <option value="executive-brief">Executive brief</option>
+            <option value="research-document">Research document</option>
+            <option value="website-news-draft">Website news draft</option>
+            <option value="source-register-only">Source register only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 8: TONE -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">09</span>
+          <h2 class="section-title">Tone</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="tone">Output Tone</label>
+          <select id="tone" class="field-select">
+            <option value="Executive">Executive</option>
+            <option value="Analyst-style">Analyst-style</option>
+            <option value="Editorial">Editorial</option>
+            <option value="Neutral research">Neutral research</option>
+            <option value="Board briefing">Board briefing</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 9: GUARDRAILS -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="section-num">10</span>
+          <h2 class="section-title">Guardrails</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Active Guardrails</label>
+          <div class="checkbox-grid checkbox-grid-single">
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-citations" value="Require citations for all factual claims" checked />
+              <span class="checkbox-custom"></span>
+              Require citations for all factual claims
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-separate" value="Separate facts, opinions and vendor claims" checked />
+              <span class="checkbox-custom"></span>
+              Separate facts, opinions and vendor claims
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-flag" value="Flag weak or conflicting evidence" checked />
+              <span class="checkbox-custom"></span>
+              Flag weak or conflicting evidence
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-approval" value="Do not publish without human approval" checked />
+              <span class="checkbox-custom"></span>
+              Do not publish without human approval
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-record" value="Record source list and run timestamp" checked />
+              <span class="checkbox-custom"></span>
+              Record source list and run timestamp
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="gr-confidence" value="Show confidence level for major findings" checked />
+              <span class="checkbox-custom"></span>
+              Show confidence level for major findings
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 10: ACTIONS -->
+      <div class="form-section form-section-actions">
+        <div class="section-header">
+          <span class="section-num">11</span>
+          <h2 class="section-title">Actions</h2>
+        </div>
+        <div class="action-grid">
+          <button type="button" class="btn btn-primary" onclick="generateBrief()">
+            <span class="btn-icon">&#9654;</span> Generate Agent Brief
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="resetForm()">
+            <span class="btn-icon">&#8634;</span> Reset
+          </button>
+          <button type="button" class="btn btn-export" onclick="exportJSON()" id="btn-export" disabled>
+            <span class="btn-icon">&#10515;</span> Export JSON
+          </button>
+        </div>
+        <div id="action-message" class="action-message" aria-live="polite"></div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: PREVIEW -->
+    <section class="preview-panel" aria-label="Generated Agent Brief">
+      <div class="preview-header">
+        <h2 class="preview-title">Agent Brief Preview</h2>
+        <span class="preview-status" id="preview-status">Awaiting generation</span>
+      </div>
+      <div class="preview-body" id="preview-body">
+        <div class="preview-empty">
+          <div class="preview-empty-icon">&#9678;</div>
+          <p>Configure the agent and click <strong>Generate Agent Brief</strong> to produce the configuration payload.</p>
+          <p class="preview-empty-sub">The JSON will appear here and can be exported for backend integration.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SCHEDULE REGISTER -->
+  <section class="register-panel" aria-label="Schedule Register">
+    <div class="register-inner">
+      <div class="register-header">
+        <div class="register-heading">
+          <span class="section-num">12</span>
+          <h2 class="section-title">Schedule Register</h2>
+          <span class="register-count" id="register-count">0 briefs</span>
+        </div>
+        <div class="register-tools">
+          <a href="/admin/approvals" class="btn-approvals">&#10003; View Approvals</a>
+          <span class="register-editing hidden" id="register-editing">
+            Editing <strong id="register-editing-id"></strong>
+            <button type="button" class="register-cancel" onclick="cancelEdit()">Cancel</button>
+          </span>
+          <button type="button" class="btn btn-export" onclick="exportRegister()" id="btn-export-register" disabled>
+            <span class="btn-icon">&#10515;</span> Export Register
+          </button>
+        </div>
+      </div>
+      <p class="register-desc">
+        Every generated brief is recorded here in a central database â this register is the agent's run list,
+        and the agent queries it live for its instructions. Select a brief to view its payload,
+        edit to amend it, or delete to remove it from the schedule. Export downloads a
+        <code>register.json</code> snapshot.
+      </p>
+      <div class="register-list" id="register-list"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-note">Research News Agent Control Centre â No content is published without explicit human approval.</span>
+      <span class="footer-build">Built for agent orchestration workflows</span>
+    </div>
+  </footer>
+
+  <script src="/admin/research-agent/app.js"></script>
+
+<script>
+/* WP15: pre-fill from a Research Candidate when arriving via /admin/research-candidates */
+(function(){
+  try{
+    var p = new URLSearchParams(location.search);
+    var topic = p.get('topic'); if(!topic) return;
+    function apply(){
+      var el = document.getElementById('topic');
+      if(el){ el.value = topic; }
+      var cand = (p.get('candidate')||'').replace(/[<>]/g,'');
+      var sig  = (p.get('signal')||'').replace(/[<>]/g,'');
+      var rat  = (p.get('rationale')||'').replace(/[<>]/g,'');
+      var note = document.createElement('div');
+      note.style.cssText = 'margin:12px 0;padding:10px 14px;border:1px solid rgba(0,184,162,.4);background:rgba(0,184,162,.08);color:#F5F2EC;font:13px/1.5 -apple-system,sans-serif;';
+      note.innerHTML = 'Pre-filled from research candidate <b>'+cand+'</b>. You still launch manually.'+(sig?'<br>Source signal: “'+sig+'”':'')+(rat?'<br>Rationale: '+rat:'');
+      if(el && el.parentNode){ el.parentNode.insertBefore(note, el); }
+    }
+    if(document.readyState!=='loading'){ setTimeout(apply,400); } else { window.addEventListener('load', function(){ setTimeout(apply,400); }); }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
